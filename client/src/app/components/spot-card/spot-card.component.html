@@ -1,0 +1,38 @@
+<article
+  class="card spot-card"
+  [attr.id]="'spot-' + spot().id"
+  (mouseenter)="highlight.emit(spot().id)"
+  (mouseleave)="highlight.emit(null)"
+  (focusin)="highlight.emit(spot().id)"
+  (focusout)="highlight.emit(null)"
+>
+  <app-spot-illustration class="spot-card__illustration" [type]="spot().type" />
+
+  <div class="spot-card__body">
+    <h3 class="spot-card__title">
+      <a class="spot-card__link" [routerLink]="['/lieux', spot().id]">{{ spot().name }}</a>
+    </h3>
+    <p class="spot-card__meta">
+      <!-- The illustration shows the type of place visually; screen readers get it as text. -->
+      <span class="visually-hidden">{{ typeLabel() }}, </span>
+      @if (distanceText(); as distance) {
+        {{ distance }} ·
+      }
+      <span [class.is-open]="spot().openNow">{{ openingText() }}</span>
+    </p>
+
+    <ul class="spot-card__badges" role="list" aria-label="Affluence et équipements">
+      <li><app-crowd-badge [meter]="spot().liveMeter" /></li>
+      @for (badge of badges(); track badge) {
+        <li><span class="badge">{{ badge }}</span></li>
+      }
+      @if (spot().status === 'a_verifier') {
+        <li>
+          <span class="badge badge--pending" title="Proposé par un membre, pas encore vérifié">
+            <svg lucideHourglass aria-hidden="true"></svg> À vérifier
+          </span>
+        </li>
+      }
+    </ul>
+  </div>
+</article>
