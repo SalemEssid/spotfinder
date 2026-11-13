@@ -1,0 +1,250 @@
+<div class="container page add">
+  <header class="page-header">
+    <h1>Ajouter un lieu</h1>
+    <p class="text-secondary">
+      Vous connaissez un bon coin pour travailler ? Partagez-le. Il apparaîtra tout de suite avec la mention
+      « À vérifier ».
+    </p>
+  </header>
+
+  @if (showSummary() && form.invalid) {
+    <p class="form-error" role="alert">
+      <svg lucideCircleExclamationPoint aria-hidden="true"></svg>
+      Il manque quelques informations : les champs à compléter sont signalés en rouge.
+    </p>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <!-- 1. Identity --------------------------------------------------------------------------->
+    <fieldset class="section">
+      <legend><span class="step" aria-hidden="true">1</span> Le lieu</legend>
+
+      <div class="grid-2">
+        <div class="field">
+          <label for="spot-name">Nom du lieu</label>
+          <input id="spot-name" class="input" formControlName="name" [attr.aria-invalid]="!!fieldError(form.controls.name)" />
+          @if (fieldError(form.controls.name); as error) {
+            <p class="field__error">{{ error }}</p>
+          }
+        </div>
+
+        <div class="field">
+          <label for="spot-type">Type</label>
+          <select id="spot-type" class="input" formControlName="type">
+            @for (option of typeOptions; track option[0]) {
+              <option [value]="option[0]">{{ option[1] }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="spot-area">Quartier</label>
+          <input
+            id="spot-area"
+            class="input"
+            formControlName="area"
+            placeholder="Ariana, El Ghazala, Ennasr…"
+            [attr.aria-invalid]="!!fieldError(form.controls.area)"
+          />
+          @if (fieldError(form.controls.area); as error) {
+            <p class="field__error">{{ error }}</p>
+          }
+        </div>
+
+        <div class="field">
+          <label for="spot-address">Adresse</label>
+          <input
+            id="spot-address"
+            class="input"
+            formControlName="address"
+            autocomplete="street-address"
+            [attr.aria-invalid]="!!fieldError(form.controls.address)"
+          />
+          @if (fieldError(form.controls.address); as error) {
+            <p class="field__error">{{ error }}</p>
+          }
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="spot-description">Description <span class="text-secondary">(facultatif)</span></label>
+        <textarea
+          id="spot-description"
+          class="input"
+          formControlName="description"
+          maxlength="500"
+          placeholder="Ambiance, meilleures tables, bons plans…"
+        ></textarea>
+      </div>
+    </fieldset>
+
+    <!-- 2. Map ------------------------------------------------------------------------------>
+    <fieldset class="section">
+      <legend><span class="step" aria-hidden="true">2</span> Sur la carte</legend>
+      <p id="map-help" class="field__hint">
+        Cliquez sur la carte à l’endroit exact du lieu (vous pouvez ensuite déplacer le repère). Au clavier : déplacez la
+        carte avec les flèches, puis « Placer au centre ».
+      </p>
+
+      <app-map-view
+        class="picker"
+        [pickable]="true"
+        [picked]="position()"
+        [fitToMarkers]="false"
+        ariaLabel="Carte pour placer le lieu"
+        (positionPick)="setPosition($event)"
+      />
+
+      <div class="picker__actions">
+        <button type="button" class="btn btn--secondary" (click)="placeAtMapCenter()">
+          <svg lucideMapPin aria-hidden="true"></svg> Placer au centre de la carte
+        </button>
+        <button type="button" class="btn btn--ghost" [disabled]="locating()" (click)="useMyLocation()">
+          <svg lucideLocateFixed aria-hidden="true"></svg> {{ locating() ? 'Localisation…' : 'Utiliser ma position' }}
+        </button>
+      </div>
+
+      <p class="picker__status" aria-live="polite" [class.is-error]="form.controls.position.touched && !position()">
+        @if (position(); as p) {
+          Repère placé · {{ p.latitude.toFixed(5) }}, {{ p.longitude.toFixed(5) }}
+        } @else if (form.controls.position.touched) {
+          Placez le lieu sur la carte pour continuer.
+        } @else {
+          Aucun repère placé pour l’instant.
+        }
+      </p>
+    </fieldset>
+
+    <!-- 3. Equipment ------------------------------------------------------------------------->
+    <fieldset class="section" formGroupName="equipment">
+      <legend><span class="step" aria-hidden="true">3</span> Équipements</legend>
+
+      <div class="grid-2">
+        <div class="field">
+          <label for="spot-wifi">Wi-Fi</label>
+          <select id="spot-wifi" class="input" formControlName="wifiSpeed">
+            @for (option of wifiOptions; track option.value) {
+              <option [ngValue]="option.value">{{ option.label }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="spot-outlets">Nombre de prises accessibles</label>
+          <input
+            id="spot-outlets"
+            class="input"
+            type="number"
+            min="0"
+            max="500"
+            inputmode="numeric"
+            formControlName="outletsCount"
+            [attr.aria-invalid]="!!fieldError(form.controls.equipment.controls.outletsCount)"
+          />
+          @if (fieldError(form.controls.equipment.controls.outletsCount); as error) {
+            <p class="field__error">{{ error }}</p>
+          }
+        </div>
+
+        <div class="field">
+          <label for="spot-price">Budget</label>
+          <select id="spot-price" class="input" formControlName="priceLevel">
+            @for (option of priceOptions; track option.value) {
+              <option [ngValue]="option.value">{{ option.label }}</option>
+            }
+          </select>
+        </div>
+
+        <fieldset class="field radios">
+          <legend>Niveau de bruit</legend>
+          <div class="radios__row">
+            @for (option of noiseOptions; track option[0]) {
+              <label class="chip" [class.is-active]="form.controls.equipment.controls.noiseLevel.value === option[0]">
+                <input type="radio" formControlName="noiseLevel" [value]="option[0]" />
+                {{ option[1] }}
+              </label>
+            }
+          </div>
+        </fieldset>
+      </div>
+
+      <label class="checkbox">
+        <input type="checkbox" formControlName="airConditioning" />
+        Climatisé
+      </label>
+    </fieldset>
+
+    <!-- 4. Opening hours: a FormArray of days, each with a FormArray of time slots --------------->
+    <fieldset class="section">
+      <legend><span class="step" aria-hidden="true">4</span> Horaires</legend>
+      <div class="hours__toolbar">
+        <p class="field__hint">Heure de Tunis. Ajoutez un deuxième créneau si le lieu ferme à midi.</p>
+        <button type="button" class="btn btn--ghost" (click)="copyMondayToAll()">
+          <svg lucideCopy aria-hidden="true"></svg> Copier le lundi sur toute la semaine
+        </button>
+      </div>
+
+      <ul class="days" role="list">
+        @for (day of days; track day.controls.weekday.value) {
+          <li class="day" [formGroup]="day">
+            <label class="checkbox day__toggle">
+              <input type="checkbox" formControlName="open" (change)="toggleDay(day, $event)" />
+              <span class="day__name">{{ weekdayLabels[day.controls.weekday.value] }}</span>
+            </label>
+
+            @if (day.controls.open.value) {
+              <div class="day__slots" formArrayName="slots">
+                @for (slot of day.controls.slots.controls; track slot; let i = $index) {
+                  <div class="slot" [formGroupName]="i">
+                    <label class="visually-hidden" [for]="'open-' + day.controls.weekday.value + '-' + i">
+                      Ouverture {{ weekdayLabels[day.controls.weekday.value] }}, créneau {{ i + 1 }}
+                    </label>
+                    <input
+                      class="input slot__time"
+                      type="time"
+                      [id]="'open-' + day.controls.weekday.value + '-' + i"
+                      formControlName="opensAt"
+                      [attr.aria-invalid]="!!slotError(slot)"
+                    />
+                    <span aria-hidden="true">à</span>
+                    <label class="visually-hidden" [for]="'close-' + day.controls.weekday.value + '-' + i">
+                      Fermeture {{ weekdayLabels[day.controls.weekday.value] }}, créneau {{ i + 1 }}
+                    </label>
+                    <input
+                      class="input slot__time"
+                      type="time"
+                      [id]="'close-' + day.controls.weekday.value + '-' + i"
+                      formControlName="closesAt"
+                      [attr.aria-invalid]="!!slotError(slot)"
+                    />
+                    <button type="button" class="btn btn--ghost btn--icon" (click)="removeSlot(day, i)">
+                      <svg lucideX aria-hidden="true"></svg>
+                      <span class="visually-hidden">Supprimer ce créneau</span>
+                    </button>
+                    @if (slotError(slot); as error) {
+                      <p class="field__error slot__error">{{ error }}</p>
+                    }
+                  </div>
+                }
+                @if (day.controls.slots.length < 3) {
+                  <button type="button" class="btn btn--ghost add-slot" (click)="addSlot(day)">
+                    <svg lucidePlus aria-hidden="true"></svg> Ajouter un créneau
+                  </button>
+                }
+              </div>
+            } @else {
+              <p class="day__closed">Fermé</p>
+            }
+          </li>
+        }
+      </ul>
+    </fieldset>
+
+    <div class="submit">
+      <button type="submit" class="btn btn--primary" [disabled]="submitting()">
+        {{ submitting() ? 'Envoi…' : 'Proposer ce lieu' }}
+      </button>
+      <p class="caption">Merci ! Chaque lieu ajouté aide la communauté.</p>
+    </div>
+  </form>
+</div>
