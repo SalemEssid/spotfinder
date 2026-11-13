@@ -21,13 +21,24 @@ import { AuthService } from './services/auth.service';
 // Dates and numbers formatted the French way (13 nov. 2026, 4,5).
 registerLocaleData(localeFr);
 
+/**
+ * Smooth cross-fade between pages (View Transitions API), except on WebKit browsers
+ * (Safari and every browser on iOS). In our end-to-end tests the WebKit engine crashed the page on
+ * view transitions; we cannot test a real Safari, so we play safe: those visitors get instant page
+ * changes and everything else works the same. (Chrome's and Edge's user agents also say "AppleWebKit".)
+ */
+const isWebKitEngine =
+  typeof navigator !== 'undefined' &&
+  /AppleWebKit/.test(navigator.userAgent) &&
+  !/Chrome|Chromium|Edg/.test(navigator.userAgent);
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(
       routes,
       withComponentInputBinding(), // route params (/lieux/:id) arrive as component inputs
-      withViewTransitions(), // smooth cross-fade between pages (skipped with reduced motion)
+      ...(isWebKitEngine ? [] : [withViewTransitions()]), // skipped with reduced motion too (CSS)
       withInMemoryScrolling({ scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled' }),
     ),
     provideHttpClient(withFetch(), withInterceptors([sessionExpiredInterceptor])),
