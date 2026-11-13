@@ -57,6 +57,18 @@ export const SPOT_TYPE_LABELS: Record<SpotType, string> = {
 export const WEEKDAY_LABELS = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
 export const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0];
 
+/** Weekday (0 = Sunday) of `date` on a Tunis wall clock, whatever the visitor's time zone. */
+export function tunisWeekday(date: Date): number {
+  const name = new Intl.DateTimeFormat('en-US', { weekday: 'short', timeZone: 'Africa/Tunis' }).format(date);
+  return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(name);
+}
+
+export const NOISE_DESCRIPTIONS = {
+  silencieux: 'Ambiance silencieuse',
+  modere: 'Ambiance modérée',
+  anime: 'Ambiance animée',
+} as const;
+
 /** 4.25 → "4,3" */
 export function formatRating(value: number): string {
   return value.toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 1 });

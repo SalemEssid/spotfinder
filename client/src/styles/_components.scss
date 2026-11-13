@@ -162,6 +162,11 @@
   color: var(--sature-texte);
 }
 
+.badge--large {
+  padding: 0.3rem 0.9rem;
+  font-size: var(--fs-corps);
+}
+
 .badge--pending {
   background: var(--encre);
   color: var(--texte-inverse);

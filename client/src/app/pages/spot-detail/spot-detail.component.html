@@ -1,0 +1,177 @@
+@switch (status()) {
+  @case ('loading') {
+    <div class="loading" aria-busy="true" aria-live="polite">
+      <span class="visually-hidden">Chargement du lieu…</span>
+      <div class="skeleton loading__hero"></div>
+      <div class="container loading__body">
+        <div class="skeleton" style="width: 55%; height: 36px"></div>
+        <div class="skeleton" style="width: 35%; height: 20px"></div>
+        <div class="skeleton loading__meter"></div>
+      </div>
+    </div>
+  }
+
+  @case ('not-found') {
+    <div class="container page">
+      <app-empty-state title="Ce lieu est introuvable" message="Il a peut-être été retiré, ou le lien est incomplet.">
+        <a class="btn btn--primary" routerLink="/explorer">Voir les lieux</a>
+      </app-empty-state>
+    </div>
+  }
+
+  @case ('error') {
+    <div class="container page">
+      <app-empty-state tone="error" title="Ce lieu n’a pas pu être chargé" [message]="errorMessage()">
+        <button type="button" class="btn btn--primary" (click)="retry()">Réessayer</button>
+      </app-empty-state>
+    </div>
+  }
+
+  @case ('ready') {
+    @if (spot(); as spot) {
+      <article class="detail">
+        <div class="detail__topbar">
+          <div class="container">
+            <button type="button" class="back" (click)="goBack()">
+              <svg lucideArrowLeft aria-hidden="true"></svg> Explorer
+            </button>
+          </div>
+        </div>
+
+        <app-spot-illustration class="detail__hero" [type]="spot.type" />
+
+        <div class="container detail__grid">
+          <header class="identity">
+            <p class="caption">{{ typeLabel() }} · {{ spot.area }}</p>
+            <h1>{{ spot.name }}</h1>
+            <p class="identity__info">{{ infoLine() }}</p>
+            <ul class="badges" role="list" aria-label="Affluence et équipements">
+              <li><app-crowd-badge [meter]="liveMeter()!" size="large" /></li>
+              @for (badge of badges(); track badge) {
+                <li><span class="badge">{{ badge }}</span></li>
+              }
+            </ul>
+            @if (spot.status === 'a_verifier') {
+              <p class="notice">
+                <svg lucideHourglass aria-hidden="true"></svg>
+                Lieu proposé par un membre, pas encore vérifié par l’équipe.
+              </p>
+            }
+          </header>
+
+          <aside class="live" aria-label="Affluence en direct">
+            <app-live-meter [meter]="liveMeter()!" />
+
+            @if (cooldownMinutes() > 0) {
+              <button type="button" class="btn btn--primary btn--block" disabled aria-describedby="cooldown-help">
+                <svg lucideCheck aria-hidden="true"></svg> Signalé · à nouveau dans {{ cooldownMinutes() }} min
+              </button>
+              <p id="cooldown-help" class="caption live__help">
+                Un signalement par personne toutes les 15 minutes : cela évite qu’une seule personne fausse la jauge.
+              </p>
+            } @else {
+              <button type="button" class="btn btn--primary btn--block report-button" [disabled]="reporting()" (click)="openReport()">
+                <svg lucideUsers aria-hidden="true"></svg> Je suis ici
+              </button>
+            }
+
+            <button
+              type="button"
+              class="btn btn--secondary btn--block favorite"
+              [class.is-favorite]="isFavorite()"
+              [attr.aria-pressed]="isFavorite()"
+              (click)="toggleFavorite()"
+            >
+              <svg lucideHeart aria-hidden="true"></svg>
+              {{ isFavorite() ? 'Dans vos favoris' : 'Ajouter aux favoris' }}
+            </button>
+          </aside>
+
+          <section class="section ratings" aria-labelledby="ratings-title">
+            <h2 id="ratings-title">Notes de la communauté</h2>
+            @if (spot.ratings.count > 0) {
+              <app-rating-bars [ratings]="spot.ratings" />
+              <p class="caption">D’après {{ spot.ratings.count }} avis · <a href="#avis">Lire les avis</a></p>
+            } @else {
+              <p class="text-secondary">Pas encore de note. Soyez le premier à donner votre avis.</p>
+            }
+          </section>
+
+          <section class="section" aria-labelledby="about-title">
+            <h2 id="about-title">Sur place</h2>
+            @if (spot.description) {
+              <p class="description">{{ spot.description }}</p>
+            }
+            @if (equipment(); as e) {
+              <ul class="equipment" role="list">
+                <li><svg lucideWifi aria-hidden="true"></svg>{{ e.wifi }}</li>
+                <li><svg lucidePlug aria-hidden="true"></svg>{{ e.outlets }}</li>
+                <li><svg lucideVolume2 aria-hidden="true"></svg>{{ e.noise }}</li>
+                <li><svg lucideWallet aria-hidden="true"></svg>{{ e.price }}</li>
+                <li><svg lucideSnowflake aria-hidden="true"></svg>{{ e.airConditioning }}</li>
+              </ul>
+            }
+          </section>
+
+          <section class="section" aria-labelledby="hours-title">
+            <h2 id="hours-title">Horaires</h2>
+            <table class="hours">
+              <caption class="visually-hidden">Horaires d’ouverture, heure de Tunis</caption>
+              <tbody>
+                @for (day of week(); track day.weekday) {
+                  <tr [class.is-today]="day.isToday">
+                    <th scope="row">
+                      {{ day.label }}
+                      @if (day.isToday) {
+                        <span class="today">aujourd’hui</span>
+                      }
+                    </th>
+                    <td>{{ day.text }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </section>
+
+          <section class="section" aria-labelledby="access-title">
+            <h2 id="access-title">Accès</h2>
+            <p>{{ spot.address }}</p>
+            <app-map-view
+              class="mini-map"
+              [markers]="[spot]"
+              [center]="spot"
+              [zoom]="15"
+              [fitToMarkers]="false"
+              [showReference]="false"
+              [ariaLabel]="'Emplacement de ' + spot.name"
+            />
+            <a class="btn btn--ghost" [href]="directionsUrl()" target="_blank" rel="noopener">
+              <svg lucideNavigation aria-hidden="true"></svg> Itinéraire à pied depuis SUP’COM
+              <span class="visually-hidden">(ouvre OpenStreetMap dans un nouvel onglet)</span>
+            </a>
+          </section>
+
+          <section class="section reviews" id="avis" aria-labelledby="reviews-title">
+            <h2 id="reviews-title">Avis @if (reviews(); as list) { ({{ list.length }}) }</h2>
+            @if (reviews(); as list) {
+              @if (list.length) {
+                <app-review-list [reviews]="list" />
+              } @else {
+                <p class="text-secondary">Aucun avis pour l’instant.</p>
+              }
+            } @else {
+              <div class="skeleton" style="height: 80px"></div>
+            }
+          </section>
+        </div>
+      </article>
+
+      <app-report-sheet
+        [open]="sheetOpen()"
+        [spotName]="spot.name"
+        (submitChoice)="submitReport($event)"
+        (closed)="sheetOpen.set(false)"
+      />
+    }
+  }
+}
