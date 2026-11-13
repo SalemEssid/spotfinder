@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { NavigationHistoryService } from './services/navigation-history.service';
 import { FooterComponent } from './components/footer/footer.component';
 import { HeaderComponent } from './components/header/header.component';
 import { MobileNavComponent } from './components/mobile-nav/mobile-nav.component';
@@ -13,4 +14,9 @@ import { ToastContainerComponent } from './components/toast-container/toast-cont
   styleUrl: './app.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppComponent {}
+export class AppComponent {
+  constructor() {
+    // Created at startup so it counts the very first navigation too.
+    inject(NavigationHistoryService);
+  }
+}

@@ -1,0 +1,116 @@
+:host {
+  display: block;
+}
+
+// Dark card from the style guide ("Jauge d'affluence"): ink background, mint numbers.
+.meter {
+  --level-colour: var(--menthe);
+
+  position: relative;
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+  background: var(--encre);
+  color: var(--texte-inverse);
+}
+
+.meter--modere {
+  --level-colour: var(--modere-clair);
+}
+
+.meter--sature {
+  --level-colour: var(--orange);
+}
+
+.meter__title {
+  font-family: var(--font-texte);
+  font-size: var(--fs-corps);
+  font-weight: 500;
+  color: #c4cdd0;
+}
+
+.meter__value {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  font-family: var(--font-titre);
+  font-size: clamp(2rem, 1.5rem + 2vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--level-colour);
+  font-variant-numeric: tabular-nums;
+}
+
+.meter__approx {
+  font-size: 0.8em;
+}
+
+.meter__value--empty {
+  font-size: var(--fs-sous-titre);
+  color: var(--texte-inverse);
+}
+
+.meter__bar {
+  position: relative;
+  height: 10px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-sombre-2);
+}
+
+.meter__fill {
+  height: 100%;
+  min-width: 10px;
+  border-radius: inherit;
+  background: var(--level-colour);
+  transition:
+    width 700ms var(--ease-out),
+    background-color 700ms;
+}
+
+// Small marks at 40 % and 70 %: where the label changes.
+.meter__tick {
+  position: absolute;
+  top: -3px;
+  width: 2px;
+  height: 16px;
+  border-radius: 1px;
+  background: rgb(253 252 248 / 35%);
+}
+
+.meter__source {
+  color: var(--texte-inverse);
+}
+
+.meter__confidence {
+  font-size: var(--fs-legende);
+  color: #c4cdd0; // light grey on ink: 9.6:1
+}
+
+// "Estimation habituelle": dashed bar, it is not live data.
+.meter--habituel .meter__fill {
+  background: repeating-linear-gradient(90deg, var(--level-colour) 0 10px, transparent 10px 14px);
+}
+
+// One pulse after a report.
+.meter.is-updated::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 0 0 var(--level-colour);
+  animation: meter-pulse 1.1s var(--ease-out);
+  pointer-events: none;
+}
+
+@keyframes meter-pulse {
+  from {
+    box-shadow: 0 0 0 0 var(--level-colour);
+    opacity: 0.9;
+  }
+
+  to {
+    box-shadow: 0 0 0 14px var(--level-colour);
+    opacity: 0;
+  }
+}

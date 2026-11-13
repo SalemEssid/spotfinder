@@ -19,11 +19,13 @@ import { crowdBadgeText } from '../../utils/live-meter';
 })
 export class CrowdBadgeComponent {
   readonly meter = input.required<LiveMeter>();
+  readonly size = input<'normal' | 'large'>('normal');
 
   protected readonly text = computed(() => crowdBadgeText(this.meter()));
   protected readonly badgeClass = computed(() => {
     const level = this.meter().level;
-    return level ? `badge badge--${level}` : 'badge';
+    const size = this.size() === 'large' ? ' badge--large' : '';
+    return (level ? `badge badge--${level}` : 'badge') + size;
   });
   protected readonly tooltip = computed(() => {
     switch (this.meter().source) {

@@ -1,0 +1,39 @@
+<section
+  class="meter"
+  [class]="'meter meter--' + (meter().level ?? 'aucun')"
+  [class.meter--habituel]="meter().source === 'habituel'"
+  [class.is-updated]="justUpdated()"
+  aria-labelledby="live-meter-title"
+>
+  <h2 id="live-meter-title" class="meter__title">{{ title() }}</h2>
+
+  @if (meter().occupancy !== null) {
+    <!-- aria-live: screen readers announce the new value after a report. -->
+    <p class="meter__value" aria-live="polite" aria-atomic="true">
+      <span class="meter__approx" aria-hidden="true">≈</span>
+      <span class="visually-hidden">environ</span>
+      {{ displayed() }} % · {{ levelLabel() }}
+    </p>
+
+    <div
+      class="meter__bar"
+      role="meter"
+      aria-label="Taux d’occupation estimé"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      [attr.aria-valuenow]="meter().occupancy"
+      [attr.aria-valuetext]="valueText()"
+    >
+      <div class="meter__fill" [style.width.%]="meter().occupancy"></div>
+      <span class="meter__tick" [style.left.%]="thresholds.modere" aria-hidden="true"></span>
+      <span class="meter__tick" [style.left.%]="thresholds.sature" aria-hidden="true"></span>
+    </div>
+  } @else {
+    <p class="meter__value meter__value--empty">Pas encore de signalement</p>
+  }
+
+  <p class="meter__source">{{ sourceText() }}</p>
+  @if (confidenceText(); as confidence) {
+    <p class="meter__confidence">{{ confidence }}</p>
+  }
+</section>
