@@ -1,0 +1,76 @@
+<section class="profile" aria-labelledby="profile-title">
+  <h2 id="profile-title">Profil</h2>
+
+  @if (loadError()) {
+    <p class="text-secondary" role="alert">Votre profil n’a pas pu être chargé. Rechargez la page.</p>
+  } @else if (profile(); as p) {
+    <dl class="stats">
+      <div class="stat">
+        <dt>Signalements</dt>
+        <dd>{{ p.stats.reportCount }}</dd>
+      </div>
+      <div class="stat">
+        <dt>Avis</dt>
+        <dd>{{ p.stats.reviewCount }}</dd>
+      </div>
+      <div class="stat">
+        <dt>Favoris</dt>
+        <dd>{{ p.stats.favoriteCount }}</dd>
+      </div>
+      <div class="stat">
+        <dt>Lieux proposés</dt>
+        <dd>{{ p.stats.spotCount }}</dd>
+      </div>
+    </dl>
+
+    <div class="card details">
+      <div class="details__row">
+        <div>
+          <p class="caption">Nom affiché</p>
+          @if (editing()) {
+            <form class="name-form" (submit)="saveName($event)" novalidate>
+              <label class="visually-hidden" for="profile-name">Nom affiché</label>
+              <input
+                id="profile-name"
+                class="input"
+                [formControl]="nameControl"
+                autocomplete="nickname"
+                [attr.aria-invalid]="!!fieldError(nameControl)"
+              />
+              <button type="submit" class="btn btn--primary" [disabled]="saving()">Enregistrer</button>
+              <button type="button" class="btn btn--ghost" (click)="editing.set(false)">Annuler</button>
+              @if (fieldError(nameControl); as error) {
+                <p class="field__error">{{ error }}</p>
+              }
+            </form>
+          } @else {
+            <p class="details__value">{{ p.name }}</p>
+          }
+        </div>
+        @if (!editing()) {
+          <button type="button" class="btn btn--ghost" (click)="startEditing()">
+            <svg lucidePencil aria-hidden="true"></svg> Modifier
+          </button>
+        }
+      </div>
+      <div class="details__row">
+        <div>
+          <p class="caption">Adresse e-mail</p>
+          <p class="details__value">{{ p.email }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <a class="btn btn--secondary" routerLink="/ajouter">
+        <svg lucideMapPinPlus aria-hidden="true"></svg> Proposer un lieu
+      </a>
+      <button type="button" class="btn btn--danger" (click)="logout()">
+        <svg lucideLogOut aria-hidden="true"></svg> Se déconnecter
+      </button>
+    </div>
+  } @else {
+    <div class="skeleton" style="height: 96px"></div>
+    <div class="skeleton" style="height: 140px"></div>
+  }
+</section>
