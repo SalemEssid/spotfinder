@@ -1,0 +1,186 @@
+// Desktop: the page fills the screen under the header; filters take the height they need
+// (one or two rows) and the list + map share the rest.
+:host {
+  display: flex;
+  flex-direction: column;
+  height: calc(100dvh - var(--header-h));
+  min-height: 640px;
+}
+
+.filters {
+  padding: var(--space-4) clamp(1rem, 3vw, 1.5rem);
+  background: var(--surface);
+  border-bottom: 1px solid var(--bordure);
+}
+
+// List on the left (480 px, like the mockup), map on the right.
+.content {
+  display: grid;
+  flex: 1;
+  grid-template-columns: minmax(340px, 480px) 1fr;
+  gap: var(--space-5);
+  min-height: 0;
+  padding: var(--space-5) clamp(1rem, 3vw, 1.5rem);
+}
+
+.results {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.results__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.results__count {
+  font-family: var(--font-texte);
+  font-size: var(--fs-corps);
+  font-weight: 700;
+  color: var(--texte-2);
+}
+
+.results__list {
+  display: grid;
+  align-content: start;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 2px 4px var(--space-4) 2px; // room for the focus ring
+  overflow-y: auto;
+  list-style: none;
+  transition: opacity var(--duration);
+
+  &.is-refreshing {
+    opacity: 0.55;
+  }
+}
+
+.skeleton-card {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: var(--space-4);
+  padding: var(--space-3);
+}
+
+.skeleton-card__img {
+  height: 90px;
+}
+
+.skeleton-card__lines {
+  display: grid;
+  align-content: center;
+  gap: var(--space-2);
+}
+
+.map-area {
+  position: relative;
+  min-height: 0;
+}
+
+.map {
+  height: 100%;
+}
+
+.map-preview {
+  position: absolute;
+  right: var(--space-3);
+  bottom: var(--space-3);
+  left: var(--space-3);
+  z-index: 800;
+  box-shadow: var(--shadow-lg);
+  border-radius: var(--radius-md);
+}
+
+.map-preview__close {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  z-index: 1;
+  background: var(--surface);
+  color: var(--encre);
+}
+
+.view-toggle {
+  display: none;
+}
+
+// Tablet: narrower list.
+@media (max-width: 1023px) {
+  .content {
+    grid-template-columns: minmax(300px, 380px) 1fr;
+    gap: var(--space-4);
+  }
+}
+
+// Phones: one column, list OR map, toggle floating above the tab bar.
+@media (max-width: 767px) {
+  :host {
+    display: block;
+    height: auto;
+    min-height: 0;
+  }
+
+  .content {
+    display: block;
+    padding: var(--space-4) var(--space-4) calc(var(--space-7) + var(--space-4));
+  }
+
+  .results__list {
+    overflow: visible;
+  }
+
+  // Header 72 + filters ≈ 130 + tab bar 68 + paddings.
+  .map-area {
+    height: calc(100dvh - var(--header-h) - 130px - var(--mobile-nav-h) - var(--space-4) * 2);
+    min-height: 360px;
+  }
+
+  [data-mobile-view='list'] .map-area {
+    display: none;
+  }
+
+  [data-mobile-view='map'] .results {
+    display: none;
+  }
+
+  .view-toggle {
+    position: fixed;
+    bottom: calc(var(--mobile-nav-h) + var(--space-3));
+    left: 50%;
+    z-index: 850;
+    display: flex;
+    padding: 4px;
+    border-radius: var(--radius-pill);
+    background: var(--encre);
+    box-shadow: var(--shadow-lg);
+    transform: translateX(-50%);
+
+    button {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      min-height: 40px;
+      padding: 0 var(--space-4);
+      border: none;
+      border-radius: var(--radius-pill);
+      background: transparent;
+      color: var(--texte-inverse);
+      font-weight: 700;
+
+      &[aria-pressed='true'] {
+        background: var(--surface);
+        color: var(--encre);
+      }
+
+      svg {
+        width: 18px;
+        height: 18px;
+      }
+    }
+  }
+}

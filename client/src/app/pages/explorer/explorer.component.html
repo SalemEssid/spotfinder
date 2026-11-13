@@ -1,0 +1,98 @@
+<h1 class="visually-hidden">Explorer les lieux pour travailler</h1>
+
+<div class="filters">
+  <app-filter-bar [filters]="filters()" (filtersChange)="onFiltersChange($event)" />
+</div>
+
+<div class="content" [attr.data-mobile-view]="mobileView()">
+  <section class="results" aria-labelledby="results-title" [attr.aria-busy]="loading()">
+    <div class="results__header">
+      <h2 id="results-title" class="results__count" aria-live="polite">
+        @if (spots() === null && loading()) {
+          Recherche…
+        } @else {
+          {{ resultText() }}
+        }
+      </h2>
+      <p class="caption">Distances depuis {{ referenceLabel }}</p>
+    </div>
+
+    @if (error(); as message) {
+      <app-empty-state tone="error" title="Oups, la liste n’a pas pu être chargée" [message]="message">
+        <button type="button" class="btn btn--primary" (click)="retry()">Réessayer</button>
+      </app-empty-state>
+    } @else if (spots() === null) {
+      <!-- First load: skeleton cards with the same shape as the real ones. -->
+      <ul class="results__list" role="list" aria-hidden="true">
+        @for (item of skeletons; track item) {
+          <li class="skeleton-card card">
+            <div class="skeleton skeleton-card__img"></div>
+            <div class="skeleton-card__lines">
+              <div class="skeleton" style="width: 70%; height: 20px"></div>
+              <div class="skeleton" style="width: 45%; height: 16px"></div>
+              <div class="skeleton" style="width: 85%; height: 24px"></div>
+            </div>
+          </li>
+        }
+      </ul>
+    } @else if (spots()!.length === 0) {
+      <app-empty-state
+        title="Aucun lieu ne correspond… pour l’instant"
+        [message]="
+          suggestions().length
+            ? 'Essayez sans ' + suggestions()[0].hint + ' ?'
+            : 'Essayez un autre mot : un quartier (Ariana, Ennasr…) ou un type de lieu.'
+        "
+      >
+        @for (suggestion of suggestions(); track suggestion.label) {
+          <a class="btn btn--secondary" routerLink="." [queryParams]="filtersToParams(suggestion.without)" replaceUrl>
+            {{ suggestion.label }}
+          </a>
+        }
+        <a class="btn btn--ghost" routerLink="." replaceUrl>Tout afficher</a>
+      </app-empty-state>
+    } @else {
+      <ul class="results__list" role="list" [class.is-refreshing]="loading()">
+        @for (spot of spots(); track spot.id) {
+          <li>
+            <app-spot-card
+              [spot]="spot"
+              [highlighted]="highlightedId() === spot.id"
+              (highlight)="highlightedId.set($event)"
+            />
+          </li>
+        }
+      </ul>
+    }
+  </section>
+
+  <section class="map-area" aria-label="Carte">
+    <app-map-view
+      class="map"
+      [markers]="spots() ?? []"
+      [highlightedId]="highlightedId()"
+      ariaLabel="Carte des lieux trouvés. Chaque repère indique l’affluence. La liste contient les mêmes lieux."
+      (markerHover)="highlightedId.set($event)"
+      (markerSelect)="onMarkerSelect($event)"
+    />
+
+    @if (preview(); as spot) {
+      <div class="map-preview">
+        <app-spot-card [spot]="spot" />
+        <button type="button" class="map-preview__close btn btn--icon" (click)="previewId.set(null)">
+          <svg lucideX aria-hidden="true"></svg><span class="visually-hidden">Fermer l’aperçu</span>
+        </button>
+      </div>
+    }
+  </section>
+
+  <!-- Phones: switch between list and map (both stay in the DOM, the list stays accessible). -->
+  <div class="view-toggle" role="group" aria-label="Affichage">
+    <button type="button" [attr.aria-pressed]="mobileView() === 'list'" (click)="showOnMobile('list')">
+      <svg lucideList aria-hidden="true"></svg> Liste
+    </button>
+    <button type="button" [attr.aria-pressed]="mobileView() === 'map'" (click)="showOnMobile('map')">
+      <svg lucideMap aria-hidden="true"></svg> Carte
+    </button>
+  </div>
+</div>
