@@ -11,8 +11,17 @@ npm run dev:local-db  same, without Docker (uses DATABASE_URL from .env)
 npm run db:reset      wipe and re-seed the demo data
 npm run demo:refresh  regenerate only the recent live reports (keeps users, reviews, favourites)
 npm test              server (unit + API, needs the DB) then client tests
+npm run e2e           Playwright: journeys, keyboard, axe audit (Chrome, Edge, Firefox, WebKit, phone)
 npm run lint          ESLint + type-check, both workspaces
+npm run preview       production build served by Express on :3000 (stop `npm run dev` first)
+npm run screenshots   regenerate docs/screenshots (BASE_URL=http://localhost:3000 for the preview)
 ```
+
+Gotchas learned the hard way:
+- The production CSP (`script-src 'self'`) forbids inline scripts: keep `inlineCritical: false` in angular.json.
+- A Leaflet map created while hidden has no size: `MapViewComponent` re-frames when it becomes visible.
+- View transitions are disabled on WebKit (crashed in Playwright's WebKit); see `app.config.ts`.
+- e2e tests write to the dev database: run `npm run db:reset` afterwards.
 
 ## Dev proxy: why the browser only talks to localhost:4200
 `client/proxy.conf.json` forwards every `/api/*` request from the Angular dev server (4200) to Express (3000).

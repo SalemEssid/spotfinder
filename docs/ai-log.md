@@ -1,8 +1,16 @@
 # AI usage log
 
-Running record of what the AI assistant (Claude Code) did and what the team did. It is the source for the
-README section "Utilisation de l'IA". Update it at the end of every phase.
+Running record of what the AI assistant (Claude Code, model Claude Opus 5.5) did and what the team did.
+It is the source for the README section "Utilisation de l'IA". Commits written with the assistant carry a
+`Co-Authored-By: Claude` trailer, so `git log` shows the same thing.
 
 | Phase | Date | Claude Code did | Team did / decided |
 |---|---|---|---|
-| 0 · Plan | 2026-11-13 | Read the brief and the Figma file (page structure + Explorer mockup; Figma API quota stopped further exports). Proposed folder structure, libraries, API endpoints and work order. Wrote `CLAUDE.md`. | Wrote the brief (`descProjt.md`), the Objectif 1 data model and the Objectif 2 Figma design. Answers to open questions: _pending_. |
+| 0 · Plan | 2026-11-13 | Read the brief and the Figma file (page structure + Explorer mockup; the Figma free-plan quota stopped further exports). Proposed folder structure, libraries, API endpoints and work order. Wrote `CLAUDE.md`. Flagged inconsistencies (mockup labels vs. spec thresholds, "à vérifier" places with no admin page, seed data going stale). | Wrote the brief (`descProjt.md`), the Objectif 1 data model and the Objectif 2 Figma design. Exported the mockups to `docs/design/`. Approved the plan; chose Docker-first, private GitHub repo, `C:\dev` instead of OneDrive, Angular dev proxy, pinned Node; asked for "350 m de SUP'COM" and `npm run demo:refresh`. Asked Claude to run all phases without stopping. |
+| 1 · Skeleton | 2026-11-13 | npm workspaces, Docker Compose PostgreSQL, SQL schema + migration runner, deterministic seed (15 places, 6 weeks of history), the **whole REST API** with Zod validation, JWT cookie auth and Supertest tests (it was fully specified in Phase 0, so it was built in one go), Angular skeleton with all routes, layout, design tokens, ESLint. | Review of the conventions in `CLAUDE.md`. |
+| 2 · Explorer | 2026-11-13 | FilterBar (debounced search, URL-synced filters), SpotCard, Leaflet MapView with crowd-level pins (+ bars so the level is readable without colour), list/map sync, mobile toggle, empty/error states, unit tests. Fixed overlapping map labels and a two-row filter bar found on screenshots. | — |
+| 3 · Live Meter | 2026-11-13 | `computeOccupancy` (pure, unit-tested with the brief's example), place page, LiveMeterComponent (count-up animation, source + reliability), "Je suis ici" bottom sheet, optimistic update with rollback, 15-min rate limit with an advisory lock, auto-reopen after login. | — |
+| 4 · Auth & account | 2026-11-13 | Login/sign-up pages, guards, Espace membre (profile, favourites, my reviews), star-rating form control, review form, tests. | — |
+| 5 · Add / contact / home | 2026-11-13 | "Ajouter un lieu" with map picking and dynamic opening hours (FormArray), À propos + contact form + Live Meter explainer, Accueil, 404. | — |
+| 6 · Quality | 2026-11-13 | Playwright e2e (3 journeys, keyboard, axe-core WCAG 2.1 AA audit of 12 pages) in Chrome, Edge, Firefox, WebKit and a phone viewport; focus management on page change; self-hosted fonts (a render-blocking Google Fonts request was found by the audit); bundle-size check. | — |
+| 7 · Docs | 2026-11-13 | README (in French), screenshots script, this log, P3 proposals. Testing the production build and the screenshots found and fixed 3 bugs: the CSP blocked Angular's inline critical-CSS script, the phone map showed the whole world when opened from the list view, "1000 m" instead of "1 km". | **To do by the team before delivery:** read the code and this README, run the app, check the screenshots against the Figma, and be ready to explain every part orally. |
