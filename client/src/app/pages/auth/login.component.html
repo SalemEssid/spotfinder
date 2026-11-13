@@ -1,0 +1,89 @@
+<div class="auth">
+  <section class="auth__card" aria-labelledby="login-title">
+    <header class="auth__header">
+      <h1 id="login-title">Connexion</h1>
+      <p class="text-secondary">Pour signaler l’affluence, garder vos favoris et laisser des avis.</p>
+    </header>
+
+    @if (serverError(); as error) {
+      <p class="form-error" role="alert">
+        <svg lucideCircleExclamationPoint aria-hidden="true"></svg>{{ error }}
+      </p>
+    }
+
+    <form class="auth__form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="field">
+        <label for="login-email">Adresse e-mail</label>
+        <input
+          id="login-email"
+          class="input"
+          type="email"
+          formControlName="email"
+          autocomplete="email"
+          inputmode="email"
+          [attr.aria-invalid]="!!fieldError(form.controls.email)"
+          [attr.aria-describedby]="fieldError(form.controls.email) ? 'login-email-error' : null"
+        />
+        @if (fieldError(form.controls.email); as error) {
+          <p id="login-email-error" class="field__error">{{ error }}</p>
+        }
+      </div>
+
+      <div class="field">
+        <label for="login-password">Mot de passe</label>
+        <div class="password">
+          <input
+            id="login-password"
+            class="input"
+            [type]="showPassword() ? 'text' : 'password'"
+            formControlName="password"
+            autocomplete="current-password"
+            [attr.aria-invalid]="!!fieldError(form.controls.password)"
+          />
+          <button
+            type="button"
+            class="password__toggle"
+            [attr.aria-pressed]="showPassword()"
+            (click)="showPassword.set(!showPassword())"
+          >
+            @if (showPassword()) {
+              <svg lucideEyeOff aria-hidden="true"></svg>
+            } @else {
+              <svg lucideEye aria-hidden="true"></svg>
+            }
+            <span class="visually-hidden">Afficher le mot de passe</span>
+          </button>
+        </div>
+        @if (fieldError(form.controls.password); as error) {
+          <p class="field__error">{{ error }}</p>
+        }
+      </div>
+
+      <button type="submit" class="btn btn--primary btn--block" [disabled]="submitting()">
+        {{ submitting() ? 'Connexion…' : 'Se connecter' }}
+      </button>
+    </form>
+
+    <div class="demo">
+      <p>
+        Compte de démonstration : <code>{{ demo.email }}</code> / <code>{{ demo.password }}</code>
+      </p>
+      <button type="button" class="btn btn--secondary" (click)="fillDemo()">Remplir avec le compte démo</button>
+    </div>
+
+    <p class="auth__switch">
+      Pas encore de compte ?
+      <a routerLink="/inscription" [queryParams]="{ redirect: redirect() }">Créer un compte</a>
+    </p>
+  </section>
+
+  <aside class="auth__aside" aria-label="Pourquoi un compte">
+    <app-spot-illustration class="auth__illustration" type="coworking" />
+    <h2>Un compte, trois super-pouvoirs</h2>
+    <ul>
+      <li><svg lucideUsers aria-hidden="true"></svg>Signaler l’affluence en un geste avec « Je suis ici ».</li>
+      <li><svg lucideHeart aria-hidden="true"></svg>Retrouver vos lieux favoris en deux clics.</li>
+      <li><svg lucideMapPinPlus aria-hidden="true"></svg>Proposer les bons coins que vous connaissez.</li>
+    </ul>
+  </aside>
+</div>
