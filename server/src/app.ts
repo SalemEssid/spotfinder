@@ -32,7 +32,7 @@ export function createApp() {
       // Leaflet loads map tiles from openstreetmap.org: allow them in the CSP.
       contentSecurityPolicy: {
         directives: {
-          'img-src': ["'self'", 'data:', 'https://*.tile.openstreetmap.org'],
+          'img-src': ["'self'", 'data:', 'https://tile.openstreetmap.org', 'https://*.tile.openstreetmap.org'],
           'style-src': ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
           'font-src': ["'self'", 'https://fonts.gstatic.com'],
         },
