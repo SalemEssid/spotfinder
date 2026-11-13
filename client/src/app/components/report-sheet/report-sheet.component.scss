@@ -1,0 +1,150 @@
+.sheet {
+  width: min(440px, calc(100% - 2rem));
+  max-width: none;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  color: var(--encre);
+  box-shadow: var(--shadow-lg);
+
+  &[open] {
+    animation: sheet-in 260ms var(--ease-out);
+  }
+
+  &::backdrop {
+    background: rgb(23 42 46 / 55%);
+    animation: backdrop-in 260ms ease-out;
+  }
+}
+
+.sheet__content {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-5) var(--space-5) var(--space-4);
+}
+
+.sheet__handle {
+  display: none;
+  justify-self: center;
+  width: 40px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--bordure);
+}
+
+.sheet__help {
+  color: var(--texte-2);
+}
+
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: var(--space-2) 0 0;
+  padding: 0;
+  border: none;
+}
+
+// Radio buttons styled as chips: native inputs keep arrow-key navigation.
+.choice {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: 0.5rem 1.25rem;
+  border: 1.5px solid var(--bordure);
+  border-radius: var(--radius-pill);
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color var(--duration),
+    border-color var(--duration),
+    color var(--duration);
+
+  &:hover {
+    border-color: var(--vert-canard);
+  }
+
+  input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  &:has(input:focus-visible) {
+    box-shadow: var(--focus-ring);
+  }
+
+  &.is-selected {
+    background: var(--vert-canard);
+    border-color: var(--vert-canard);
+    color: var(--texte-inverse);
+  }
+}
+
+.choice__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  outline: 2px solid var(--surface);
+}
+
+.choice__dot--calme {
+  background: var(--calme);
+}
+
+.choice__dot--moyen {
+  background: var(--modere);
+}
+
+.choice__dot--sature {
+  background: var(--sature);
+}
+
+.sheet__hint {
+  min-height: 1.5em;
+  font-size: var(--fs-legende);
+  color: var(--texte-2);
+}
+
+// Phones: bottom sheet glued to the bottom edge, as in the mockup.
+@media (max-width: 767px) {
+  .sheet {
+    width: 100%;
+    margin: auto 0 0;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+
+    &[open] {
+      animation-name: sheet-up;
+    }
+  }
+
+  .sheet__content {
+    padding-bottom: calc(var(--space-5) + env(safe-area-inset-bottom));
+  }
+
+  .sheet__handle {
+    display: block;
+  }
+}
+
+@keyframes sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+}
+
+@keyframes sheet-up {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes backdrop-in {
+  from {
+    opacity: 0;
+  }
+}
