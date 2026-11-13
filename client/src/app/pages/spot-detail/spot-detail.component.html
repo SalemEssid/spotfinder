@@ -153,6 +153,25 @@
 
           <section class="section reviews" id="avis" aria-labelledby="reviews-title">
             <h2 id="reviews-title">Avis @if (reviews(); as list) { ({{ list.length }}) }</h2>
+
+            @if (!auth.isLoggedIn()) {
+              <p class="text-secondary">
+                <a routerLink="/connexion" [queryParams]="{ redirect: '/lieux/' + spot.id + '#avis' }">Connectez-vous</a>
+                pour laisser un avis.
+              </p>
+            } @else if (spot.hasReviewed) {
+              <p class="text-secondary">
+                Merci, vous avez déjà donné votre avis sur ce lieu. Retrouvez-le dans
+                <a routerLink="/compte/avis">Mes avis</a>.
+              </p>
+            } @else if (reviewFormOpen()) {
+              <app-review-form [submitting]="postingReview()" (submitReview)="postReview($event)" (cancelled)="reviewFormOpen.set(false)" />
+            } @else {
+              <button type="button" class="btn btn--secondary review-toggle" (click)="reviewFormOpen.set(true)">
+                <svg lucideStar aria-hidden="true"></svg> Laisser un avis
+              </button>
+            }
+
             @if (reviews(); as list) {
               @if (list.length) {
                 <app-review-list [reviews]="list" />

@@ -12,6 +12,7 @@ import {
   LucideNavigation,
   LucidePlug,
   LucideSnowflake,
+  LucideStar,
   LucideUsers,
   LucideVolume2,
   LucideWallet,
@@ -27,7 +28,8 @@ import { ReportSheetComponent } from '../../components/report-sheet/report-sheet
 import { ReviewListComponent } from '../../components/review-list/review-list.component';
 import { SpotIllustrationComponent } from '../../components/spot-illustration/spot-illustration.component';
 import type { LiveMeter, ReportChoice, SpotDetail } from '../../models/spot.model';
-import type { Review } from '../../models/user.model';
+import type { NewReview, Review } from '../../models/user.model';
+import { ReviewFormComponent } from '../../components/review-form/review-form.component';
 import { AccountService } from '../../services/account.service';
 import { AuthService } from '../../services/auth.service';
 import { ClockService } from '../../services/clock.service';
@@ -65,7 +67,9 @@ const LIVE_REFRESH_MS = 60_000;
     RatingBarsComponent,
     ReportSheetComponent,
     ReviewListComponent,
+    ReviewFormComponent,
     SpotIllustrationComponent,
+    LucideStar,
     LucideArrowLeft,
     LucideCheck,
     LucideHeart,
@@ -108,6 +112,8 @@ export class SpotDetailComponent {
   protected readonly reviews = signal<Review[] | null>(null);
   protected readonly sheetOpen = signal(false);
   protected readonly reporting = signal(false);
+  protected readonly reviewFormOpen = signal(false);
+  protected readonly postingReview = signal(false);
   private readonly reload$ = new Subject<void>();
 
   // --- What the template shows --------------------------------------------------------------
@@ -282,6 +288,24 @@ export class SpotDetailComponent {
           if (nextAllowed) this.nextReportAllowedAt.set(nextAllowed);
           this.toast.error(apiErrorMessage(error, 'Votre signalement n’a pas pu être envoyé. Réessayez.'));
         },
+      });
+  }
+
+  protected postReview(review: NewReview): void {
+    const id = Number(this.id());
+    this.postingReview.set(true);
+    this.spotService
+      .createReview(id, review)
+      .pipe(finalize(() => this.postingReview.set(false)))
+      .subscribe({
+        next: (created) => {
+          this.reviews.update((list) => [created, ...(list ?? [])]);
+          this.reviewFormOpen.set(false);
+          this.toast.success('Merci pour votre avis !');
+          // Refresh the averages ("Notes de la communauté") without showing the loading state.
+          this.spotService.get(id).subscribe((spot) => this.spot.set(spot));
+        },
+        error: (error: unknown) => this.toast.error(apiErrorMessage(error, 'Votre avis n’a pas pu être publié.')),
       });
   }
 

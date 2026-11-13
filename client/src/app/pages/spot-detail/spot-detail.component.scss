@@ -177,6 +177,10 @@
   height: 240px;
 }
 
+.review-toggle {
+  justify-self: start;
+}
+
 .favorite.is-favorite svg {
   fill: currentcolor;
   animation: heart-pop 320ms var(--ease-out);
