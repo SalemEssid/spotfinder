@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.angular/
+coverage/
+out-tsc/
+
+# Environment (never commit secrets — copy .env.example instead)
+.env
+.env.*
+!.env.example
+
+# Tooling
+test-results/
+playwright-report/
+*.log
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
