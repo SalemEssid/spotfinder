@@ -76,22 +76,32 @@ export function sameFilters(a: SpotFilters, b: SpotFilters): boolean {
   return JSON.stringify(filtersToParams(a)) === JSON.stringify(filtersToParams(b));
 }
 
-/** Human name of each removable filter, for "Essayez sans le filtre « Prises »". */
+/** A removable filter, for the empty state: "Essayez sans le filtre « Prises » ?" */
 export interface ActiveFilter {
+  /** Button text: "Sans « Prises »". */
   label: string;
+  /** End of the sentence "Essayez sans …": "le filtre « Prises »". */
+  hint: string;
   without: SpotFilters;
 }
 
+/** Active filters in a stable order; the text search comes last (it is usually the most specific). */
 export function describeActiveFilters(filters: SpotFilters): ActiveFilter[] {
   const active: ActiveFilter[] = [];
+  const add = (name: string, without: SpotFilters) =>
+    active.push({ label: `Sans « ${name} »`, hint: `le filtre « ${name} »`, without });
+
   for (const level of filters.noise) {
-    active.push({ label: NOISE_LABELS[level], without: { ...filters, noise: filters.noise.filter((n) => n !== level) } });
+    add(NOISE_LABELS[level], { ...filters, noise: filters.noise.filter((n) => n !== level) });
   }
-  if (filters.fastWifi) active.push({ label: 'Wi-Fi rapide', without: { ...filters, fastWifi: false } });
-  if (filters.outlets) active.push({ label: 'Prises', without: { ...filters, outlets: false } });
-  if (filters.airConditioning) active.push({ label: 'Clim', without: { ...filters, airConditioning: false } });
-  if (filters.budget !== null) active.push({ label: BUDGET_LABELS[filters.budget], without: { ...filters, budget: null } });
-  if (filters.openNow) active.push({ label: 'Ouvert maintenant', without: { ...filters, openNow: false } });
+  if (filters.fastWifi) add('Wi-Fi rapide', { ...filters, fastWifi: false });
+  if (filters.outlets) add('Prises', { ...filters, outlets: false });
+  if (filters.airConditioning) add('Clim', { ...filters, airConditioning: false });
+  if (filters.budget !== null) add(BUDGET_LABELS[filters.budget], { ...filters, budget: null });
+  if (filters.openNow) add('Ouvert maintenant', { ...filters, openNow: false });
+  if (filters.q.trim()) {
+    active.push({ label: 'Sans la recherche', hint: `la recherche « ${filters.q.trim()} »`, without: { ...filters, q: '' } });
+  }
   return active;
 }
 

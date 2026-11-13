@@ -1,0 +1,75 @@
+<form class="filter-bar" role="search" aria-label="Rechercher et filtrer les lieux" (submit)="submitSearch($event)">
+  <div class="search">
+    <label class="visually-hidden" for="spot-search">Rechercher un lieu ou un quartier</label>
+    <svg lucideSearch class="search__icon" aria-hidden="true"></svg>
+    <input
+      #searchInput
+      id="spot-search"
+      class="search__input"
+      type="search"
+      placeholder="Rechercher un lieu, un quartier…"
+      autocomplete="off"
+      enterkeyhint="search"
+      [formControl]="search"
+    />
+    <kbd class="search__shortcut" aria-hidden="true" title="Raccourci clavier">/</kbd>
+  </div>
+
+  <div class="chips">
+    <div class="chip-group" role="group" aria-label="Niveau de bruit">
+      @for (option of noiseOptions; track option.value) {
+        <button
+          type="button"
+          class="chip"
+          [attr.aria-pressed]="isNoiseActive(option.value)"
+          (click)="toggleNoise(option.value)"
+        >
+          {{ option.label }}
+        </button>
+      }
+    </div>
+
+    <span class="separator" aria-hidden="true"></span>
+
+    <div class="chip-group" role="group" aria-label="Équipements et horaires">
+      <button type="button" class="chip" [attr.aria-pressed]="filters().fastWifi" (click)="toggle('fastWifi')">
+        <svg lucideWifi aria-hidden="true"></svg> Wi-Fi rapide
+      </button>
+      <button type="button" class="chip" [attr.aria-pressed]="filters().outlets" (click)="toggle('outlets')">
+        <svg lucidePlug aria-hidden="true"></svg> Prises
+      </button>
+      <button
+        type="button"
+        class="chip"
+        [attr.aria-pressed]="filters().airConditioning"
+        (click)="toggle('airConditioning')"
+      >
+        <svg lucideSnowflake aria-hidden="true"></svg> Clim
+      </button>
+
+      <label class="visually-hidden" for="budget-filter">Budget</label>
+      <select
+        id="budget-filter"
+        class="chip chip--select"
+        [class.is-active]="filters().budget !== null"
+        [value]="filters().budget ?? ''"
+        (change)="onBudgetChange($event)"
+      >
+        <option value="">Budget : tous</option>
+        @for (option of budgetOptions; track option.value) {
+          <option [value]="option.value" [selected]="filters().budget === option.value">{{ option.label }}</option>
+        }
+      </select>
+
+      <button type="button" class="chip" [attr.aria-pressed]="filters().openNow" (click)="toggle('openNow')">
+        <svg lucideClock aria-hidden="true"></svg> Ouvert maintenant
+      </button>
+    </div>
+
+    @if (canReset()) {
+      <button type="button" class="btn btn--ghost reset" (click)="reset()">
+        <svg lucideRotateCcw aria-hidden="true"></svg> Réinitialiser
+      </button>
+    }
+  </div>
+</form>
