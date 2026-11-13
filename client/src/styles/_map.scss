@@ -1,0 +1,183 @@
+// Leaflet base styles + SpotFinder map pins (style guide "Repère carte").
+@use 'leaflet/dist/leaflet';
+
+.leaflet-container {
+  font-family: var(--font-texte);
+  background: #e6e9e4;
+
+  a {
+    color: var(--vert-canard);
+  }
+}
+
+.leaflet-control-attribution {
+  font-size: 0.75rem; // legally required credit, not body text
+}
+
+.leaflet-bar a {
+  width: 36px;
+  height: 36px;
+  line-height: 36px;
+  color: var(--encre);
+}
+
+// The marker element itself is positioned by Leaflet (transform): animate the inner pin only.
+.sf-marker {
+  background: none;
+  border: none;
+
+  &:focus-visible {
+    box-shadow: none;
+
+    .sf-pin__shape {
+      outline: 3px solid var(--vert-canard);
+      outline-offset: 3px;
+      border-radius: 50%;
+    }
+  }
+}
+
+.sf-pin {
+  position: relative;
+  width: 40px;
+  height: 52px;
+  transform-origin: 50% 100%;
+  transition: transform var(--duration) var(--ease-out);
+  cursor: pointer;
+}
+
+.sf-pin__shape {
+  width: 40px;
+  height: 52px;
+  filter: drop-shadow(0 3px 4px rgb(23 42 46 / 25%));
+
+  .sf-pin__body {
+    fill: var(--texte-2);
+  }
+
+  .sf-pin__dot {
+    fill: var(--surface);
+  }
+}
+
+.sf-pin--calme .sf-pin__body {
+  fill: var(--calme);
+}
+
+.sf-pin--modere .sf-pin__body {
+  fill: var(--modere);
+}
+
+.sf-pin--sature .sf-pin__body {
+  fill: var(--sature);
+}
+
+// "Estimation habituelle": hollow pin, the colour is a hint, not live data.
+.sf-pin--habituel .sf-pin__body {
+  fill-opacity: 0.55;
+}
+
+.sf-pin__label {
+  position: absolute;
+  top: 54px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.1rem 0.55rem;
+  border-radius: var(--radius-pill);
+  background: var(--neutre-bg);
+  color: var(--neutre-texte);
+  font-size: var(--fs-legende);
+  font-weight: 500;
+  white-space: nowrap;
+  box-shadow: var(--shadow-sm);
+  pointer-events: none;
+}
+
+.sf-pin--calme .sf-pin__label {
+  background: var(--calme-bg);
+  color: var(--calme-texte);
+}
+
+.sf-pin--modere .sf-pin__label {
+  background: var(--modere-bg);
+  color: var(--modere-texte);
+}
+
+.sf-pin--sature .sf-pin__label {
+  background: var(--sature-bg);
+  color: var(--sature-texte);
+}
+
+.sf-pin.is-highlighted {
+  transform: scale(1.2);
+
+  .sf-pin__label {
+    background: var(--encre);
+    color: var(--texte-inverse);
+  }
+}
+
+// Pulse around places with a report in the last 15 minutes.
+.sf-pin.is-fresh::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: currentcolor;
+  color: var(--menthe);
+  animation: sf-pin-pulse 2s ease-out infinite;
+}
+
+.sf-pin--sature.is-fresh::before {
+  color: var(--orange);
+}
+
+@keyframes sf-pin-pulse {
+  from {
+    opacity: 0.7;
+    transform: scale(0.8);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(2.4);
+  }
+}
+
+// Reference point (SUP'COM) / user position: "Position actuelle" in the style guide.
+.sf-reference {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgb(23 42 46 / 18%);
+
+  &::after {
+    content: '';
+    width: 16px;
+    height: 16px;
+    border: 3px solid var(--surface);
+    border-radius: 50%;
+    background: var(--encre);
+  }
+}
+
+.sf-reference-label {
+  padding: 0.15rem 0.5rem;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: var(--encre);
+  color: var(--texte-inverse);
+  font-family: var(--font-texte);
+  font-size: var(--fs-legende);
+  font-weight: 500;
+  box-shadow: none;
+
+  &::before {
+    display: none;
+  }
+}

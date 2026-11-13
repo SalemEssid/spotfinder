@@ -3,6 +3,24 @@
 Student project (SUP'COM, Projet Web · Objectif 3). **`descProjt.md` is the source of truth** for scope,
 priorities and the Live Meter spec. If it conflicts with this file, the brief wins. Ask before deviating.
 
+## Commands (Node 24, see `.nvmrc`)
+```
+npm install           install both workspaces
+npm run dev           start PostgreSQL (Docker) + API (:3000) + Angular (:4200), migrate & seed if empty
+npm run dev:local-db  same, without Docker (uses DATABASE_URL from .env)
+npm run db:reset      wipe and re-seed the demo data
+npm run demo:refresh  regenerate only the recent live reports (keeps users, reviews, favourites)
+npm test              server (unit + API, needs the DB) then client tests
+npm run lint          ESLint + type-check, both workspaces
+```
+
+## Dev proxy: why the browser only talks to localhost:4200
+`client/proxy.conf.json` forwards every `/api/*` request from the Angular dev server (4200) to Express (3000).
+For the browser everything is **same-origin**, so the httpOnly session cookie is sent automatically and no
+cross-origin setup is needed (no `withCredentials`, no CORS preflight). The API still restricts CORS to
+`CLIENT_ORIGIN` in case someone calls it directly from another site. In production, Express serves the built
+Angular app itself (`client/dist`), which is same-origin too.
+
 ## Languages
 - **UI text: French** (friendly, short). Code, identifiers, comments, commits: **English**.
 - URL paths and query params are French because users see them: `/explorer?bruit=silencieux&wifi=1`.
@@ -67,14 +85,16 @@ priorities and the Live Meter spec. If it conflicts with this file, the brief wi
   ```json
   { "error": { "code": "VALIDATION_ERROR", "message": "Certains champs sont invalides.", "details": [{ "field": "email", "message": "Adresse e-mail invalide." }] } }
   ```
-- Auth: JWT in an **httpOnly, SameSite=Lax cookie**. Passwords hashed with bcrypt. CORS restricted to the dev origin.
+- Auth: JWT in an **httpOnly, SameSite=Lax cookie** (7 days). Passwords hashed with bcrypt (cost 10). `GET /api/auth/me`
+  answers `200 { user: null }` when logged out (a 401 would pollute the console on every visit).
 - Timestamps are `timestamptz`. Business time (opening hours, weekday/hour stats) uses **`Africa/Tunis`**.
 - No secrets in Git: `.env` is ignored and `.env.example` is committed.
 
 ## Live Meter
 - `server/src/live-meter/compute-occupancy.ts` exports the pure function `computeOccupancy(reports, now)`.
   No DB access, no `Date.now()` inside. `now` is always passed in so tests are deterministic.
-- Constants (half-life 30 min, window 2 h, levels 25/55/85, thresholds 40/70, rate limit 15 min) live in one file.
+- Constants (decay time constant τ = 30 min, window 2 h, levels 25/55/85, thresholds 40/70, rate limit 15 min)
+  live in `live-meter.constants.ts`.
 - The 14:00/14:30/14:50 → ≈ 47 % example from the brief is a required unit test.
 
 ## Tests

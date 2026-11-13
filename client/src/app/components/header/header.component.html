@@ -1,0 +1,40 @@
+<header class="header">
+  <div class="header__inner">
+    <a class="logo" routerLink="/" aria-label="SpotFinder, retour à l’accueil">
+      <svg lucideMapPin [size]="26" [strokeWidth]="2.25"></svg>
+      <span>SpotFinder</span>
+    </a>
+
+    <nav id="menu-principal" class="nav" [class.is-open]="menuOpen()" aria-label="Navigation principale">
+      <a routerLink="/explorer" routerLinkActive="is-active" ariaCurrentWhenActive="page">Explorer</a>
+      <a routerLink="/ajouter" routerLinkActive="is-active" ariaCurrentWhenActive="page">Ajouter un lieu</a>
+      <a routerLink="/a-propos" routerLinkActive="is-active" ariaCurrentWhenActive="page">À propos</a>
+    </nav>
+
+    <div class="header__actions">
+      @if (auth.user(); as user) {
+        <a class="account-link" routerLink="/compte" routerLinkActive="is-active" ariaCurrentWhenActive="page">
+          <span class="avatar" aria-hidden="true">{{ userInitials() }}</span>
+          <span class="account-link__label">Mon espace</span>
+        </a>
+      } @else {
+        <a class="btn btn--secondary header__login" routerLink="/connexion">Connexion</a>
+      }
+
+      <button
+        type="button"
+        class="btn btn--ghost btn--icon menu-toggle"
+        aria-controls="menu-principal"
+        [attr.aria-expanded]="menuOpen()"
+        (click)="toggleMenu()"
+      >
+        @if (menuOpen()) {
+          <svg lucideX></svg>
+        } @else {
+          <svg lucideMenu></svg>
+        }
+        <span class="visually-hidden">Menu</span>
+      </button>
+    </div>
+  </div>
+</header>

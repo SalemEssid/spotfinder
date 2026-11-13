@@ -1,0 +1,71 @@
+// Design tokens from the Objectif 2 style guide (Figma "Charte & composants").
+// Components only ever use these variables: never a raw hex value.
+:root {
+  // --- Colours -------------------------------------------------------------------------------
+  --vert-canard: #16706b; // primary: buttons, links, calm places
+  --vert-canard-fonce: #0f5a55; // hover / pressed
+  --encre: #172a2e; // text, headings, dark surfaces
+  --sable: #f6f4ee; // page background
+  --orange: #e07a1f; // accent: saturated places, alerts
+  --orange-texte: #b5530f; // orange used as text on light backgrounds (contrast AA)
+  --menthe: #7fd1c3; // numbers and text on dark surfaces
+  --surface: #fdfcf8; // cards
+  --bordure: #ddd8cc; // borders
+  --texte-2: #4a5560; // secondary text
+  --texte-inverse: #fdfcf8;
+  --surface-sombre-2: #23393e; // gauge track on dark surface
+
+  // Crowd levels: always shown with a word, never colour alone.
+  --calme: #16706b;
+  --calme-bg: #d7ede8;
+  --calme-texte: #0f5a55;
+  // "Modéré" was not in the style guide (it only had Calme / Saturé): an amber in between,
+  // checked for contrast like the others.
+  --modere: #b9811b;
+  --modere-clair: #e3b04b; // on dark surface
+  --modere-bg: #f5e8c8;
+  --modere-texte: #6b4a0a;
+  --sature: #e07a1f;
+  --sature-bg: #f6dfcb;
+  --sature-texte: #8a3e0b;
+  --neutre-bg: #efece4; // equipment badges ("Wi-Fi 4/5")
+  --neutre-texte: #33404a;
+  --illustration-bg: #d7ede8;
+
+  --danger: #b3261e;
+  --danger-bg: #fbe9e7;
+  --succes-bg: #d7ede8;
+
+  // --- Typography ----------------------------------------------------------------------------
+  --font-titre: 'Space Grotesk', 'Segoe UI', system-ui, sans-serif;
+  --font-texte: 'DM Sans', 'Segoe UI', system-ui, sans-serif;
+  --fs-titre: clamp(1.875rem, 1.2rem + 2.6vw, 2.5rem); // 30 → 40 px
+  --fs-sous-titre: clamp(1.25rem, 1.05rem + 0.8vw, 1.5rem); // 20 → 24 px
+  --fs-carte: 1.125rem; // 18 px, card titles
+  --fs-corps: 1rem; // 16 px
+  --fs-legende: 0.875rem; // 14 px: the smallest size allowed anywhere
+
+  // --- Shape & spacing -----------------------------------------------------------------------
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --container: 1200px;
+  --header-h: 72px;
+  --mobile-nav-h: 68px;
+
+  --shadow-sm: 0 1px 2px rgb(23 42 46 / 6%);
+  --shadow-md: 0 6px 20px rgb(23 42 46 / 10%);
+  --shadow-lg: 0 18px 40px rgb(23 42 46 / 18%);
+  --focus-ring: 0 0 0 3px var(--surface), 0 0 0 5px var(--vert-canard);
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration: 220ms;
+}

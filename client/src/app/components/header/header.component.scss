@@ -1,0 +1,146 @@
+:host {
+  position: sticky;
+  top: 0;
+  z-index: 900; // above Leaflet panes (≤ 800)
+  display: block;
+}
+
+.header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--bordure);
+}
+
+.header__inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  height: var(--header-h);
+  padding-inline: clamp(1rem, 3vw, 2.5rem);
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--vert-canard);
+  font-family: var(--font-titre);
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.nav {
+  display: flex;
+  gap: var(--space-5);
+
+  a {
+    padding-block: var(--space-2);
+    color: var(--texte-2);
+    font-weight: 500;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+
+    &:hover {
+      color: var(--encre);
+    }
+
+    &.is-active {
+      color: var(--encre);
+      font-weight: 700;
+      border-bottom-color: var(--vert-canard);
+    }
+  }
+}
+
+.header__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-left: auto;
+}
+
+.account-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0.25rem 0.9rem 0.25rem 0.25rem;
+  border: 1.5px solid var(--bordure);
+  border-radius: var(--radius-pill);
+  color: var(--encre);
+  font-weight: 700;
+  text-decoration: none;
+
+  &:hover,
+  &.is-active {
+    border-color: var(--vert-canard);
+    color: var(--encre);
+  }
+}
+
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--vert-canard);
+  color: var(--texte-inverse);
+  font-size: var(--fs-legende);
+  font-weight: 700;
+}
+
+.menu-toggle {
+  display: none;
+}
+
+// Phones: links move into a drop-down menu; the bottom tab bar covers the main pages.
+@media (max-width: 767px) {
+  .header__inner {
+    gap: var(--space-3);
+  }
+
+  .menu-toggle {
+    display: inline-flex;
+  }
+
+  .account-link {
+    padding-right: 0.25rem;
+  }
+
+  .account-link__label {
+    display: none;
+  }
+
+  .header__login {
+    min-height: 40px;
+    padding: 0.4rem 1rem;
+  }
+
+  .nav {
+    position: absolute;
+    top: var(--header-h);
+    right: 0;
+    left: 0;
+    display: none;
+    flex-direction: column;
+    gap: 0;
+    padding: var(--space-2) var(--space-4) var(--space-4);
+    background: var(--surface);
+    border-bottom: 1px solid var(--bordure);
+    box-shadow: var(--shadow-md);
+
+    &.is-open {
+      display: flex;
+    }
+
+    a {
+      padding: var(--space-3) var(--space-2);
+      border-bottom: 1px solid var(--bordure);
+
+      &.is-active {
+        border-bottom-color: var(--bordure);
+        color: var(--vert-canard);
+      }
+    }
+  }
+}

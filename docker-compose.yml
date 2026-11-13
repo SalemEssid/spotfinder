@@ -1,0 +1,24 @@
+# Local PostgreSQL for development and tests.
+# Start it with `npm run db:up` (or simply `npm run dev`, which does it for you).
+# Credentials are local development defaults, not secrets: override them in `.env` if you like.
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: spotfinder-db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-spotfinder}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-spotfinder}
+      POSTGRES_DB: ${POSTGRES_DB:-spotfinder}
+    ports:
+      # Host port 5433 so it never clashes with a PostgreSQL already installed on 5432.
+      - "5433:5432"
+    volumes:
+      - spotfinder-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+volumes:
+  spotfinder-data:
