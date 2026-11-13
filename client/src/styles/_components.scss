@@ -1,0 +1,283 @@
+// Small reusable UI pieces from the style guide, as CSS classes:
+// buttons, filter chips, badges, cards, form fields, skeletons.
+
+// --- Buttons ----------------------------------------------------------------------------------
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 44px; // comfortable touch target
+  padding: 0.625rem 1.375rem;
+  border: 2px solid transparent;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-texte);
+  font-size: var(--fs-corps);
+  font-weight: 700;
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color var(--duration),
+    border-color var(--duration),
+    color var(--duration),
+    transform var(--duration) var(--ease-out);
+
+  &:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+
+  &:disabled,
+  &[aria-disabled='true'] {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+
+  svg {
+    flex: none;
+    width: 1.25em;
+    height: 1.25em;
+  }
+}
+
+// One action colour: green.
+.btn--primary {
+  background: var(--vert-canard);
+  color: var(--texte-inverse);
+
+  &:hover:not(:disabled) {
+    background: var(--vert-canard-fonce);
+    color: var(--texte-inverse);
+  }
+}
+
+.btn--secondary {
+  background: transparent;
+  border-color: var(--vert-canard);
+  color: var(--vert-canard);
+
+  &:hover:not(:disabled) {
+    background: var(--calme-bg);
+    color: var(--vert-canard-fonce);
+  }
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--vert-canard);
+  padding-inline: var(--space-3);
+
+  &:hover:not(:disabled) {
+    background: var(--calme-bg);
+  }
+}
+
+.btn--danger {
+  background: transparent;
+  border-color: var(--danger);
+  color: var(--danger);
+
+  &:hover:not(:disabled) {
+    background: var(--danger-bg);
+  }
+}
+
+.btn--block {
+  width: 100%;
+}
+
+.btn--icon {
+  min-width: 44px;
+  padding: 0.5rem;
+}
+
+// --- Filter chips (style guide "Étiquette de filtre") -----------------------------------------
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-height: 38px;
+  padding: 0.4rem 1.125rem;
+  border: 1.5px solid var(--bordure);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--encre);
+  font-size: var(--fs-legende);
+  font-weight: 500;
+  white-space: nowrap;
+  transition:
+    background-color var(--duration),
+    border-color var(--duration),
+    color var(--duration);
+
+  &:hover {
+    border-color: var(--vert-canard);
+  }
+
+  &[aria-pressed='true'],
+  &.is-active {
+    background: var(--vert-canard);
+    border-color: var(--vert-canard);
+    color: var(--texte-inverse);
+  }
+
+  svg {
+    width: 1rem;
+    height: 1rem;
+  }
+}
+
+// --- Badges (style guide "Badge d'affluence") ------------------------------------------------
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.7rem;
+  border-radius: var(--radius-pill);
+  background: var(--neutre-bg);
+  color: var(--neutre-texte);
+  font-size: var(--fs-legende);
+  font-weight: 500;
+  line-height: 1.5;
+  white-space: nowrap;
+
+  svg {
+    width: 0.95rem;
+    height: 0.95rem;
+  }
+}
+
+.badge--calme {
+  background: var(--calme-bg);
+  color: var(--calme-texte);
+}
+
+.badge--modere {
+  background: var(--modere-bg);
+  color: var(--modere-texte);
+}
+
+.badge--sature {
+  background: var(--sature-bg);
+  color: var(--sature-texte);
+}
+
+.badge--pending {
+  background: var(--encre);
+  color: var(--texte-inverse);
+}
+
+// --- Cards --------------------------------------------------------------------------------------
+.card {
+  background: var(--surface);
+  border: 1px solid var(--bordure);
+  border-radius: var(--radius-md);
+}
+
+// --- Form fields ----------------------------------------------------------------------------------
+.field {
+  display: grid;
+  gap: 0.375rem;
+
+  label,
+  legend {
+    font-weight: 500;
+  }
+}
+
+.field__hint {
+  font-size: var(--fs-legende);
+  color: var(--texte-2);
+}
+
+.field__error {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: var(--fs-legende);
+  font-weight: 500;
+  color: var(--danger);
+}
+
+.input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0.7rem 1rem;
+  border: 1.5px solid var(--bordure);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  transition: border-color var(--duration);
+
+  &:hover {
+    border-color: var(--texte-2);
+  }
+
+  &:focus-visible {
+    border-color: var(--vert-canard);
+  }
+
+  &[aria-invalid='true'] {
+    border-color: var(--danger);
+  }
+
+  &::placeholder {
+    color: var(--texte-2);
+    opacity: 1;
+  }
+}
+
+textarea.input {
+  min-height: 120px;
+  resize: vertical;
+}
+
+select.input {
+  appearance: none;
+  padding-right: 2.5rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23172A2E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+}
+
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  cursor: pointer;
+
+  input {
+    width: 1.25rem;
+    height: 1.25rem;
+    accent-color: var(--vert-canard);
+  }
+}
+
+// --- Loading skeleton -------------------------------------------------------------------------
+.skeleton {
+  border-radius: var(--radius-sm);
+  background: linear-gradient(90deg, var(--neutre-bg) 25%, var(--surface) 50%, var(--neutre-bg) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+
+  to {
+    background-position: -200% 0;
+  }
+}
+
+// --- Page sections ------------------------------------------------------------------------------
+.page {
+  padding-block: var(--space-6) var(--space-7);
+}
+
+.page-header {
+  display: grid;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+}

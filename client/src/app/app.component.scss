@@ -1,0 +1,17 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+main {
+  flex: 1;
+  outline: none;
+}
+
+// Leave room for the fixed bottom tab bar on phones.
+@media (max-width: 767px) {
+  :host {
+    padding-bottom: var(--mobile-nav-h);
+  }
+}
