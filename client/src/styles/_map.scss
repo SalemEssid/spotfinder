@@ -108,6 +108,12 @@
   color: var(--sature-texte);
 }
 
+// Zoomed out: labels would overlap. The bars inside the pin still tell the level;
+// the hovered / focused pin keeps its label.
+.sf-map--compact .sf-pin:not(.is-highlighted) .sf-pin__label {
+  display: none;
+}
+
 .sf-pin.is-highlighted {
   transform: scale(1.2);
 
