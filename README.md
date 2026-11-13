@@ -1,210 +1,212 @@
 # SpotFinder
 
-**Trouvez où travailler, maintenant.** SpotFinder aide les étudiants et télétravailleurs à trouver un café calme,
-une bibliothèque ou un coworking autour d'eux, avec le Wi-Fi, les prises, le budget, les horaires, et surtout
-**l'affluence en direct** signalée par la communauté (« Live Meter »).
+**Find a place to work, right now.** SpotFinder helps students and remote workers find a quiet café, a library or a
+coworking space nearby, with Wi-Fi, power outlets, budget, opening hours and, above all, **live crowd levels**
+reported by the community (the "Live Meter").
 
-Projet Web · Objectif 3 « Développement et intégration des fonctionnalités principales » · SUP'COM 2026.
+Web Project · Objective 3 "Development and integration of the main features" · SUP'COM 2026.
+The user interface is in French; code, comments and commits are in English.
 
-![Explorer : liste, carte et filtres](docs/screenshots/02-explorer.png)
+![Explorer: list, map and filters](docs/screenshots/02-explorer.png)
 
-## Sommaire
+## Contents
 
-1. [Lancer le projet](#lancer-le-projet)
-2. [Fonctionnalités](#fonctionnalités)
-3. [Le Live Meter](#le-live-meter)
-4. [Choix techniques](#choix-techniques)
+1. [Running the project](#running-the-project)
+2. [Features](#features)
+3. [The Live Meter](#the-live-meter)
+4. [Technical choices](#technical-choices)
 5. [Architecture](#architecture)
-6. [API REST](#api-rest)
-7. [Modèle de données](#modèle-de-données)
-8. [Qualité : tests, accessibilité, performance](#qualité--tests-accessibilité-performance)
-9. [Écarts assumés par rapport au brief et à la maquette](#écarts-assumés-par-rapport-au-brief-et-à-la-maquette)
-10. [Organisation Git](#organisation-git)
-11. [Utilisation de l'IA](#utilisation-de-lia)
-12. [Pistes d'amélioration (P3)](#pistes-damélioration-p3)
+6. [REST API](#rest-api)
+7. [Data model](#data-model)
+8. [Quality: tests, accessibility, performance](#quality-tests-accessibility-performance)
+9. [Deliberate differences from the brief and the mockups](#deliberate-differences-from-the-brief-and-the-mockups)
+10. [Git workflow](#git-workflow)
+11. [AI usage (Utilisation de l'IA)](#ai-usage-utilisation-de-lia)
+12. [Next steps (P3)](#next-steps-p3)
 
 ---
 
-## Lancer le projet
+## Running the project
 
-### Prérequis
+### Requirements
 
-| Outil | Version | Pourquoi |
+| Tool | Version | Why |
 |---|---|---|
-| **Node.js** | **24** (voir `.nvmrc`, `nvm use`) | Angular 22 et l'API ; `engines` le vérifie dans `package.json` |
-| **Docker Desktop** | récent, démarré | base PostgreSQL 17 en une commande (recommandé) |
-| _ou_ PostgreSQL | 14 ou plus | si Docker n'est pas disponible (voir plus bas) |
+| **Node.js** | **24** (see `.nvmrc`, `nvm use`) | Angular 22 and the API; `engines` in `package.json` checks it |
+| **Docker Desktop** | recent, running | PostgreSQL 17 in one command (recommended) |
+| _or_ PostgreSQL | 14 or later | if Docker is not available (see below) |
 
-### Avec Docker (recommandé) : deux commandes
+### With Docker (recommended): two commands
 
 ```bash
-git clone <url-du-dépôt> spotfinder && cd spotfinder
+git clone <repository-url> spotfinder && cd spotfinder
 npm install
 npm run dev
 ```
 
-Ouvrez **http://localhost:4200**. `npm run dev` démarre la base (Docker), applique les migrations, remplit la base
-avec les données de démonstration si elle est vide, puis lance l'API (port 3000) et Angular (port 4200).
-Aucun fichier `.env` n'est nécessaire en développement (valeurs par défaut sûres, voir `.env.example`).
+Open **http://localhost:4200**. `npm run dev` starts the database (Docker), applies the migrations, fills the
+database with demo data if it is empty, then starts the API (port 3000) and Angular (port 4200).
+No `.env` file is needed in development (safe defaults, see `.env.example`).
 
-### Sans Docker (PostgreSQL installé localement)
+### Without Docker (local PostgreSQL)
 
 ```bash
 cp .env.example .env
-# dans .env : DATABASE_URL=postgres://postgres:motdepasse@localhost:5432/spotfinder
-#             TEST_DATABASE_URL=postgres://postgres:motdepasse@localhost:5432/spotfinder_test
+# in .env: DATABASE_URL=postgres://postgres:yourpassword@localhost:5432/spotfinder
+#          TEST_DATABASE_URL=postgres://postgres:yourpassword@localhost:5432/spotfinder_test
 npm install
 npm run dev:local-db
 ```
 
-Les bases `spotfinder` et `spotfinder_test` sont créées automatiquement si elles n'existent pas.
+The `spotfinder` and `spotfinder_test` databases are created automatically if they do not exist.
 
-### Compte de démonstration
+### Demo account
 
-| E-mail | Mot de passe |
+| E-mail | Password |
 |---|---|
 | `demo@spotfinder.tn` | `SpotFinder2026` |
 
-La page de connexion propose un bouton « Remplir avec le compte démo ». Ce compte a déjà 3 favoris et 2 avis.
+The login page has a "Remplir avec le compte démo" (fill in the demo account) button. This account already has
+3 favourites and 2 reviews.
 
-### Commandes utiles
+### Useful commands
 
-| Commande | Effet |
+| Command | What it does |
 |---|---|
-| `npm run dev` | tout démarrer (Docker + API + Angular) |
-| `npm run db:reset` | effacer et recréer les données de démonstration |
-| `npm run demo:refresh` | **avant une démo** : régénère seulement les signalements récents (garde comptes, avis, favoris) |
-| `npm test` | tests unitaires et d'API (serveur) puis tests Angular (la base doit tourner) |
-| `npm run e2e` | tests de bout en bout dans Chrome, Edge, Firefox, WebKit et sur mobile |
-| `npm run lint` | ESLint + vérification TypeScript des deux parties |
-| `npm run preview` | version de production : Angular compilé servi par Express sur http://localhost:3000 |
-| `npm run screenshots` | régénère les captures de ce README |
+| `npm run dev` | start everything (Docker + API + Angular) |
+| `npm run db:reset` | wipe and re-create the demo data |
+| `npm run demo:refresh` | **before a demo**: regenerate only the recent crowd reports (keeps accounts, reviews, favourites) |
+| `npm test` | server unit and API tests, then Angular tests (the database must be running) |
+| `npm run e2e` | end-to-end tests in Chrome, Edge, Firefox, WebKit and on a phone viewport |
+| `npm run lint` | ESLint + TypeScript type-check, both parts |
+| `npm run preview` | production version: compiled Angular served by Express on http://localhost:3000 |
+| `npm run screenshots` | regenerate the screenshots of this README |
 
-> Les signalements de démonstration sont datés par rapport au moment du seed et expirent au bout de 2 h :
-> lancez `npm run demo:refresh` juste avant de présenter. Sans signalement récent, la jauge affiche
-> l'« estimation habituelle », elle n'est donc jamais vide.
+> Demo crowd reports are dated relative to when the database was seeded and expire after 2 hours:
+> run `npm run demo:refresh` just before presenting. Without recent reports the meter shows the
+> "Estimation habituelle" (usual level at this hour), so it is never empty.
 
 ---
 
-## Fonctionnalités
+## Features
 
-Toutes les pages du plan du site (Objectif 2) sont à 3 clics maximum de l'accueil et alimentées par l'API.
+Every page of the sitemap (Objective 2) is at most 3 clicks from the home page and is fed by the API.
 
-| Page | Route | Contenu |
+| Page | Route | Content |
 |---|---|---|
-| Accueil | `/` | recherche, filtres rapides, lieux « Près de SUP'COM » avec leur affluence, activité en direct |
-| Explorer | `/explorer` | liste + carte synchronisées, filtres dans l'URL, bascule liste/carte sur mobile |
-| Fiche d'un lieu | `/lieux/:id` | infos, équipements, horaires, notes par critère, avis, **Live Meter**, « Je suis ici », favoris |
-| Ajouter un lieu | `/ajouter` | formulaire dynamique, repère à placer sur la carte, horaires par jour (créneaux multiples) |
-| Espace membre | `/compte/profil`, `/favoris`, `/avis` | profil et statistiques, favoris, mes avis (protégé) |
-| Connexion / Inscription | `/connexion`, `/inscription` | formulaires validés, retour à la page demandée |
-| À propos / Contact | `/a-propos` | explication de la jauge, formulaire de contact, mentions légales |
+| Home (Accueil) | `/` | search, quick filters, places "Près de SUP'COM" (near SUP'COM) with their crowd level, live activity |
+| Explorer | `/explorer` | list + map kept in sync, filters stored in the URL, list/map toggle on phones |
+| Place page (Fiche d'un lieu) | `/lieux/:id` | details, equipment, opening hours, ratings per criterion, reviews, **Live Meter**, "Je suis ici", favourites |
+| Add a place (Ajouter un lieu) | `/ajouter` | dynamic form, pin placed on the map, opening hours per day (several time slots) |
+| Member area (Espace membre) | `/compte/profil`, `/favoris`, `/avis` | profile and stats, favourites, my reviews (login required) |
+| Login / Sign-up | `/connexion`, `/inscription` | validated forms, back to the requested page afterwards |
+| About / Contact | `/a-propos` | how the meter works, contact form, legal notice |
 
-### Priorité 1 (doit marcher parfaitement)
+### Priority 1 (must work perfectly)
 
-- [x] **Explorer** : liste de `SpotCard` + carte Leaflet ; survoler une carte met son repère en avant et inversement ;
-      cliquer un repère fait défiler la liste jusqu'au lieu.
-- [x] **Filtres** : bruit (Silencieux / Modéré / Animé), Wi-Fi rapide, prises, clim, budget (Gratuit, < 3 DT, < 6 DT),
-      ouvert maintenant, recherche texte (nom, quartier, adresse, sans tenir compte des accents). Recherche
-      « debouncée » (300 ms), filtres appliqués sans rechargement et **reflétés dans l'URL**
-      (`/explorer?bruit=silencieux&wifi=1&prises=1`) : partageables et conservés au rafraîchissement.
-- [x] **Fiche d'un lieu** : nom, type, adresse, horaires (aujourd'hui en gras), équipements, notes par critère
-      (barres), avis, Live Meter, « Je suis ici », favoris, carte et itinéraire à pied.
-- [x] **Live Meter** : voir [la section dédiée](#le-live-meter).
+- [x] **Explorer**: list of `SpotCard`s + Leaflet map; hovering a card highlights its pin and vice versa;
+      clicking a pin scrolls the list to that place.
+- [x] **Filters**: noise (Silencieux / Modéré / Animé), fast Wi-Fi, outlets, air conditioning, budget (free,
+      < 3 DT, < 6 DT), open now, text search (name, area, address, accent-insensitive). The search is debounced
+      (300 ms), filters apply without reloading and are **reflected in the URL**
+      (`/explorer?bruit=silencieux&wifi=1&prises=1`): shareable and kept after a refresh.
+- [x] **Place page**: name, type, address, opening hours (today in bold), equipment, ratings per criterion (bars),
+      reviews, Live Meter, "Je suis ici", favourites, map and walking directions.
+- [x] **Live Meter**: see [its own section](#the-live-meter).
 
-### Priorité 2
+### Priority 2
 
-- [x] **Authentification** : inscription, connexion, déconnexion ; mots de passe hachés (bcrypt) ; JWT dans un
-      cookie `httpOnly` ; `authGuard` sur `/compte` et `/ajouter`.
-- [x] **Espace membre** : profil (nom modifiable, compteurs), favoris, mes avis (suppression en deux temps).
-- [x] **Laisser un avis** : une note de 1 à 5 par critère (Wi-Fi, calme, prises, prix) + commentaire, validé côté
-      client et serveur, un avis par personne et par lieu.
-- [x] **Ajouter un lieu** : formulaire réactif, repère placé en cliquant sur la carte (ou au clavier, ou par
-      géolocalisation), horaires dynamiques ; statut « À vérifier ».
-- [x] **Contact** : validation, message de remerciement, enregistré en base.
-- [x] **Notifications** : toasts non bloquants (« Merci ! Affluence mise à jour. », « Ajouté aux favoris. », erreurs),
-      annoncés aux lecteurs d'écran.
+- [x] **Authentication**: sign-up, login, logout; hashed passwords (bcrypt); JWT in an `httpOnly` cookie;
+      `authGuard` on `/compte` and `/ajouter`.
+- [x] **Member area**: profile (editable name, counters), favourites, my reviews (two-step delete).
+- [x] **Leave a review**: a 1–5 rating per criterion (Wi-Fi, quiet, outlets, price) + comment, validated on the
+      client and the server, one review per person and place.
+- [x] **Add a place**: reactive form, pin placed by clicking the map (or with the keyboard, or by geolocation),
+      dynamic opening hours; status "À vérifier" (to be checked).
+- [x] **Contact**: validation, thank-you message, stored in the database.
+- [x] **Notifications**: non-blocking toasts ("Merci ! Affluence mise à jour.", "Ajouté aux favoris.", errors),
+      announced to screen readers.
 
-### Petits plus
+### Small extras
 
-- Repères qui « pulsent » quand un signalement a moins de 15 min ; squelettes de chargement ; raccourci clavier
-  `/` pour la recherche ; états vides qui proposent quoi retirer (« Essayez sans le filtre « Prises » ? ») ;
-  transitions entre pages ; animation de la jauge ; tout est désactivé si l'utilisateur préfère moins d'animations.
+- Pins "pulse" when a report is less than 15 minutes old; loading skeletons; `/` keyboard shortcut for the search;
+  empty states that suggest which filter to drop ("Essayez sans le filtre « Prises » ?"); page transitions;
+  meter animation; all animations are turned off for users who prefer reduced motion.
 
-### Captures d'écran
+### Screenshots
 
-Générées avec `npm run screenshots` sur la version de production (données de démonstration).
+Generated with `npm run screenshots` on the production build (demo data).
 
-| Accueil (1440 px) | Fiche d'un lieu (1440 px) |
+| Home (1440 px) | Place page (1440 px) |
 |---|---|
-| ![Accueil](docs/screenshots/01-accueil.png) | ![Fiche d'un lieu](docs/screenshots/03-fiche.png) |
-| **Espace membre, favoris** | **Ajouter un lieu** |
-| ![Favoris](docs/screenshots/08-favoris.png) | ![Ajouter un lieu](docs/screenshots/09-ajouter.png) |
+| ![Home](docs/screenshots/01-accueil.png) | ![Place page](docs/screenshots/03-fiche.png) |
+| **Member area, favourites** | **Add a place** |
+| ![Favourites](docs/screenshots/08-favoris.png) | ![Add a place](docs/screenshots/09-ajouter.png) |
 
-| Fiche (téléphone) | « Je suis ici » (téléphone) | Explorer, carte (téléphone) | Explorer (tablette, 768 px) |
+| Place page (phone) | "Je suis ici" (phone) | Explorer, map (phone) | Explorer (tablet, 768 px) |
 |---|---|---|---|
-| ![Fiche mobile](docs/screenshots/04-fiche-mobile.png) | ![Je suis ici](docs/screenshots/05-je-suis-ici-mobile.png) | ![Carte mobile](docs/screenshots/06-explorer-mobile-carte.png) | ![Tablette](docs/screenshots/07-explorer-tablette.png) |
+| ![Place page on a phone](docs/screenshots/04-fiche-mobile.png) | ![Je suis ici](docs/screenshots/05-je-suis-ici-mobile.png) | ![Map on a phone](docs/screenshots/06-explorer-mobile-carte.png) | ![Tablet](docs/screenshots/07-explorer-tablette.png) |
 
-Maquettes Figma de référence (Objectif 2) : [`docs/design/`](docs/design/).
+Reference Figma mockups (Objective 2): [`docs/design/`](docs/design/).
 
 ---
 
-## Le Live Meter
+## The Live Meter
 
-Notre fonctionnalité signature. Code : [`server/src/live-meter/compute-occupancy.ts`](server/src/live-meter/compute-occupancy.ts)
-(fonction pure, sans base de données ni horloge) et ses tests.
+Our signature feature. Code: [`server/src/live-meter/compute-occupancy.ts`](server/src/live-meter/compute-occupancy.ts)
+(a pure function, no database and no clock inside) and its tests.
 
-**Signaler.** Sur la fiche, « Je suis ici » ouvre une feuille : *Calme* (25 %), *Moyen* (55 %) ou *Saturé* (85 %).
-Un signalement par personne et par lieu toutes les **15 minutes**, vérifié côté serveur (réponse `429` avec le délai
-restant, expliqué gentiment dans l'interface). Un verrou PostgreSQL (`pg_advisory_xact_lock`) empêche qu'un double
-clic crée deux signalements.
+**Reporting.** On the place page, "Je suis ici" (I'm here) opens a sheet: *Calme* (quiet, 25 %), *Moyen*
+(medium, 55 %) or *Saturé* (packed, 85 %). One report per person and place every **15 minutes**, enforced on the
+server (`429` response with the remaining wait, explained kindly in the interface). A PostgreSQL lock
+(`pg_advisory_xact_lock`) prevents a double click from creating two reports.
 
-**Estimer.** Seuls les signalements des 2 dernières heures comptent, les plus récents davantage :
+**Estimating.** Only reports from the last 2 hours count, and recent ones count more:
 
 ```text
-poids_i     = exp(−âge_i / 30 min)
-estimation  = Σ (poids_i × occupation_i) / Σ poids_i
+weight_i  = exp(−age_i / 30 min)
+estimate  = Σ (weight_i × occupancy_i) / Σ weight_i
 ```
 
-Exemple (test unitaire) : à 15 h 00, signalements à 14 h 00 → 80 %, 14 h 30 → 50 %, 14 h 50 → 40 % ;
-poids ≈ 0,135, 0,368, 0,717 ; **estimation ≈ 47 % · Modéré**.
+Example (a unit test): at 15:00, reports at 14:00 → 80 %, 14:30 → 50 %, 14:50 → 40 %;
+weights ≈ 0.135, 0.368, 0.717; **estimate ≈ 47 % · Modéré**.
 
-**Repli.** Aucun signalement récent : moyenne des 8 dernières semaines, même jour, même heure (au moins 3 signalements),
-affichée « Estimation habituelle ». Aucune donnée : « Pas encore de signalement ».
+**Fallback.** No recent report: average of the last 8 weeks, same weekday, same hour (at least 3 reports),
+shown as "Estimation habituelle" (usual estimate). No data at all: "Pas encore de signalement" (no report yet).
 
-**Affichage.** `≈ 47 % · Modéré` (moins de 40 % Calme, de 40 à 69 % Modéré, 70 % et plus Saturé) ; la couleur est
-toujours accompagnée du mot ; la source est toujours visible (« 3 signalements · il y a 10 min ») ainsi qu'une
-**fiabilité** calculée à partir de Σ poids (un seul signalement d'il y a 1 h pèse 0,14 : « Fiabilité faible »).
+**Display.** `≈ 47 % · Modéré` (below 40 % Calme, 40–69 % Modéré, 70 % and above Saturé); the colour always comes
+with the word; the source is always visible ("3 signalements · il y a 10 min") together with a **reliability**
+level computed from Σ weights (a single report from an hour ago weighs 0.14: "Fiabilité faible", low reliability).
 
-**Mise à jour optimiste.** Après un signalement, la jauge change immédiatement : un signalement neuf pèse 1, donc
-l'écran calcule `(ancienne × Σpoids + nouvelle) / (Σpoids + 1)`, exactement ce que le serveur va répondre. La réponse
-du serveur remplace ensuite cette valeur, ou l'ancienne revient en cas d'erreur.
+**Optimistic update.** After a report the meter changes immediately: a brand-new report weighs 1, so the screen
+computes `(old × Σweights + new) / (Σweights + 1)`, exactly what the server is about to answer. The server's answer
+then replaces that value, or the previous one comes back if the request fails.
 
 ---
 
-## Choix techniques
+## Technical choices
 
-| Couche | Choix | En une ligne |
+| Layer | Choice | In one line |
 |---|---|---|
-| Framework | **Angular 22** (composants standalone, `OnPush`, sans zone.js) | imposé par l'Objectif 1 ; structure claire et typée, adaptée à un projet d'équipe |
-| État | **Signals** dans des services | plus simple que NgRx ou des `BehaviorSubject` pour cette taille d'application |
-| Asynchrone | **RxJS** là où le temps compte | `debounceTime` pour la recherche, `switchMap` pour annuler une requête dépassée |
-| Formulaires | **Reactive Forms** | validation typée et testable ; `FormArray` pour les horaires dynamiques |
-| Carte | **Leaflet 1.9** + tuiles OpenStreetMap | gratuit, sans clé d'API ; utilisé directement dans un seul `MapViewComponent` |
-| Icônes | **@lucide/angular** | le jeu d'icônes de la charte ; chaque icône est un composant, seules celles utilisées sont livrées |
-| Polices | Space Grotesk + DM Sans via **Fontsource** | les polices Google de la charte, auto-hébergées (aucune requête tierce bloquante) |
-| API | **Node.js 24 + Express 5** en TypeScript (`tsx`) | Express 5 transmet les erreurs des fonctions `async` au gestionnaire d'erreurs, sans `try/catch` partout |
-| Base | **PostgreSQL 17** + `pg` et **SQL paramétré** | chaque requête est visible et explicable ; c'est le SQL de l'Objectif 1 |
-| Migrations | fichiers `.sql` + petit script | pas de « magie » d'ORM |
-| Validation | **Zod** (messages en français) | un schéma = validation à l'exécution + type TypeScript |
-| Mots de passe | **bcryptjs** (coût 10) | hachage lent contre la force brute, en JavaScript pur (rien à compiler sous Windows) |
-| Session | **JWT** dans un cookie `httpOnly`, `SameSite=Lax`, 7 jours | illisible par JavaScript (XSS), non envoyé par un autre site (CSRF), sans table de sessions |
-| Sécurité HTTP | helmet (CSP), CORS limité, limitation des tentatives de connexion | protections de base sans configuration lourde |
-| Tests | **Vitest** (serveur et Angular), Supertest, **Playwright** + axe-core | un seul lanceur de tests des deux côtés ; e2e multi-navigateurs |
-| Dev | npm workspaces, `concurrently`, Docker Compose, proxy Angular | `npm run dev` lance tout ; le navigateur ne parle qu'à `localhost:4200` |
+| Framework | **Angular 22** (standalone components, `OnPush`, no zone.js) | chosen in Objective 1; clear, typed structure that suits a team project |
+| State | **Signals** in services | simpler than NgRx or `BehaviorSubject`s for an app this size |
+| Async | **RxJS** where time matters | `debounceTime` for the search, `switchMap` to cancel an outdated request |
+| Forms | **Reactive Forms** | typed, testable validation; `FormArray` for the dynamic opening hours |
+| Map | **Leaflet 1.9** + OpenStreetMap tiles | free, no API key; used directly in a single `MapViewComponent` |
+| Icons | **@lucide/angular** | the icon set of the style guide; each icon is a component, only the ones used are shipped |
+| Fonts | Space Grotesk + DM Sans via **Fontsource** | the Google Fonts of the style guide, self-hosted (no blocking third-party request) |
+| API | **Node.js 24 + Express 5** in TypeScript (`tsx`) | Express 5 forwards errors thrown in `async` handlers to the error handler, no `try/catch` everywhere |
+| Database | **PostgreSQL 17** + `pg` with **parameterised SQL** | every query is visible and explainable; it is the SQL of Objective 1 |
+| Migrations | plain `.sql` files + a small script | no ORM "magic" |
+| Validation | **Zod** (French messages) | one schema = runtime validation + TypeScript type |
+| Passwords | **bcryptjs** (cost 10) | slow hashing against brute force, pure JavaScript (nothing to compile on Windows) |
+| Session | **JWT** in an `httpOnly`, `SameSite=Lax` cookie, 7 days | unreadable by JavaScript (XSS), not sent by other sites (CSRF), no session table |
+| HTTP security | helmet (CSP), restricted CORS, login rate limiting | basic protections without heavy configuration |
+| Tests | **Vitest** (server and Angular), Supertest, **Playwright** + axe-core | one test runner on both sides; multi-browser end-to-end tests |
+| Dev | npm workspaces, `concurrently`, Docker Compose, Angular proxy | `npm run dev` starts everything; the browser only talks to `localhost:4200` |
 
-**Pourquoi le proxy Angular ?** `client/proxy.conf.json` transfère `/api/*` de 4200 vers Express (3000) : pour le
-navigateur tout est sur la même origine, donc le cookie de session part automatiquement, sans configuration CORS.
+**Why the Angular proxy?** `client/proxy.conf.json` forwards `/api/*` from port 4200 to Express (3000): for the
+browser everything is on the same origin, so the session cookie is sent automatically, with no CORS setup.
 
 ---
 
@@ -215,249 +217,248 @@ spotfinder/
 ├── client/                      Angular
 │   └── src/
 │       ├── app/
-│       │   ├── pages/           une page par route, chargée à la demande (lazy loading)
+│       │   ├── pages/           one page per route, lazy-loaded
 │       │   ├── components/      HeaderComponent, FooterComponent, FilterBarComponent, SpotCardComponent,
 │       │   │                    MapViewComponent, LiveMeterComponent, ReportSheet, RatingBars, StarRating…
 │       │   ├── services/        AuthService, SpotService, AccountService, ToastService, ClockService…
-│       │   ├── models/          types des réponses de l'API
-│       │   ├── guards/ interceptors/ utils/   (filtres ⇄ URL, formats, calculs du Live Meter…)
+│       │   ├── models/          types of the API responses
+│       │   ├── guards/ interceptors/ utils/   (filters ⇄ URL, formatting, Live Meter helpers…)
 │       │   └── app.routes.ts
-│       └── styles/              _tokens.scss (couleurs, typo, rayons de la charte), _components.scss…
+│       └── styles/              _tokens.scss (style-guide colours, type, radii), _components.scss…
 ├── server/                      Express + PostgreSQL
 │   ├── src/
-│   │   ├── modules/<ressource>/ routes → service → repository (SQL)
-│   │   ├── live-meter/          computeOccupancy (pur) + constantes + tests
+│   │   ├── modules/<resource>/  routes → service → repository (SQL)
+│   │   ├── live-meter/          computeOccupancy (pure) + constants + tests
 │   │   ├── db/                  pool, migrations/*.sql, seed, cli (prepare | migrate | reset | refresh)
-│   │   └── middleware/          auth, gestion d'erreurs
-│   └── test/                    tests d'API (Supertest) sur une base `spotfinder_test` séparée
-├── e2e/                         Playwright : parcours, clavier, audit d'accessibilité
-├── docs/                        maquettes Figma, captures, journal d'utilisation de l'IA
+│   │   └── middleware/          auth, error handling
+│   └── test/                    API tests (Supertest) on a separate `spotfinder_test` database
+├── e2e/                         Playwright: journeys, keyboard, accessibility audit
+├── docs/                        Figma mockups, screenshots, AI usage log
 └── docker-compose.yml
 ```
 
-**Flux de données de l'Explorer** (dans un seul sens) : paramètres de l'URL → signal `filters` → requête API
-(`switchMap`) → signal `spots` → liste et carte. La barre de filtres ne modifie jamais la liste directement : elle
-modifie l'URL.
+**Explorer data flow** (one direction only): URL query params → `filters` signal → API request (`switchMap`) →
+`spots` signal → list and map. The filter bar never changes the list directly: it changes the URL.
 
 ---
 
-## API REST
+## REST API
 
-Toutes les routes sont préfixées par `/api`. Les réponses sont en JSON, les dates en ISO 8601.
+All routes are prefixed with `/api`. Responses are JSON, dates are ISO 8601.
 
-| Méthode | Route | Auth | Rôle | Codes |
+| Method | Route | Auth | Purpose | Status codes |
 |---|---|---|---|---|
-| GET | `/health` | | état de l'API et de la base | 200 |
-| POST | `/auth/register` | | inscription (ouvre la session) | 201, 400, 409, 429 |
-| POST | `/auth/login` | | connexion | 200, 400, 401, 429 |
-| POST | `/auth/logout` | | déconnexion | 204 |
-| GET | `/auth/me` | | utilisateur courant ou `{ user: null }` | 200 |
-| GET | `/spots?q&bruit&wifi&prises&clim&budget&ouvert&type&lat&lng` | | liste filtrée, triée par distance | 200, 400 |
-| GET | `/spots/:id` | | fiche (+ favori, avis déjà donné, prochain signalement possible) | 200, 400, 404 |
-| POST | `/spots` | ✓ | ajouter un lieu (statut `a_verifier`) | 201, 400, 401 |
-| GET | `/spots/:id/live` | | estimation du Live Meter | 200, 404 |
-| GET | `/spots/:id/live/hourly` | | affluence habituelle par heure aujourd'hui | 200, 404 |
-| POST | `/spots/:id/live-reports` | ✓ | « Je suis ici » `{ level: calme / moyen / sature }` | 201, 400, 401, 404, 429 |
-| GET | `/spots/:id/reviews` | | avis du lieu | 200, 404 |
-| POST | `/spots/:id/reviews` | ✓ | laisser un avis | 201, 400, 401, 404, 409 |
-| DELETE | `/reviews/:id` | ✓ | supprimer son avis | 204, 403, 404 |
-| GET | `/me` | ✓ | profil + compteurs | 200, 401 |
-| PATCH | `/me` | ✓ | modifier son nom | 200, 400, 401 |
-| GET | `/me/favorites` | ✓ | mes favoris | 200, 401 |
-| PUT / DELETE | `/me/favorites/:spotId` | ✓ | ajouter / retirer un favori (idempotent) | 204, 401, 404 |
-| GET | `/me/reviews` | ✓ | mes avis | 200, 401 |
-| POST | `/contact` | | message de contact | 201, 400, 429 |
+| GET | `/health` | | API and database status | 200 |
+| POST | `/auth/register` | | sign up (opens the session) | 201, 400, 409, 429 |
+| POST | `/auth/login` | | log in | 200, 400, 401, 429 |
+| POST | `/auth/logout` | | log out | 204 |
+| GET | `/auth/me` | | current user, or `{ user: null }` | 200 |
+| GET | `/spots?q&bruit&wifi&prises&clim&budget&ouvert&type&lat&lng` | | filtered list, sorted by distance | 200, 400 |
+| GET | `/spots/:id` | | place detail (+ favourite, already reviewed, next report allowed at) | 200, 400, 404 |
+| POST | `/spots` | ✓ | add a place (status `a_verifier`) | 201, 400, 401 |
+| GET | `/spots/:id/live` | | Live Meter estimate | 200, 404 |
+| GET | `/spots/:id/live/hourly` | | usual crowd level per hour today | 200, 404 |
+| POST | `/spots/:id/live-reports` | ✓ | "Je suis ici" `{ level: calme / moyen / sature }` | 201, 400, 401, 404, 429 |
+| GET | `/spots/:id/reviews` | | reviews of a place | 200, 404 |
+| POST | `/spots/:id/reviews` | ✓ | leave a review | 201, 400, 401, 404, 409 |
+| DELETE | `/reviews/:id` | ✓ | delete one's own review | 204, 403, 404 |
+| GET | `/me` | ✓ | profile + counters | 200, 401 |
+| PATCH | `/me` | ✓ | change one's display name | 200, 400, 401 |
+| GET | `/me/favorites` | ✓ | my favourites | 200, 401 |
+| PUT / DELETE | `/me/favorites/:spotId` | ✓ | add / remove a favourite (idempotent) | 204, 401, 404 |
+| GET | `/me/reviews` | ✓ | my reviews | 200, 401 |
+| POST | `/contact` | | contact message | 201, 400, 429 |
 
-**Format d'erreur unique** (messages en français, affichables tels quels) :
+Query parameters are French because they also appear in the Explorer URL that users share.
+
+**One error format** (messages in French, ready to display):
 
 ```json
 { "error": { "code": "VALIDATION_ERROR", "message": "Certains champs sont invalides.",
              "details": [{ "field": "email", "message": "Adresse e-mail invalide." }] } }
 ```
 
-Un `429` sur `/live-reports` ajoute `retryAfterSeconds` et `nextReportAllowedAt`, et l'en-tête `Retry-After`.
+A `429` on `/live-reports` adds `retryAfterSeconds` and `nextReportAllowedAt`, and the `Retry-After` header.
 
 ---
 
-## Modèle de données
+## Data model
 
-Les entités de l'Objectif 1 sont conservées ([`001_initial_schema.sql`](server/src/db/migrations/001_initial_schema.sql)) :
-`users`, `spots`, `equipment`, `live_reports`, `reviews`, `favorites`, `contact_messages`. Ajustements :
+The entities of Objective 1 are kept ([`001_initial_schema.sql`](server/src/db/migrations/001_initial_schema.sql)):
+`users`, `spots`, `equipment`, `live_reports`, `reviews`, `favorites`, `contact_messages`. Adjustments:
 
-- **`opening_hours`** devient une table (`spot_id, weekday, opens_at, closes_at`) au lieu d'un champ texte :
-  « ouvert maintenant » est une simple condition SQL et un lieu peut fermer à midi (deux créneaux).
-- Types énumérés pour le bruit, le type de lieu, le statut et le rôle ; `CHECK` sur les notes (1 à 5), l'occupation
-  (0 à 100), le budget (0 à 3) ; **un avis par personne et par lieu** (`UNIQUE`).
-- `spots.area` (quartier) pour l'affichage et la recherche ; index sur `live_reports (spot_id, created_at)`.
-- Heure métier : `Africa/Tunis` (horaires, « même jour, même heure »).
+- **`opening_hours`** becomes a table (`spot_id, weekday, opens_at, closes_at`) instead of a text field:
+  "open now" is a simple SQL condition and a place can close at lunchtime (two time slots).
+- Enumerated types for noise, place type, status and role; `CHECK` constraints on ratings (1 to 5), occupancy
+  (0 to 100) and budget (0 to 3); **one review per person and place** (`UNIQUE`).
+- `spots.area` (neighbourhood) for display and search; index on `live_reports (spot_id, created_at)`.
+- Business time zone: `Africa/Tunis` (opening hours, "same weekday, same hour").
 
-**Données de démonstration** : 15 lieux fictifs autour d'El Ghazala, de l'Ariana et de Tunis (noms des maquettes
-pour les quatre premiers, coordonnées réalistes), 9 comptes, environ 30 avis, 6 semaines d'historique d'affluence
-par heure et des signalements récents. Le seed est déterministe : tout le monde obtient les mêmes données.
+**Demo data**: 15 fictional places around El Ghazala, Ariana and Tunis (the first four use the names from our
+mockups, coordinates are realistic), 9 accounts, about 30 reviews, 6 weeks of hourly crowd history and recent
+reports. The seed is deterministic: everyone gets the same data.
 
 ---
 
-## Qualité : tests, accessibilité, performance
+## Quality: tests, accessibility, performance
 
-### Tests automatisés (tous au vert)
+### Automated tests (all passing)
 
-| Suite | Outil | Tests | Ce qui est couvert |
+| Suite | Tool | Tests | What is covered |
 |---|---|---|---|
-| Serveur, unitaires | Vitest | 31 | `computeOccupancy` (exemple des 47 %, fenêtre de 2 h, signalement « du futur »), seuils, fiabilité, filtres → SQL (y compris une tentative d'injection), heure de Tunis, distances |
-| API | Vitest + Supertest | 39 | chaque ressource : auth (cookie `httpOnly`, 401 identique, 409), lieux (filtres, accents, tri par distance, 404, création validée), Live Meter (live / habituel / aucun, 429, double clic), avis (409, 403), favoris, profil, contact, erreurs JSON |
-| Angular | Vitest (Angular CLI) | 71 | `SpotCardComponent`, `FilterBarComponent` (debounce), `LiveMeterComponent`, feuille « Je suis ici », formulaire d'avis, « Ajouter un lieu » (`FormArray`), `AuthService` + garde, utilitaires |
-| De bout en bout | Playwright + axe-core | 20 scénarios | les 3 parcours du brief, la garde, le clavier, l'audit d'accessibilité ; **échec si la moindre erreur apparaît dans la console** |
+| Server, unit | Vitest | 31 | `computeOccupancy` (the 47 % example, 2-hour window, report "from the future"), thresholds, reliability, filters → SQL (including an injection attempt), Tunis time, distances |
+| API | Vitest + Supertest | 39 | every resource: auth (`httpOnly` cookie, identical 401, 409), places (filters, accents, distance sort, 404, validated creation), Live Meter (live / usual / none, 429, double click), reviews (409, 403), favourites, profile, contact, JSON errors |
+| Angular | Vitest (Angular CLI) | 71 | `SpotCardComponent`, `FilterBarComponent` (debounce), `LiveMeterComponent`, "Je suis ici" sheet, review form, "Add a place" (`FormArray`), `AuthService` + guard, utilities |
+| End-to-end | Playwright + axe-core | 20 scenarios | the 3 journeys of the brief, the guard, keyboard use, the accessibility audit; **fails if any error appears in the browser console** |
 
 ```bash
-npm test     # serveur (unitaires + API, base de test séparée) puis Angular
-npm run e2e  # avec l'application lancée (npm run dev)
+npm test     # server (unit + API, separate test database) then Angular
+npm run e2e  # with the app running (npm run dev)
 ```
 
-### Navigateurs
+### Browsers
 
-| Navigateur | Résultat e2e |
+| Browser | End-to-end result |
 |---|---|
-| Chrome (Windows) | 20/20, dont l'audit d'accessibilité de 12 pages |
+| Chrome (Windows) | 20/20, including the 12-page accessibility audit |
 | Edge | 7/7 |
 | Firefox | 7/7 |
-| WebKit (moteur de Safari) | 6/6 |
-| Téléphone (Pixel 7, Chrome) | 4/4 |
+| WebKit (Safari's engine) | 6/6 |
+| Phone (Pixel 7, Chrome) | 4/4 |
 
-L'audit d'accessibilité ne tourne qu'une fois (dans Chrome) : le HTML est le même partout. Le WebKit de Playwright
-plantait sur l'API View Transitions (fondu entre les pages) : nous l'avons désactivée pour les navigateurs WebKit
-(Safari, iPhone), qui changent donc de page sans fondu. Nous n'avons pas pu tester un vrai Safari (pas de Mac).
+The accessibility audit runs once (in Chrome): the HTML is the same everywhere. Playwright's WebKit crashed on the
+View Transitions API (cross-fade between pages), so it is turned off for WebKit browsers (Safari, iPhone), which
+change pages without the fade. We could not test a real Safari (no Mac).
 
-### Accessibilité (WCAG 2.1 AA)
+### Accessibility (WCAG 2.1 AA)
 
-- **axe-core : 0 violation** sur 12 pages (accueil, Explorer avec et sans filtres, fiche, connexion, inscription,
-  à propos, 404, ajouter, profil, favoris, mes avis).
-- **Contrastes** mesurés pour chaque couleur de la charte, tous ≥ 4,5:1, par exemple : texte 13,6:1 ; bouton 5,7:1 ;
-  badges Calme 6,6:1, Modéré 6,6:1, Saturé 5,9:1 ; jauge sur fond encre 5,0 à 8,4:1 ; orange en texte 4,5:1.
-- **Clavier** : lien « Aller au contenu », focus toujours visible, repères de carte atteignables avec Tab, raccourci
-  `/` pour la recherche, feuille « Je suis ici » fermée par Échap, repère placé au clavier dans « Ajouter un lieu ».
-- **Lecteurs d'écran** : `header` / `nav` / `main` / `footer`, un seul `h1` par page, étiquette sur chaque champ,
-  jauge exposée en `role="meter"`, résultats, jauge et toasts annoncés (`aria-live`), focus déplacé sur le contenu à
-  chaque changement de page. La liste est toujours une alternative à la carte.
-- Couleur jamais seule ; aucun texte sous 14 px ; animations coupées avec `prefers-reduced-motion`.
+- **axe-core: 0 violations** on 12 pages (home, Explorer with and without filters, place page, login, sign-up,
+  about, 404, add a place, profile, favourites, my reviews).
+- **Contrast** measured for every colour of the style guide, all ≥ 4.5:1, for example: text 13.6:1; button 5.7:1;
+  badges Calme 6.6:1, Modéré 6.6:1, Saturé 5.9:1; meter on the ink background 5.0 to 8.4:1; orange text 4.5:1.
+- **Keyboard**: "Aller au contenu" skip link, focus always visible, map pins reachable with Tab, `/` shortcut for
+  the search, "Je suis ici" sheet closed with Esc, pin placed with the keyboard in "Add a place".
+- **Screen readers**: `header` / `nav` / `main` / `footer`, a single `h1` per page, a label on every field, meter
+  exposed as `role="meter"`, results, meter and toasts announced (`aria-live`), focus moved to the content on each
+  page change. The list is always an alternative to the map.
+- Colour never used alone; no text below 14 px; animations off with `prefers-reduced-motion`.
 
 ### Responsive
 
-Testé à 375–390 px (téléphone), 768 px (tablette) et 1440 px (bureau) : voir les [captures](#captures-décran).
-Sur téléphone : barre d'onglets en bas comme dans la maquette, bascule liste/carte dans l'Explorer, feuille
-« Je suis ici » qui monte du bas de l'écran.
+Tested at 375–390 px (phone), 768 px (tablet) and 1440 px (desktop): see the [screenshots](#screenshots).
+On phones: bottom tab bar as in the mockup, list/map toggle in the Explorer, "Je suis ici" sheet sliding up from
+the bottom of the screen.
 
 ### Performance
 
-- **97,7 ko** (gzip) de JavaScript + CSS au premier chargement (budget Angular : 500 ko).
-- Chaque page est chargée à la demande (1 à 11 ko) ; **Leaflet (40 ko) n'est téléchargé que par les pages avec carte** ;
-  l'accueil utilise un aperçu de carte en SVG.
-- Aucune photo : illustrations SVG de quelques centaines d'octets ; polices `woff2` auto-hébergées (alphabet latin seul).
-- Côté API, la jauge de N lieux coûte 3 requêtes SQL, quel que soit N ; index sur les tables lues le plus souvent.
+- **97.7 kB** (gzip) of JavaScript + CSS on first load (Angular budget: 500 kB).
+- Each page is lazy-loaded (1 to 11 kB); **Leaflet (40 kB) is only downloaded by pages with a map**;
+  the home page uses an SVG map preview instead.
+- No photos: SVG illustrations of a few hundred bytes; self-hosted `woff2` fonts (Latin subset only).
+- On the API side, the meter of N places costs 3 SQL queries whatever N is; indexes on the most-read tables.
 
-### Sécurité
+### Security
 
-bcrypt (coût 10) ; JWT en cookie `httpOnly` + `SameSite=Lax` (+ `Secure` en production) ; même temps de réponse que
-l'e-mail existe ou non (pas d'énumération des comptes) ; validation Zod côté serveur sur chaque entrée ; SQL
-uniquement paramétré ; CSP et en-têtes de sécurité (helmet) ; CORS limité à l'origine du client ; limites de débit
-(connexion, contact, signalements) ; redirections après connexion limitées aux chemins internes ; aucun secret dans
-Git (`.env.example`).
+bcrypt (cost 10); JWT in an `httpOnly` + `SameSite=Lax` cookie (+ `Secure` in production); same response time
+whether the e-mail exists or not (no account enumeration); Zod validation on the server for every input;
+parameterised SQL only; CSP and security headers (helmet); CORS restricted to the client's origin; rate limits
+(login, contact, reports); post-login redirects limited to internal paths; no secrets in Git (`.env.example`).
 
-### Limites connues
+### Known limitations
 
-- Les tests e2e écrivent dans la base de développement (comptes, signalements) : `npm run db:reset` ensuite.
-- Les messages de contact sont enregistrés en base, pas envoyés par e-mail.
-- Les lieux « à vérifier » n'ont pas encore d'écran de modération (le rôle `admin` existe déjà dans le modèle).
-- Une connexion avec un mauvais mot de passe renvoie `401` : le navigateur l'affiche dans la console, c'est normal.
-- Le fond de carte OpenStreetMap nécessite une connexion Internet.
-
----
-
-## Écarts assumés par rapport au brief et à la maquette
-
-Tous validés avec l'équipe en Phase 0, ou signalés ici :
-
-1. **Libellés de la maquette** : « 15 % · Silencieux » et « 40 % · Calme » ne suivent pas les seuils du brief.
-   Nous suivons le brief (Calme / Modéré / Saturé ; 40 % = Modéré) ; le bruit reste un équipement à part.
-2. **Couleur « Modéré »** : la charte n'avait que Calme (vert) et Saturé (orange). Nous avons ajouté un ambre, vérifié
-   pour le contraste, toujours accompagné du mot.
-3. **Repères de la carte** : en plus de la couleur, 1, 2 ou 3 barres indiquent le niveau ; les étiquettes texte sont
-   masquées en vue éloignée pour éviter qu'elles se chevauchent (le repère survolé garde la sienne).
-4. **Distance** affichée depuis SUP'COM (« 350 m de SUP'COM ») tant que l'utilisateur ne partage pas sa position.
-5. **Lieux « à vérifier »** visibles dans l'Explorer avec un badge (sinon, sans page d'administration, ils
-   n'apparaîtraient jamais).
-6. **Polices** auto-hébergées (Fontsource) au lieu du lien Google Fonts : mêmes polices, aucune requête tierce
-   qui bloque l'affichage (problème réel détecté par les tests e2e sur un réseau instable).
-7. **`GET /api/auth/me`** répond `200 { user: null }` hors connexion plutôt qu'une erreur `401`, pour ne pas
-   afficher une erreur dans la console à chaque visite.
-8. **API complète dès la Phase 1** : spécifiée en Phase 0, elle a été écrite d'un bloc ; les fonctionnalités
-   côté interface ont ensuite eu chacune leur branche.
+- End-to-end tests write to the development database (accounts, reports): run `npm run db:reset` afterwards.
+- Contact messages are stored in the database, not sent by e-mail.
+- Places "à vérifier" have no moderation screen yet (the `admin` role already exists in the model).
+- Logging in with a wrong password returns `401`: the browser logs it in the console, which is expected.
+- The OpenStreetMap background needs an Internet connection.
 
 ---
 
-## Organisation Git
+## Deliberate differences from the brief and the mockups
 
-`main` fonctionne toujours. Une branche par phase/fonctionnalité, fusionnée avec `--no-ff` pour rester visible dans
-l'historique ; messages au format Conventional Commits (`feat:`, `fix:`, `test:`, `docs:`, `chore:`).
+All agreed with the team in Phase 0, or listed here:
 
-| Branche | Contenu |
+1. **Mockup labels**: "15 % · Silencieux" and "40 % · Calme" do not follow the brief's thresholds. We follow the
+   brief (Calme / Modéré / Saturé; 40 % = Modéré); noise stays a separate equipment attribute.
+2. **"Modéré" colour**: the style guide only had Calme (green) and Saturé (orange). We added an amber, checked for
+   contrast, always shown with the word.
+3. **Map pins**: besides the colour, 1, 2 or 3 bars show the level; text labels are hidden when zoomed out so they
+   do not overlap (the hovered pin keeps its label).
+4. **Distance** shown from SUP'COM ("350 m de SUP'COM") as long as the user does not share their position.
+5. **Places "à vérifier"** are visible in the Explorer with a badge (otherwise, with no admin page, they would
+   never appear).
+6. **Fonts** self-hosted (Fontsource) instead of the Google Fonts link: same fonts, no third-party request that
+   blocks rendering (a real problem found by the end-to-end tests on an unreliable network).
+7. **`GET /api/auth/me`** answers `200 { user: null }` when logged out instead of a `401` error, so the browser
+   console does not show an error on every visit.
+8. **Full API in Phase 1**: it was specified in Phase 0, so it was written in one go; the user-facing features
+   then each got their own branch.
+
+---
+
+## Git workflow
+
+`main` always works. One branch per phase/feature, merged with `--no-ff` so it stays visible in the history;
+Conventional Commits messages (`feat:`, `fix:`, `test:`, `docs:`, `chore:`).
+
+| Branch | Content |
 |---|---|
-| `feat/skeleton` | workspaces, Docker, schéma, seed, API complète, squelette Angular, tokens |
-| `feat/explorer` | Explorer, filtres, carte |
-| `feat/live-meter` | fiche d'un lieu, Live Meter, « Je suis ici » |
-| `feat/auth-account` | connexion, inscription, espace membre, favoris, avis |
-| `feat/add-spot-contact` | ajouter un lieu, à propos / contact, accueil, 404 |
-| `chore/quality-pass` | e2e multi-navigateurs, audit d'accessibilité, polices locales, focus |
-| `docs/readme` | ce README, captures, journal IA |
+| `feat/skeleton` | workspaces, Docker, schema, seed, full API, Angular skeleton, design tokens |
+| `feat/explorer` | Explorer, filters, map |
+| `feat/live-meter` | place page, Live Meter, "Je suis ici" |
+| `feat/auth-account` | login, sign-up, member area, favourites, reviews |
+| `feat/add-spot-contact` | add a place, about / contact, home page, 404 |
+| `chore/quality-pass` | multi-browser e2e, accessibility audit, local fonts, focus management |
+| `docs/readme` | this README, screenshots, AI log |
 
-`git log --graph --oneline` montre la structure.
-
----
-
-## Utilisation de l'IA
-
-Notre enseignant autorise les outils d'IA à condition de documenter leur usage. Voici, honnêtement, qui a fait quoi.
-Le détail phase par phase est dans [`docs/ai-log.md`](docs/ai-log.md) ; chaque commit écrit avec l'assistant porte la
-mention `Co-Authored-By: Claude` (visible avec `git log`).
-
-**Outil** : Claude Code (modèle Claude Opus 5.5, Anthropic), utilisé dans VS Code, en suivant un cahier des charges
-que nous avons rédigé ([`descProjt.md`](descProjt.md)) et des conventions écrites ensemble ([`CLAUDE.md`](CLAUDE.md)).
-
-**Ce que l'équipe a fait**
-
-- Objectifs 1 et 2 : idée, cahier des charges, modèle de données, plan du site, **maquettes Figma et charte graphique**.
-- Le brief de l'Objectif 3 : priorités, spécification du Live Meter (formule, seuils, règle des 15 minutes),
-  exigences de qualité.
-- Les décisions d'architecture proposées par l'IA (Docker d'abord, proxy Angular, version de Node, dépôt privé,
-  « 350 m de SUP'COM », `demo:refresh`…) et la validation du plan.
-- La relecture, les tests manuels et la préparation de la soutenance (à compléter par l'équipe : qui a relu quoi).
-
-**Ce que Claude Code a fait**
-
-- Proposé l'architecture, les bibliothèques et l'API ; signalé les incohérences du brief et des maquettes.
-- Écrit le code (client, serveur, SQL, seed), les tests unitaires, d'API et e2e, la configuration et ce README.
-- Lancé l'application, pris des captures d'écran pour comparer avec les maquettes, et corrigé ce qui n'allait pas.
-
-**Comment nous avons vérifié** : chaque phase a été testée (tests automatisés + navigation réelle), et le code est
-commenté là où le « pourquoi » n'est pas évident, pour que chacun puisse l'expliquer à l'oral.
-
-**Limites** : l'IA peut se tromper ou faire des choix discutables ; nous restons responsables du code rendu. Les
-données de démonstration sont fictives.
+`git log --graph --oneline` shows the structure.
 
 ---
 
-## Pistes d'amélioration (P3)
+## AI usage (Utilisation de l'IA)
 
-Déjà réalisés en petit : repères qui pulsent pour les signalements récents, squelettes de chargement, raccourci
-clavier, géolocalisation (sur option) dans « Ajouter un lieu ». Propositions pour la suite, de la plus utile à la
-moins urgente :
+Our teacher allows AI tools as long as their use is documented. Here is, honestly, who did what.
+The phase-by-phase detail is in [`docs/ai-log.md`](docs/ai-log.md); every commit written with the assistant carries a
+`Co-Authored-By: Claude` line (visible with `git log`).
 
-1. **« Meilleur moment pour y aller » + histogramme d'affluence par heure** sur la fiche : l'API est déjà prête
-   (`GET /api/spots/:id/live/hourly` renvoie la moyenne par heure du jour et l'heure la plus calme à venir).
-2. **« Près de moi »** dans l'Explorer : utiliser la position du navigateur (sur option) comme point de référence,
-   « 350 m de vous » au lieu de « de SUP'COM ».
-3. **Modération** des lieux « à vérifier » par un administrateur.
-4. **Jauge en temps réel** (Server-Sent Events) au lieu du rafraîchissement chaque minute.
-5. **Badges de contributeur** (premiers signalements, avis utiles).
-6. **Mode sombre** : les couleurs sont déjà centralisées dans `_tokens.scss`.
-7. **PWA** : liste des favoris consultable hors connexion.
-8. **Regroupement des repères** (clustering) si le nombre de lieux grandit beaucoup.
+**Tool**: Claude Code (model Claude Opus 5.5, by Anthropic), used in VS Code, following a brief we wrote
+([`descProjt.md`](descProjt.md)) and conventions written together ([`CLAUDE.md`](CLAUDE.md)).
+
+**What the team did**
+
+- Objectives 1 and 2: the idea, requirements, data model, sitemap, **Figma mockups and style guide**.
+- The Objective 3 brief: priorities, the Live Meter specification (formula, thresholds, 15-minute rule),
+  quality requirements.
+- The architecture decisions proposed by the AI (Docker first, Angular proxy, Node version, private repository,
+  "350 m de SUP'COM", `demo:refresh`…) and approval of the plan.
+- Review, manual testing and preparation of the oral defence (to be completed by the team: who reviewed what).
+
+**What Claude Code did**
+
+- Proposed the architecture, libraries and API; pointed out inconsistencies in the brief and the mockups.
+- Wrote the code (client, server, SQL, seed), the unit, API and end-to-end tests, the configuration and this README.
+- Ran the application, took screenshots to compare with the mockups, and fixed what was wrong.
+
+**How we checked it**: every phase was tested (automated tests + real browsing), and the code is commented where
+the "why" is not obvious, so that each of us can explain it orally.
+
+**Limits**: AI can make mistakes or questionable choices; we remain responsible for the code we hand in. The demo
+data is fictional.
+
+---
+
+## Next steps (P3)
+
+Already done in a small way: pins that pulse for recent reports, loading skeletons, keyboard shortcut, opt-in
+geolocation in "Add a place". Proposals for what comes next, most useful first:
+
+1. **"Best time to go" + crowd-by-hour histogram** on the place page: the API is ready
+   (`GET /api/spots/:id/live/hourly` returns the average per hour for today and the quietest upcoming hour).
+2. **"Near me"** in the Explorer: use the browser's position (opt-in) as the reference point,
+   "350 m de vous" instead of "de SUP'COM".
+3. **Moderation** of places "à vérifier" by an administrator.
+4. **Real-time meter** (Server-Sent Events) instead of refreshing every minute.
+5. **Contributor badges** (first reports, helpful reviews).
+6. **Dark mode**: colours are already centralised in `_tokens.scss`.
+7. **PWA**: favourites list available offline.
+8. **Pin clustering** if the number of places grows a lot.
