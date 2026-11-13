@@ -4,6 +4,7 @@ describe('formatDistance', () => {
   it.each([
     [346, '350 m'],
     [912, '910 m'],
+    [997, '1 km'], // not "1000 m"
     [1236, '1,2 km'],
     [10232, '10 km'],
   ])('%s m → %s', (meters, text) => {
