@@ -29,12 +29,12 @@ export function createApp() {
 
   app.use(
     helmet({
-      // Leaflet loads map tiles from openstreetmap.org: allow them in the CSP.
+      // Leaflet loads map tiles from openstreetmap.org: the only third party allowed by the CSP.
+      // ('unsafe-inline' styles: Angular and Leaflet set inline style attributes.)
       contentSecurityPolicy: {
         directives: {
           'img-src': ["'self'", 'data:', 'https://tile.openstreetmap.org', 'https://*.tile.openstreetmap.org'],
-          'style-src': ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
-          'font-src': ["'self'", 'https://fonts.gstatic.com'],
+          'style-src': ["'self'", "'unsafe-inline'"],
         },
       },
     }),

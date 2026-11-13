@@ -51,7 +51,7 @@ import { RouterLink } from '@angular/router';
     }
 
     p {
-      color: #c4cdd0; // light grey on ink: contrast 9.6:1
+      color: #c4cdd0; // light grey on ink: contrast 9.2:1
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

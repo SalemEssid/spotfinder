@@ -19,11 +19,16 @@
     "db:reset": "npm run db:reset -w server",
     "demo:refresh": "npm run demo:refresh -w server",
     "test": "npm test -w server && npm test -w client",
+    "e2e": "playwright test",
+    "e2e:chrome": "playwright test --project=chrome",
+    "screenshots": "node scripts/screenshots.mjs",
     "lint": "npm run lint -w server && npm run lint -w client",
     "build": "npm run build -w client",
+    "preview": "npm run db:up && npm run build && npm start -w server",
     "format": "prettier --write \"server/{src,test}/**/*.ts\" \"client/src/**/*.{ts,html,scss}\""
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
     "@playwright/test": "^1.65.0",
     "concurrently": "^10.0.7",
     "prettier": "^3.8.1"

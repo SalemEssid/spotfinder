@@ -1,4 +1,10 @@
-// Global styles: tokens first, then base rules, then shared UI classes.
+// Global styles: fonts, tokens, base rules, then shared UI classes.
+
+// Space Grotesk + DM Sans (the Google Fonts of the style guide), self-hosted with Fontsource:
+// no render-blocking request to a third-party server, and the site works offline.
+// Variable fonts: one file per family covers every weight; unicode-range = only latin is downloaded.
+@use '@fontsource-variable/dm-sans/wght';
+@use '@fontsource-variable/space-grotesk/wght' as space-grotesk;
 @use 'styles/tokens';
 @use 'styles/base';
 @use 'styles/components';

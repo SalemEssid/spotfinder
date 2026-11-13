@@ -9,10 +9,13 @@ import { findUserById, type User } from './users.repository';
 
 export const authRouter = Router();
 
-/** Slows down password guessing: 20 attempts per IP every 15 minutes. */
+/**
+ * Slows down password guessing: 20 attempts per IP every 15 minutes in production.
+ * Higher in development, where the end-to-end tests log in many times from the same machine.
+ */
 const authAttemptsLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  limit: 20,
+  limit: env.isProduction ? 20 : 500,
   standardHeaders: 'draft-8',
   legacyHeaders: false,
   skip: () => env.isTest,
