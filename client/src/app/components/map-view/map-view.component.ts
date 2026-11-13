@@ -107,7 +107,15 @@ export class MapViewComponent {
     // Leaflet needs a real DOM element with a size: create the map after the first render.
     afterNextRender(() => {
       this.createMap();
-      const resizeObserver = new ResizeObserver(() => this.map?.invalidateSize());
+      // The map can be hidden (phones: "Liste" view) when the places arrive. A hidden map has no
+      // size, so framing the pins then gives a whole-world view: re-frame when it becomes visible.
+      let wasHidden = this.container().nativeElement.offsetWidth === 0;
+      const resizeObserver = new ResizeObserver(([entry]) => {
+        this.map?.invalidateSize();
+        const isHidden = (entry?.contentRect.width ?? 0) === 0;
+        if (wasHidden && !isHidden) this.fitBounds(this.markers());
+        wasHidden = isHidden;
+      });
       resizeObserver.observe(this.container().nativeElement);
       destroyRef.onDestroy(() => {
         resizeObserver.disconnect();
@@ -220,11 +228,16 @@ export class MapViewComponent {
       this.markerById.set(spot.id, marker);
     }
 
-    if (this.fitToMarkers() && markers.length > 0) {
-      const points: L.LatLngExpression[] = markers.map((m) => [m.latitude, m.longitude]);
-      if (this.showReference()) points.push([REFERENCE_POINT.latitude, REFERENCE_POINT.longitude]);
-      this.map?.fitBounds(L.latLngBounds(points).pad(0.12), { maxZoom: 15, animate: false });
-    }
+    this.fitBounds(markers);
+  }
+
+  /** Frames the pins (and the reference point). Skipped while the map is hidden: it has no size. */
+  private fitBounds(markers: MapMarker[]): void {
+    if (!this.map || !this.fitToMarkers() || markers.length === 0) return;
+    if (this.container().nativeElement.offsetWidth === 0) return;
+    const points: L.LatLngExpression[] = markers.map((m) => [m.latitude, m.longitude]);
+    if (this.showReference()) points.push([REFERENCE_POINT.latitude, REFERENCE_POINT.longitude]);
+    this.map.fitBounds(L.latLngBounds(points).pad(0.12), { maxZoom: 15, animate: false });
   }
 
   private renderPickedMarker(position: GeoPoint | null): void {
