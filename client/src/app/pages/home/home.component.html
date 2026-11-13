@@ -1,0 +1,122 @@
+<section class="hero" aria-labelledby="home-title">
+  <div class="container hero__inner">
+    <div class="hero__text">
+      <h1 id="home-title">Trouvez où travailler, maintenant.</h1>
+      <p class="hero__subtitle">Wi-Fi, prises, calme et affluence en direct, signalés par la communauté.</p>
+
+      <form class="search" role="search" aria-label="Chercher un lieu pour travailler" (submit)="search($event)">
+        <div class="search__field">
+          <label class="visually-hidden" for="home-search">Où ? Quartier ou nom d’un lieu</label>
+          <svg lucideSearch class="search__icon" aria-hidden="true"></svg>
+          <input
+            id="home-search"
+            class="search__input"
+            type="search"
+            placeholder="Où ? Quartier, nom d’un lieu…"
+            autocomplete="off"
+            enterkeyhint="search"
+            [formControl]="query"
+          />
+        </div>
+        <button type="submit" class="btn btn--primary search__button">Rechercher</button>
+
+        <div class="quick" role="group" aria-label="Filtres rapides, appliqués à la recherche">
+          @for (filter of quickFilters; track filter.id) {
+            <button
+              type="button"
+              class="chip"
+              [attr.aria-pressed]="selected().has(filter.id)"
+              (click)="toggle(filter.id)"
+            >
+              {{ filter.label }}
+            </button>
+          }
+        </div>
+      </form>
+
+      @if (liveSummary(); as summary) {
+        <p class="live-summary">
+          <span class="live-dot" aria-hidden="true"></span>
+          {{ summary }}
+        </p>
+      }
+    </div>
+
+    <!-- Decorative preview of the map (mockup "Aperçu de la carte"): plain SVG, no map library on the home page. -->
+    <div class="hero__map" aria-hidden="true">
+      <svg viewBox="0 0 440 320" focusable="false">
+        <rect class="m-ground" width="440" height="320" rx="20" />
+        <rect class="m-park" x="264" y="256" width="88" height="42" rx="8" />
+        <path class="m-road" d="M120 0h30v320h-30zM317 0h22v320h-22z" />
+        <path class="m-road" d="M0 86 440 80v28L0 114zM0 217c150-8 290-8 440 4v14C290 224 150 224 0 231z" />
+        <g class="m-pin m-pin--calme" transform="translate(100 98)">
+          <path d="M20 0C9 0 0 8.6 0 19.3 0 33.8 18 50.5 18.8 51.2a1.8 1.8 0 0 0 2.4 0C22 50.5 40 33.8 40 19.3 40 8.6 31 0 20 0Z" />
+          <circle cx="20" cy="19" r="7" />
+        </g>
+        <g class="m-pin m-pin--calme" transform="translate(230 58)">
+          <path d="M20 0C9 0 0 8.6 0 19.3 0 33.8 18 50.5 18.8 51.2a1.8 1.8 0 0 0 2.4 0C22 50.5 40 33.8 40 19.3 40 8.6 31 0 20 0Z" />
+          <circle cx="20" cy="19" r="7" />
+        </g>
+        <g class="m-pin m-pin--sature" transform="translate(350 123)">
+          <path d="M20 0C9 0 0 8.6 0 19.3 0 33.8 18 50.5 18.8 51.2a1.8 1.8 0 0 0 2.4 0C22 50.5 40 33.8 40 19.3 40 8.6 31 0 20 0Z" />
+          <circle cx="20" cy="19" r="7" />
+        </g>
+        <g transform="translate(168 228)">
+          <circle class="m-me-halo" cx="22" cy="22" r="22" />
+          <circle class="m-me" cx="22" cy="22" r="8" />
+        </g>
+      </svg>
+      <span class="map-tag map-tag--calme" style="left: 15%; top: 50%">≈ 30 % · Calme</span>
+      <span class="map-tag map-tag--calme" style="left: 46%; top: 37%">≈ 25 % · Calme</span>
+      <span class="map-tag map-tag--sature" style="left: 70%; top: 58%">≈ 85 % · Saturé</span>
+    </div>
+  </div>
+</section>
+
+<section class="container nearby" aria-labelledby="nearby-title">
+  <div class="section-header">
+    <h2 id="nearby-title">Près de {{ referenceLabel }}</h2>
+    <a class="see-all" routerLink="/explorer">
+      Voir tous les lieux <svg lucideArrowRight aria-hidden="true"></svg>
+    </a>
+  </div>
+
+  @if (spots() === null) {
+    <div class="cards" aria-hidden="true">
+      @for (i of [1, 2, 3]; track i) {
+        <div class="skeleton" style="height: 290px; border-radius: var(--radius-md)"></div>
+      }
+    </div>
+  } @else if (loadFailed()) {
+    <p class="text-secondary" role="alert">
+      Les lieux n’ont pas pu être chargés pour l’instant. <a routerLink="/explorer">Réessayer dans l’Explorer</a>.
+    </p>
+  } @else {
+    <ul class="cards" role="list">
+      @for (spot of nearby(); track spot.id) {
+        <li><app-spot-card [spot]="spot" layout="grid" /></li>
+      }
+    </ul>
+  }
+</section>
+
+<section class="container how" aria-labelledby="how-title">
+  <h2 id="how-title">Comment ça marche</h2>
+  <ol class="steps" role="list">
+    <li class="step">
+      <span class="step__icon"><svg lucideSlidersHorizontal aria-hidden="true"></svg></span>
+      <h3>1. Filtrez</h3>
+      <p>Calme, Wi-Fi rapide, prises, budget, ouvert maintenant : gardez seulement ce qui compte pour vous.</p>
+    </li>
+    <li class="step">
+      <span class="step__icon"><svg lucideClock aria-hidden="true"></svg></span>
+      <h3>2. Vérifiez l’affluence</h3>
+      <p>La jauge indique s’il y a du monde en ce moment, d’après les signalements récents.</p>
+    </li>
+    <li class="step">
+      <span class="step__icon"><svg lucideUsers aria-hidden="true"></svg></span>
+      <h3>3. Signalez « Je suis ici »</h3>
+      <p>Sur place, un geste suffit pour aider les suivants. La jauge se met à jour pour tout le monde.</p>
+    </li>
+  </ol>
+</section>
