@@ -6,10 +6,11 @@
 //
 // Uses the Chrome installed on the machine (PW_CHANNEL=msedge for Edge, PW_CHANNEL= for Playwright's Chromium).
 import { mkdirSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { chromium } from '@playwright/test';
 
 const BASE = process.env.BASE_URL ?? 'http://localhost:4200';
-const OUT = new URL('../docs/screenshots/', import.meta.url);
+const OUT = fileURLToPath(new URL('../docs/screenshots/', import.meta.url));
 const channel = process.env.PW_CHANNEL ?? 'chrome';
 mkdirSync(OUT, { recursive: true });
 
@@ -30,9 +31,11 @@ async function shoot(name, path, viewport, { setup, fullPage = false, login = fa
     await page.request.post(`${BASE}/api/auth/register`, { data: { name: 'Nadia', email, password: 'Motdepasse1' } });
   }
   await page.goto(`${BASE}${path}`, { waitUntil: 'load' });
+  await page.locator('main h1').first().waitFor({ state: 'attached', timeout: 30_000 }); // page rendered
+  await page.waitForLoadState('networkidle');
   await page.waitForTimeout(wait); // map tiles, count-up animation
   if (setup) await setup(page);
-  await page.screenshot({ path: new URL(`${name}.png`, OUT), fullPage });
+  await page.screenshot({ path: `${OUT}${name}.png`, fullPage });
   console.log(`✔ docs/screenshots/${name}.png`);
   await context.close();
 }

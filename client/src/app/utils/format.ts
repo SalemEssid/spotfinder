@@ -4,7 +4,8 @@ const MINUTE = 60_000;
 
 /** 350 → "350 m", 1240 → "1,2 km" (French decimal comma). */
 export function formatDistance(meters: number): string {
-  if (meters < 1000) return `${Math.max(10, Math.round(meters / 10) * 10)} m`;
+  const roundedMeters = Math.max(10, Math.round(meters / 10) * 10);
+  if (roundedMeters < 1000) return `${roundedMeters} m`; // 997 m rounds to 1000: show "1 km" instead
   const km = meters / 1000;
   return `${km.toLocaleString('fr-FR', { maximumFractionDigits: km < 10 ? 1 : 0 })} km`;
 }
