@@ -32,6 +32,32 @@ describe('Reviews API', () => {
     expect(body.error.details.map((d: { field: string }) => d.field)).toEqual(['ratingWifi', 'ratingCalm']);
   });
 
+  it('lets the author edit a review, and marks it as edited', async () => {
+    const id = await seededSpotId('Café des Arts');
+    const author = await newLoggedInUser('Auteur');
+    const created = await author.agent.post(`/api/spots/${id}/reviews`).send(review).expect(201);
+    expect(created.body.updatedAt).toBeNull();
+
+    const edited = await author.agent
+      .put(`/api/reviews/${created.body.id}`)
+      .send({ ...review, ratingCalm: 2, comment: '  Plus bruyant que prévu.  ' })
+      .expect(200);
+    expect(edited.body).toMatchObject({ ratings: { calm: 2, wifi: 4 }, comment: 'Plus bruyant que prévu.' });
+    expect(edited.body.updatedAt).not.toBeNull();
+  });
+
+  it('refuses to edit someone else’s review, an invalid one, or one that does not exist', async () => {
+    const id = await seededSpotId('Café Les Pages');
+    const author = await newLoggedInUser();
+    const created = await author.agent.post(`/api/spots/${id}/reviews`).send(review).expect(201);
+
+    const stranger = await newLoggedInUser();
+    await stranger.agent.put(`/api/reviews/${created.body.id}`).send(review).expect(403);
+    await author.agent.put(`/api/reviews/${created.body.id}`).send({ ...review, ratingPrice: 9 }).expect(400);
+    await author.agent.put('/api/reviews/99999').send(review).expect(404);
+    await request(app).put(`/api/reviews/${created.body.id}`).send(review).expect(401);
+  });
+
   it('lets only the author delete a review', async () => {
     const id = await seededSpotId('Café L’Encrier');
     const author = await newLoggedInUser();
