@@ -37,6 +37,9 @@ function cacheHeaders(res: express.Response, filePath: string): void {
   );
 }
 
+/** In production Express serves the client itself, so the client's origin is the site's origin. */
+const SERVED_OVER_HTTPS = env.CLIENT_ORIGIN.startsWith('https://');
+
 /** Builds the Express app without starting it, so tests can call it with Supertest. */
 export function createApp() {
   const app = express();
@@ -54,6 +57,10 @@ export function createApp() {
             'https://*.tile.openstreetmap.org',
           ],
           'style-src': ["'self'", "'unsafe-inline'"],
+          // helmet adds this by default. Over plain HTTP (npm run preview, a school server) Safari
+          // also applies it to localhost and rewrites our own scripts to https://, which do not
+          // exist: the page stays blank. So we only send it when the site is served over HTTPS.
+          'upgrade-insecure-requests': SERVED_OVER_HTTPS ? [] : null,
         },
       },
     }),
