@@ -177,6 +177,11 @@
   height: 240px;
 }
 
+.mini-map--placeholder {
+  border-radius: var(--radius-lg);
+  background: var(--map-fond);
+}
+
 .review-toggle {
   justify-self: start;
 }

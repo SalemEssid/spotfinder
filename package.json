@@ -25,12 +25,14 @@
     "lint": "npm run lint -w server && npm run lint -w client",
     "build": "npm run build -w client",
     "preview": "npm run db:up && npm run build && npm start -w server",
-    "format": "prettier --write \"server/{src,test}/**/*.ts\" \"client/src/**/*.{ts,html,scss}\""
+    "format": "prettier --write \"server/{src,test}/**/*.ts\" \"client/src/**/*.{ts,html,scss}\"",
+    "lighthouse": "node scripts/lighthouse.mjs"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",
     "@playwright/test": "^1.65.0",
     "concurrently": "^10.0.7",
+    "lighthouse": "^13.6.0",
     "prettier": "^3.8.1"
   }
 }

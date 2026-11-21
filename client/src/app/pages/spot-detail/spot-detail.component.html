@@ -136,15 +136,20 @@
           <section class="section" aria-labelledby="access-title">
             <h2 id="access-title">Accès</h2>
             <p>{{ spot.address }}</p>
-            <app-map-view
-              class="mini-map"
-              [markers]="[spot]"
-              [center]="spot"
-              [zoom]="15"
-              [fitToMarkers]="false"
-              [showReference]="false"
-              [ariaLabel]="'Emplacement de ' + spot.name"
-            />
+            <!-- @defer: the mini map (and Leaflet) is only downloaded when this section scrolls into view. -->
+            @defer (on viewport) {
+              <app-map-view
+                class="mini-map"
+                [markers]="[spot]"
+                [center]="spot"
+                [zoom]="15"
+                [fitToMarkers]="false"
+                [showReference]="false"
+                [ariaLabel]="'Emplacement de ' + spot.name"
+              />
+            } @placeholder {
+              <div class="mini-map mini-map--placeholder" aria-hidden="true"></div>
+            }
             <a class="btn btn--ghost" [href]="directionsUrl()" target="_blank" rel="noopener">
               <svg lucideNavigation aria-hidden="true"></svg> Itinéraire à pied depuis SUP’COM
               <span class="visually-hidden">(ouvre OpenStreetMap dans un nouvel onglet)</span>

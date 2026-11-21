@@ -96,6 +96,12 @@
   border-radius: var(--radius-md);
 }
 
+// Same size and colour as the map, shown until the deferred map arrives (no layout shift).
+.map-placeholder {
+  border-radius: var(--radius-lg);
+  background: var(--map-fond);
+}
+
 .map-preview__close {
   position: absolute;
   top: var(--space-2);

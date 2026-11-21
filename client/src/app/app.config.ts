@@ -38,7 +38,8 @@ export const appConfig: ApplicationConfig = {
     provideRouter(
       routes,
       withComponentInputBinding(), // route params (/lieux/:id) arrive as component inputs
-      ...(isWebKitEngine ? [] : [withViewTransitions()]), // skipped with reduced motion too (CSS)
+      // No cross-fade on the very first page: there is nothing to fade from, and it delays the first paint.
+      ...(isWebKitEngine ? [] : [withViewTransitions({ skipInitialTransition: true })]), // off with reduced motion (CSS)
       withInMemoryScrolling({ scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled' }),
     ),
     provideHttpClient(withFetch(), withInterceptors([sessionExpiredInterceptor])),
