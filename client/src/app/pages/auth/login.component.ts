@@ -10,6 +10,8 @@ import {
   LucideUsers,
 } from '@lucide/angular';
 import { finalize } from 'rxjs';
+import { FORM_FIELD } from '../../components/form-field/form-field.component';
+import { SpinnerComponent } from '../../components/spinner/spinner.component';
 import { SpotIllustrationComponent } from '../../components/spot-illustration/spot-illustration.component';
 import { AuthService } from '../../services/auth.service';
 import { ToastService } from '../../services/toast.service';
@@ -23,6 +25,8 @@ export const DEMO_ACCOUNT = { email: 'demo@spotfinder.tn', password: 'SpotFinder
   selector: 'app-login',
   imports: [
     ReactiveFormsModule,
+    FORM_FIELD,
+    SpinnerComponent,
     RouterLink,
     SpotIllustrationComponent,
     LucideEye,

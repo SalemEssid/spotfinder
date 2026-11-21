@@ -12,49 +12,28 @@
     }
 
     <form class="auth__form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
-      <div class="field">
-        <label for="register-name">Prénom ou pseudo</label>
-        <input
-          id="register-name"
-          class="input"
-          type="text"
-          formControlName="name"
-          autocomplete="nickname"
-          [attr.aria-invalid]="!!fieldError(form.controls.name)"
-        />
-        <p class="field__hint">Affiché avec vos avis.</p>
-        @if (fieldError(form.controls.name); as error) {
-          <p class="field__error">{{ error }}</p>
-        }
-      </div>
+      <app-form-field
+        label="Prénom ou pseudo"
+        controlId="register-name"
+        hint="Affiché avec vos avis."
+        [error]="fieldError(form.controls.name)"
+      >
+        <input appFieldControl class="input" type="text" formControlName="name" autocomplete="nickname" />
+      </app-form-field>
 
-      <div class="field">
-        <label for="register-email">Adresse e-mail</label>
-        <input
-          id="register-email"
-          class="input"
-          type="email"
-          formControlName="email"
-          autocomplete="email"
-          inputmode="email"
-          [attr.aria-invalid]="!!fieldError(form.controls.email)"
-        />
-        @if (fieldError(form.controls.email); as error) {
-          <p class="field__error">{{ error }}</p>
-        }
-      </div>
+      <app-form-field label="Adresse e-mail" controlId="register-email" [error]="fieldError(form.controls.email)">
+        <input appFieldControl class="input" type="email" formControlName="email" autocomplete="email" inputmode="email" />
+      </app-form-field>
 
-      <div class="field">
-        <label for="register-password">Mot de passe</label>
+      <!-- No error text here: the rules list below already says, live, what is missing. -->
+      <app-form-field label="Mot de passe" controlId="register-password" describedBy="password-rules">
         <div class="password">
           <input
-            id="register-password"
+            appFieldControl
             class="input"
             [type]="showPassword() ? 'text' : 'password'"
             formControlName="password"
             autocomplete="new-password"
-            aria-describedby="password-rules"
-            [attr.aria-invalid]="!!fieldError(form.controls.password)"
           />
           <button
             type="button"
@@ -80,24 +59,22 @@
             </li>
           }
         </ul>
-      </div>
+      </app-form-field>
 
-      <div class="field">
-        <label for="register-confirm">Confirmez le mot de passe</label>
+      <app-form-field label="Confirmez le mot de passe" controlId="register-confirm" [error]="confirmError()">
         <input
-          id="register-confirm"
+          appFieldControl
           class="input"
           [type]="showPassword() ? 'text' : 'password'"
           formControlName="confirmPassword"
           autocomplete="new-password"
-          [attr.aria-invalid]="!!confirmError()"
         />
-        @if (confirmError(); as error) {
-          <p class="field__error">{{ error }}</p>
-        }
-      </div>
+      </app-form-field>
 
       <button type="submit" class="btn btn--primary btn--block" [disabled]="submitting()">
+        @if (submitting()) {
+          <app-spinner />
+        }
         {{ submitting() ? 'Création du compte…' : 'Créer mon compte' }}
       </button>
     </form>

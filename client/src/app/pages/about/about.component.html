@@ -75,50 +75,27 @@
       </div>
     } @else {
       <form class="card contact__form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
-        <div class="field">
-          <label for="contact-name">Nom</label>
-          <input
-            id="contact-name"
-            class="input"
-            formControlName="name"
-            autocomplete="name"
-            [attr.aria-invalid]="!!fieldError(form.controls.name)"
-          />
-          @if (fieldError(form.controls.name); as error) {
-            <p class="field__error">{{ error }}</p>
-          }
-        </div>
-        <div class="field">
-          <label for="contact-email">Adresse e-mail</label>
-          <input
-            id="contact-email"
-            class="input"
-            type="email"
-            formControlName="email"
-            autocomplete="email"
-            [attr.aria-invalid]="!!fieldError(form.controls.email)"
-          />
-          @if (fieldError(form.controls.email); as error) {
-            <p class="field__error">{{ error }}</p>
-          }
-        </div>
-        <div class="field">
-          <label for="contact-message">Message</label>
-          <textarea
-            id="contact-message"
-            class="input"
-            formControlName="message"
-            [attr.maxlength]="messageMax"
-            aria-describedby="contact-message-hint"
-            [attr.aria-invalid]="!!fieldError(form.controls.message)"
-          ></textarea>
-          <p id="contact-message-hint" class="field__hint">{{ remaining() }} caractères restants</p>
-          @if (fieldError(form.controls.message, { minlength: 'Votre message doit contenir au moins 10 caractères.' }); as error) {
-            <p class="field__error">{{ error }}</p>
-          }
-        </div>
+        <app-form-field label="Nom" controlId="contact-name" [error]="fieldError(form.controls.name)">
+          <input appFieldControl class="input" formControlName="name" autocomplete="name" />
+        </app-form-field>
+        <app-form-field label="Adresse e-mail" controlId="contact-email" [error]="fieldError(form.controls.email)">
+          <input appFieldControl class="input" type="email" formControlName="email" autocomplete="email" />
+        </app-form-field>
+        <app-form-field
+          label="Message"
+          controlId="contact-message"
+          [hint]="remaining() + ' caractères restants'"
+          [error]="fieldError(form.controls.message, { minlength: 'Votre message doit contenir au moins 10 caractères.' })"
+        >
+          <textarea appFieldControl class="input" formControlName="message" [attr.maxlength]="messageMax"></textarea>
+        </app-form-field>
         <button type="submit" class="btn btn--primary" [disabled]="sending()">
-          <svg lucideSend aria-hidden="true"></svg> {{ sending() ? 'Envoi…' : 'Envoyer' }}
+          @if (sending()) {
+            <app-spinner />
+          } @else {
+            <svg lucideSend aria-hidden="true"></svg>
+          }
+          {{ sending() ? 'Envoi…' : 'Envoyer' }}
         </button>
       </form>
     }

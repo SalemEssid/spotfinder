@@ -20,62 +20,36 @@
       <legend><span class="step" aria-hidden="true">1</span> Le lieu</legend>
 
       <div class="grid-2">
-        <div class="field">
-          <label for="spot-name">Nom du lieu</label>
-          <input id="spot-name" class="input" formControlName="name" [attr.aria-invalid]="!!fieldError(form.controls.name)" />
-          @if (fieldError(form.controls.name); as error) {
-            <p class="field__error">{{ error }}</p>
-          }
-        </div>
+        <app-form-field label="Nom du lieu" controlId="spot-name" [error]="fieldError(form.controls.name)">
+          <input appFieldControl class="input" formControlName="name" />
+        </app-form-field>
 
-        <div class="field">
-          <label for="spot-type">Type</label>
-          <select id="spot-type" class="input" formControlName="type">
+        <app-form-field label="Type" controlId="spot-type">
+          <select appFieldControl class="input" formControlName="type">
             @for (option of typeOptions; track option[0]) {
               <option [value]="option[0]">{{ option[1] }}</option>
             }
           </select>
-        </div>
+        </app-form-field>
 
-        <div class="field">
-          <label for="spot-area">Quartier</label>
-          <input
-            id="spot-area"
-            class="input"
-            formControlName="area"
-            placeholder="Ariana, El Ghazala, Ennasr…"
-            [attr.aria-invalid]="!!fieldError(form.controls.area)"
-          />
-          @if (fieldError(form.controls.area); as error) {
-            <p class="field__error">{{ error }}</p>
-          }
-        </div>
+        <app-form-field label="Quartier" controlId="spot-area" [error]="fieldError(form.controls.area)">
+          <input appFieldControl class="input" formControlName="area" placeholder="Ariana, El Ghazala, Ennasr…" />
+        </app-form-field>
 
-        <div class="field">
-          <label for="spot-address">Adresse</label>
-          <input
-            id="spot-address"
-            class="input"
-            formControlName="address"
-            autocomplete="street-address"
-            [attr.aria-invalid]="!!fieldError(form.controls.address)"
-          />
-          @if (fieldError(form.controls.address); as error) {
-            <p class="field__error">{{ error }}</p>
-          }
-        </div>
+        <app-form-field label="Adresse" controlId="spot-address" [error]="fieldError(form.controls.address)">
+          <input appFieldControl class="input" formControlName="address" autocomplete="street-address" />
+        </app-form-field>
       </div>
 
-      <div class="field">
-        <label for="spot-description">Description <span class="text-secondary">(facultatif)</span></label>
+      <app-form-field label="Description" controlId="spot-description" [optional]="true">
         <textarea
-          id="spot-description"
+          appFieldControl
           class="input"
           formControlName="description"
           maxlength="500"
           placeholder="Ambiance, meilleures tables, bons plans…"
         ></textarea>
-      </div>
+      </app-form-field>
     </fieldset>
 
     <!-- 2. Map ------------------------------------------------------------------------------>
@@ -120,40 +94,37 @@
       <legend><span class="step" aria-hidden="true">3</span> Équipements</legend>
 
       <div class="grid-2">
-        <div class="field">
-          <label for="spot-wifi">Wi-Fi</label>
-          <select id="spot-wifi" class="input" formControlName="wifiSpeed">
+        <app-form-field label="Wi-Fi" controlId="spot-wifi">
+          <select appFieldControl class="input" formControlName="wifiSpeed">
             @for (option of wifiOptions; track option.value) {
               <option [ngValue]="option.value">{{ option.label }}</option>
             }
           </select>
-        </div>
+        </app-form-field>
 
-        <div class="field">
-          <label for="spot-outlets">Nombre de prises accessibles</label>
+        <app-form-field
+          label="Nombre de prises accessibles"
+          controlId="spot-outlets"
+          [error]="fieldError(form.controls.equipment.controls.outletsCount)"
+        >
           <input
-            id="spot-outlets"
+            appFieldControl
             class="input"
             type="number"
             min="0"
             max="500"
             inputmode="numeric"
             formControlName="outletsCount"
-            [attr.aria-invalid]="!!fieldError(form.controls.equipment.controls.outletsCount)"
           />
-          @if (fieldError(form.controls.equipment.controls.outletsCount); as error) {
-            <p class="field__error">{{ error }}</p>
-          }
-        </div>
+        </app-form-field>
 
-        <div class="field">
-          <label for="spot-price">Budget</label>
-          <select id="spot-price" class="input" formControlName="priceLevel">
+        <app-form-field label="Budget" controlId="spot-price">
+          <select appFieldControl class="input" formControlName="priceLevel">
             @for (option of priceOptions; track option.value) {
               <option [ngValue]="option.value">{{ option.label }}</option>
             }
           </select>
-        </div>
+        </app-form-field>
 
         <fieldset class="field radios">
           <legend>Niveau de bruit</legend>
@@ -242,6 +213,9 @@
 
     <div class="submit">
       <button type="submit" class="btn btn--primary" [disabled]="submitting()">
+        @if (submitting()) {
+          <app-spinner />
+        }
         {{ submitting() ? 'Envoi…' : 'Proposer ce lieu' }}
       </button>
       <p class="caption">Merci ! Chaque lieu ajouté aide la communauté.</p>

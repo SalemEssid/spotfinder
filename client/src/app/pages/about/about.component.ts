@@ -4,6 +4,8 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { RouterLink } from '@angular/router';
 import { LucideCircleCheck, LucideClock, LucideSend, LucideShieldCheck, LucideUsers } from '@lucide/angular';
 import { finalize } from 'rxjs';
+import { FORM_FIELD } from '../../components/form-field/form-field.component';
+import { SpinnerComponent } from '../../components/spinner/spinner.component';
 import { AccountService } from '../../services/account.service';
 import { AuthService } from '../../services/auth.service';
 import { ToastService } from '../../services/toast.service';
@@ -14,7 +16,17 @@ const MESSAGE_MAX = 2000;
 
 @Component({
   selector: 'app-about',
-  imports: [ReactiveFormsModule, RouterLink, LucideSend, LucideCircleCheck, LucideUsers, LucideClock, LucideShieldCheck],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    FORM_FIELD,
+    SpinnerComponent,
+    LucideSend,
+    LucideCircleCheck,
+    LucideUsers,
+    LucideClock,
+    LucideShieldCheck,
+  ],
   templateUrl: './about.component.html',
   styleUrl: './about.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

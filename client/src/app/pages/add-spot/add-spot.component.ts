@@ -12,7 +12,9 @@ import {
 import { Router } from '@angular/router';
 import { LucideCircleExclamationPoint, LucideCopy, LucideLocateFixed, LucideMapPin, LucidePlus, LucideX } from '@lucide/angular';
 import { finalize } from 'rxjs';
+import { FORM_FIELD } from '../../components/form-field/form-field.component';
 import { MapViewComponent } from '../../components/map-view/map-view.component';
+import { SpinnerComponent } from '../../components/spinner/spinner.component';
 import type { NewSpot, NoiseLevel, SpotType } from '../../models/spot.model';
 import { SpotService } from '../../services/spot.service';
 import { ToastService } from '../../services/toast.service';
@@ -63,6 +65,8 @@ const WIFI_OPTIONS = [
   imports: [
     ReactiveFormsModule,
     MapViewComponent,
+    FORM_FIELD,
+    SpinnerComponent,
     LucideMapPin,
     LucideLocateFixed,
     LucidePlus,

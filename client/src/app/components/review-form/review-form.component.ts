@@ -3,6 +3,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import type { NewReview } from '../../models/user.model';
 import { fieldError } from '../../utils/form-errors';
+import { FORM_FIELD } from '../form-field/form-field.component';
+import { SpinnerComponent } from '../spinner/spinner.component';
 import { StarRatingComponent } from '../star-rating/star-rating.component';
 
 const COMMENT_MAX = 500;
@@ -10,7 +12,7 @@ const COMMENT_MAX = 500;
 /** "Laisser un avis": one rating per criterion (Wi-Fi, calme, prises, prix) + an optional comment. */
 @Component({
   selector: 'app-review-form',
-  imports: [ReactiveFormsModule, StarRatingComponent],
+  imports: [ReactiveFormsModule, StarRatingComponent, FORM_FIELD, SpinnerComponent],
   template: `
     <form class="review-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
       <div class="review-form__stars">
@@ -23,25 +25,27 @@ const COMMENT_MAX = 500;
         <p class="field__error" role="alert">Donnez une note aux 4 critères.</p>
       }
 
-      <div class="field">
-        <label for="review-comment">Commentaire <span class="text-secondary">(facultatif)</span></label>
+      <app-form-field
+        label="Commentaire"
+        controlId="review-comment"
+        [optional]="true"
+        [hint]="remaining() + ' caractères restants'"
+        [error]="commentError()"
+      >
         <textarea
-          id="review-comment"
+          appFieldControl
           class="input"
           formControlName="comment"
           [attr.maxlength]="commentMax"
-          aria-describedby="review-comment-hint"
           placeholder="Ce qui vous a plu, ce qu’il faut savoir avant d’y aller…"
-          [attr.aria-invalid]="!!commentError()"
         ></textarea>
-        <p id="review-comment-hint" class="field__hint">{{ remaining() }} caractères restants</p>
-        @if (commentError(); as error) {
-          <p class="field__error">{{ error }}</p>
-        }
-      </div>
+      </app-form-field>
 
       <div class="review-form__actions">
         <button type="submit" class="btn btn--primary" [disabled]="submitting()">
+          @if (submitting()) {
+            <app-spinner />
+          }
           {{ submitting() ? 'Envoi…' : submitLabel() }}
         </button>
         <button type="button" class="btn btn--ghost" (click)="cancelled.emit()">Annuler</button>
