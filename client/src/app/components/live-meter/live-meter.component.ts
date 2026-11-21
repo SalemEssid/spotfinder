@@ -62,8 +62,14 @@ export class LiveMeterComponent {
       return `${count} · ${formatRelativeTime(meter.lastReportAt, now)}`;
     }
     if (meter.source === 'habituel') {
-      const weekday = new Intl.DateTimeFormat('fr-FR', { weekday: 'long', timeZone: 'Africa/Tunis' }).format(now);
-      const hour = new Intl.DateTimeFormat('fr-FR', { hour: 'numeric', timeZone: 'Africa/Tunis' }).format(now);
+      const weekday = new Intl.DateTimeFormat('fr-FR', {
+        weekday: 'long',
+        timeZone: 'Africa/Tunis',
+      }).format(now);
+      const hour = new Intl.DateTimeFormat('fr-FR', {
+        hour: 'numeric',
+        timeZone: 'Africa/Tunis',
+      }).format(now);
       return `Estimation habituelle · ${meter.reportCount} signalements passés le ${weekday} vers ${hour}`;
     }
     return 'Soyez le premier à indiquer l’affluence ici.';

@@ -2,7 +2,13 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { LucideArrowRight, LucideClock, LucideSearch, LucideSlidersHorizontal, LucideUsers } from '@lucide/angular';
+import {
+  LucideArrowRight,
+  LucideClock,
+  LucideSearch,
+  LucideSlidersHorizontal,
+  LucideUsers,
+} from '@lucide/angular';
 import { catchError, of } from 'rxjs';
 import { SpotCardComponent } from '../../components/spot-card/spot-card.component';
 import type { SpotSummary } from '../../models/spot.model';
@@ -46,7 +52,9 @@ export class HomeComponent {
 
   protected readonly spots = signal<SpotSummary[] | null>(null);
   protected readonly loadFailed = signal(false);
-  protected readonly nearby = computed(() => (this.spots() ?? []).filter((s) => s.status === 'publie').slice(0, 3));
+  protected readonly nearby = computed(() =>
+    (this.spots() ?? []).filter((s) => s.status === 'publie').slice(0, 3),
+  );
 
   /** "27 signalements ces 2 dernières heures, dans 11 lieux": proof that the data is alive. */
   protected readonly liveSummary = computed(() => {

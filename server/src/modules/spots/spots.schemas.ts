@@ -56,18 +56,30 @@ export const idParamSchema = z.coerce
   .int('Identifiant invalide.')
   .positive('Identifiant invalide.');
 
-const time = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$|^24:00$/, 'Heure invalide (format HH:MM).');
+const time = z
+  .string()
+  .regex(/^([01]\d|2[0-3]):[0-5]\d$|^24:00$/, 'Heure invalide (format HH:MM).');
 
 /** Body of POST /api/spots ("Ajouter un lieu"). */
 export const createSpotSchema = z.object({
-  name: z.string().trim().min(2, 'Le nom doit contenir au moins 2 caractères.').max(80, 'Nom trop long.'),
+  name: z
+    .string()
+    .trim()
+    .min(2, 'Le nom doit contenir au moins 2 caractères.')
+    .max(80, 'Nom trop long.'),
   type: z.enum(SPOT_TYPES, 'Choisissez un type de lieu.'),
   address: z.string().trim().min(5, 'Adresse trop courte.').max(160, 'Adresse trop longue.'),
   area: z.string().trim().min(2, 'Indiquez le quartier.').max(60, 'Quartier trop long.'),
   description: z.string().trim().max(500, '500 caractères maximum.').default(''),
   // Roughly the bounding box of Tunisia: catches a pin dropped in the sea or on another continent.
-  latitude: z.number('Placez le lieu sur la carte.').min(30, 'Le lieu doit être en Tunisie.').max(37.6, 'Le lieu doit être en Tunisie.'),
-  longitude: z.number('Placez le lieu sur la carte.').min(7.5, 'Le lieu doit être en Tunisie.').max(11.7, 'Le lieu doit être en Tunisie.'),
+  latitude: z
+    .number('Placez le lieu sur la carte.')
+    .min(30, 'Le lieu doit être en Tunisie.')
+    .max(37.6, 'Le lieu doit être en Tunisie.'),
+  longitude: z
+    .number('Placez le lieu sur la carte.')
+    .min(7.5, 'Le lieu doit être en Tunisie.')
+    .max(11.7, 'Le lieu doit être en Tunisie.'),
   equipment: z.object({
     wifiSpeed: z.number().int().min(0).max(10_000),
     outletsCount: z.number().int().min(0).max(500),
@@ -90,8 +102,12 @@ export const createSpotSchema = z.object({
 
 export type CreateSpotInput = z.infer<typeof createSpotSchema>;
 
-function noOverlappingSlots(slots: { weekday: number; opensAt: string; closesAt: string }[]): boolean {
-  const sorted = [...slots].sort((a, b) => a.weekday - b.weekday || a.opensAt.localeCompare(b.opensAt));
+function noOverlappingSlots(
+  slots: { weekday: number; opensAt: string; closesAt: string }[],
+): boolean {
+  const sorted = [...slots].sort(
+    (a, b) => a.weekday - b.weekday || a.opensAt.localeCompare(b.opensAt),
+  );
   return sorted.every((slot, i) => {
     const previous = sorted[i - 1];
     return !previous || previous.weekday !== slot.weekday || previous.closesAt <= slot.opensAt;

@@ -19,7 +19,11 @@ import { apiErrorMessage } from '../../utils/api-error';
       <h2 id="favorites-title">Mes favoris</h2>
 
       @if (error()) {
-        <app-empty-state tone="error" title="Vos favoris n’ont pas pu être chargés" [message]="error()!" />
+        <app-empty-state
+          tone="error"
+          title="Vos favoris n’ont pas pu être chargés"
+          [message]="error()!"
+        />
       } @else if (favorites(); as list) {
         @if (list.length === 0) {
           <app-empty-state
@@ -29,7 +33,9 @@ import { apiErrorMessage } from '../../utils/api-error';
             <a class="btn btn--primary" routerLink="/explorer">Explorer les lieux</a>
           </app-empty-state>
         } @else {
-          <p class="text-secondary">Leur affluence en ce moment, pour choisir où aller sans chercher.</p>
+          <p class="text-secondary">
+            Leur affluence en ce moment, pour choisir où aller sans chercher.
+          </p>
           <ul class="grid" role="list">
             @for (spot of list; track spot.id) {
               <li class="grid__item">

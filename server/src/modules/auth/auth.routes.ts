@@ -20,7 +20,13 @@ const authAttemptsLimiter = rateLimit({
   legacyHeaders: false,
   skip: () => env.isTest,
   handler: (_req, _res, next) =>
-    next(new HttpError(429, 'TOO_MANY_ATTEMPTS', 'Trop de tentatives. Réessayez dans quelques minutes.')),
+    next(
+      new HttpError(
+        429,
+        'TOO_MANY_ATTEMPTS',
+        'Trop de tentatives. Réessayez dans quelques minutes.',
+      ),
+    ),
 });
 
 /** The user as sent to the browser: never the password hash. */

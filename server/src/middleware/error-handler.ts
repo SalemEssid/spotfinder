@@ -38,7 +38,9 @@ export const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
 
   // Malformed JSON body (thrown by express.json()).
   if (isBodyParserError(error)) {
-    res.status(400).json({ error: { code: 'INVALID_JSON', message: 'Le corps de la requête est invalide.' } });
+    res
+      .status(400)
+      .json({ error: { code: 'INVALID_JSON', message: 'Le corps de la requête est invalide.' } });
     return;
   }
 
@@ -49,13 +51,22 @@ export const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
   }
 
   console.error(error);
-  res.status(500).json({ error: { code: 'INTERNAL_ERROR', message: 'Une erreur inattendue est survenue.' } });
+  res
+    .status(500)
+    .json({ error: { code: 'INTERNAL_ERROR', message: 'Une erreur inattendue est survenue.' } });
 };
 
 function isBodyParserError(error: unknown): boolean {
-  return typeof error === 'object' && error !== null && 'type' in error && error.type === 'entity.parse.failed';
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'type' in error &&
+    error.type === 'entity.parse.failed'
+  );
 }
 
 function isPgError(error: unknown): error is { code: string } {
-  return typeof error === 'object' && error !== null && 'code' in error && typeof error.code === 'string';
+  return (
+    typeof error === 'object' && error !== null && 'code' in error && typeof error.code === 'string'
+  );
 }

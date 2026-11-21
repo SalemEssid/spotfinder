@@ -55,12 +55,23 @@ export const SPOT_TYPE_LABELS: Record<SpotType, string> = {
 };
 
 /** Monday first, as on a French calendar. Index = JS weekday (0 = Sunday). */
-export const WEEKDAY_LABELS = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+export const WEEKDAY_LABELS = [
+  'Dimanche',
+  'Lundi',
+  'Mardi',
+  'Mercredi',
+  'Jeudi',
+  'Vendredi',
+  'Samedi',
+];
 export const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0];
 
 /** Weekday (0 = Sunday) of `date` on a Tunis wall clock, whatever the visitor's time zone. */
 export function tunisWeekday(date: Date): number {
-  const name = new Intl.DateTimeFormat('en-US', { weekday: 'short', timeZone: 'Africa/Tunis' }).format(date);
+  const name = new Intl.DateTimeFormat('en-US', {
+    weekday: 'short',
+    timeZone: 'Africa/Tunis',
+  }).format(date);
   return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(name);
 }
 

@@ -1,7 +1,12 @@
 import type pg from 'pg';
 import { pool, type Queryable } from '../../db/pool';
 import { BUSINESS_TIME_ZONE } from '../../live-meter/live-meter.constants';
-import { buildSpotFilterSql, type NoiseLevel, type SpotFilters, type SpotType } from './spot-filters';
+import {
+  buildSpotFilterSql,
+  type NoiseLevel,
+  type SpotFilters,
+  type SpotType,
+} from './spot-filters';
 import type { CreateSpotInput } from './spots.schemas';
 
 /** A spot row as read from the database (snake_case), joined with equipment and ratings. */
@@ -93,18 +98,18 @@ export async function findOpeningHours(spotId: number): Promise<OpeningHoursRow[
 }
 
 export async function isFavorite(userId: number, spotId: number): Promise<boolean> {
-  const { rowCount } = await pool.query('SELECT 1 FROM favorites WHERE user_id = $1 AND spot_id = $2', [
-    userId,
-    spotId,
-  ]);
+  const { rowCount } = await pool.query(
+    'SELECT 1 FROM favorites WHERE user_id = $1 AND spot_id = $2',
+    [userId, spotId],
+  );
   return rowCount === 1;
 }
 
 export async function hasReviewed(userId: number, spotId: number): Promise<boolean> {
-  const { rowCount } = await pool.query('SELECT 1 FROM reviews WHERE user_id = $1 AND spot_id = $2', [
-    userId,
-    spotId,
-  ]);
+  const { rowCount } = await pool.query(
+    'SELECT 1 FROM reviews WHERE user_id = $1 AND spot_id = $2',
+    [userId, spotId],
+  );
   return rowCount === 1;
 }
 
@@ -117,7 +122,16 @@ export async function insertSpot(
   const { rows } = await client.query<{ id: number }>(
     `INSERT INTO spots (name, type, address, area, latitude, longitude, description, status, created_by)
      VALUES ($1, $2, $3, $4, $5, $6, $7, 'a_verifier', $8) RETURNING id`,
-    [input.name, input.type, input.address, input.area, input.latitude, input.longitude, input.description, createdBy],
+    [
+      input.name,
+      input.type,
+      input.address,
+      input.area,
+      input.latitude,
+      input.longitude,
+      input.description,
+      createdBy,
+    ],
   );
   const spotId = rows[0]!.id;
   const e = input.equipment;

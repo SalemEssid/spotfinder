@@ -8,7 +8,15 @@ import { initials } from '../../utils/format';
 /** "Espace membre": a header with the member, three tabs, and the selected tab below. */
 @Component({
   selector: 'app-account',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, DatePipe, LucideUser, LucideHeart, LucideMessageSquare],
+  imports: [
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    DatePipe,
+    LucideUser,
+    LucideHeart,
+    LucideMessageSquare,
+  ],
   template: `
     <div class="container page account">
       @if (auth.user(); as user) {

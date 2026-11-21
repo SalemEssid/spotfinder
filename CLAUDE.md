@@ -4,6 +4,7 @@ Student project (SUP'COM, Projet Web · Objectif 3). **`descProjt.md` is the sou
 priorities and the Live Meter spec. If it conflicts with this file, the brief wins. Ask before deviating.
 
 ## Commands (Node 24, see `.nvmrc`)
+
 ```
 npm install           install both workspaces
 npm run dev           start PostgreSQL (Docker) + API (:3000) + Angular (:4200), migrate & seed if empty
@@ -18,12 +19,14 @@ npm run screenshots   regenerate docs/screenshots (BASE_URL=http://localhost:300
 ```
 
 Gotchas learned the hard way:
+
 - The production CSP (`script-src 'self'`) forbids inline scripts: keep `inlineCritical: false` in angular.json.
 - A Leaflet map created while hidden has no size: `MapViewComponent` re-frames when it becomes visible.
 - View transitions are disabled on WebKit (crashed in Playwright's WebKit); see `app.config.ts`.
 - e2e tests write to the dev database: run `npm run db:reset` afterwards.
 
 ## Dev proxy: why the browser only talks to localhost:4200
+
 `client/proxy.conf.json` forwards every `/api/*` request from the Angular dev server (4200) to Express (3000).
 For the browser everything is **same-origin**, so the httpOnly session cookie is sent automatically and no
 cross-origin setup is needed (no `withCredentials`, no CORS preflight). The API still restricts CORS to
@@ -31,10 +34,12 @@ cross-origin setup is needed (no `withCredentials`, no CORS preflight). The API 
 Angular app itself (`client/dist`), which is same-origin too.
 
 ## Languages
+
 - **UI text: French** (friendly, short). Code, identifiers, comments, commits: **English**.
 - URL paths and query params are French because users see them: `/explorer?bruit=silencieux&wifi=1`.
 
 ## Repository layout
+
 ```
 /                     npm workspaces root (scripts: dev, test, lint, db:reset)
 ├── client/           Angular app (standalone components, SCSS)
@@ -61,6 +66,7 @@ Angular app itself (`client/dist`), which is same-origin too.
 ```
 
 ## Frontend rules (Angular)
+
 - Standalone components, `ChangeDetectionStrategy.OnPush`, `inject()` for DI.
 - Keep the `Component` suffix and `.component.ts` file names (the teacher already saw `HeaderComponent` etc.).
   Configure the CLI schematics so generated files follow this.
@@ -72,6 +78,7 @@ Angular app itself (`client/dist`), which is same-origin too.
 - Leaflet is used directly through `MapViewComponent` (no wrapper lib) and only in lazy routes.
 
 ## Styling
+
 - All colours, radii, spacing and font sizes come from `styles/_tokens.scss` (CSS custom properties).
   **No hard-coded hex values in components.**
 - Fonts: Space Grotesk (headings), DM Sans (body/buttons). Sizes 40 / 24 / 16 / 14. **Never below 14px.**
@@ -80,11 +87,13 @@ Angular app itself (`client/dist`), which is same-origin too.
 - Icons: Lucide, linear and rounded. Images: own SVG illustrations only, never hotlinked photos.
 
 ## Accessibility (checked on every PR)
+
 - Landmarks `header` / `nav` / `main` / `footer`; one `h1` per page; labels on every field.
 - Visible focus styles. Everything keyboard-reachable. Contrast ≥ 4.5:1.
 - The list is always an alternative to the map. Respect `prefers-reduced-motion` for all animations.
 
 ## Backend rules (Express + PostgreSQL)
+
 - Layers: **routes** (HTTP + validation) → **service** (business rules) → **repository** (SQL only).
 - **Raw parameterised SQL with `pg`** (`$1, $2`), never string concatenation. DB is `snake_case`, JSON/TS is `camelCase`,
   and the repository maps between them.
@@ -92,7 +101,13 @@ Angular app itself (`client/dist`), which is same-origin too.
 - All routes under `/api`, plural resource names. Status codes: 200, 201, 204, 400, 401, 403, 404, 409, 429, 500.
 - Error format (messages in French, shown to users):
   ```json
-  { "error": { "code": "VALIDATION_ERROR", "message": "Certains champs sont invalides.", "details": [{ "field": "email", "message": "Adresse e-mail invalide." }] } }
+  {
+    "error": {
+      "code": "VALIDATION_ERROR",
+      "message": "Certains champs sont invalides.",
+      "details": [{ "field": "email", "message": "Adresse e-mail invalide." }]
+    }
+  }
   ```
 - Auth: JWT in an **httpOnly, SameSite=Lax cookie** (7 days). Passwords hashed with bcrypt (cost 10). `GET /api/auth/me`
   answers `200 { user: null }` when logged out (a 401 would pollute the console on every visit).
@@ -100,6 +115,7 @@ Angular app itself (`client/dist`), which is same-origin too.
 - No secrets in Git: `.env` is ignored and `.env.example` is committed.
 
 ## Live Meter
+
 - `server/src/live-meter/compute-occupancy.ts` exports the pure function `computeOccupancy(reports, now)`.
   No DB access, no `Date.now()` inside. `now` is always passed in so tests are deterministic.
 - Constants (decay time constant τ = 30 min, window 2 h, levels 25/55/85, thresholds 40/70, rate limit 15 min)
@@ -107,18 +123,21 @@ Angular app itself (`client/dist`), which is same-origin too.
 - The 14:00/14:30/14:50 → ≈ 47 % example from the brief is a required unit test.
 
 ## Tests
+
 - Runner: **Vitest** on both sides (Supertest for API routes).
 - Required at minimum: `computeOccupancy`, filter logic, one route per resource, `SpotCardComponent`,
   `LiveMeterComponent`, `FilterBarComponent`.
 - `npm test` and `npm run lint` must pass before merging to `main`.
 
 ## Git workflow
+
 - `main` always runs. One branch per phase/feature: `feat/explorer`, `feat/live-meter`, `fix/…`, `docs/…`.
 - Small commits, Conventional Commits in English: `feat(explorer): sync card hover with map pin`.
 - Merge with `--no-ff` so each feature stays visible in history.
 - AI-assisted commits carry a `Co-Authored-By: Claude` trailer (part of documenting AI use).
 
 ## Working agreement (phases from the brief, section 9)
+
 - Work phase by phase. At the end of each phase: stop, summarise in 5–10 lines, list manual tests, wait for go-ahead.
 - Build P1 first, then P2. P3 extras only once P1 and P2 are solid.
 - After each phase, append to `docs/ai-log.md`: what Claude did, what the team did or decided.

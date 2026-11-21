@@ -1,7 +1,11 @@
 import { withTransaction } from '../../db/pool';
 import { notFound } from '../../utils/http-error';
 import { distanceInMeters, type Coordinates } from '../../utils/geo';
-import { getLiveMeters, getNextReportAllowedAt, type LiveMeterDto } from '../live-reports/live-meter.service';
+import {
+  getLiveMeters,
+  getNextReportAllowedAt,
+  type LiveMeterDto,
+} from '../live-reports/live-meter.service';
 import type { SpotFilters } from './spot-filters';
 import {
   findOpeningHours,
@@ -34,7 +38,13 @@ export interface SpotSummaryDto {
   openNow: boolean;
   /** "HH:MM" end of the current opening slot, null when closed. */
   closesAt: string | null;
-  ratings: { wifi: number | null; calm: number | null; outlets: number | null; price: number | null; count: number };
+  ratings: {
+    wifi: number | null;
+    calm: number | null;
+    outlets: number | null;
+    price: number | null;
+    count: number;
+  };
   liveMeter: LiveMeterDto;
   /** From the reference point given in ?lat&lng, null otherwise. */
   distanceMeters: number | null;
@@ -55,7 +65,11 @@ export interface SpotDetailDto extends SpotSummaryDto {
 const hhmm = (time: string) => time.slice(0, 5);
 const roundRating = (value: number | null) => (value === null ? null : Math.round(value * 10) / 10);
 
-function toSummary(row: SpotRow, liveMeter: LiveMeterDto, origin: Coordinates | null): SpotSummaryDto {
+function toSummary(
+  row: SpotRow,
+  liveMeter: LiveMeterDto,
+  origin: Coordinates | null,
+): SpotSummaryDto {
   return {
     id: row.id,
     name: row.name,
@@ -123,14 +137,22 @@ export async function getSpotDetail(
     ...toSummary(row, meters.get(id)!, origin),
     description: row.description,
     createdAt: row.created_at.toISOString(),
-    openingHours: hours.map((h) => ({ weekday: h.weekday, opensAt: hhmm(h.opens_at), closesAt: hhmm(h.closes_at) })),
+    openingHours: hours.map((h) => ({
+      weekday: h.weekday,
+      opensAt: hhmm(h.opens_at),
+      closesAt: hhmm(h.closes_at),
+    })),
     isFavorite: favorite,
     hasReviewed: reviewed,
     nextReportAllowedAt: nextReport?.toISOString() ?? null,
   };
 }
 
-export async function createSpot(input: CreateSpotInput, userId: number, now: Date): Promise<SpotDetailDto> {
+export async function createSpot(
+  input: CreateSpotInput,
+  userId: number,
+  now: Date,
+): Promise<SpotDetailDto> {
   const spotId = await withTransaction((client) => insertSpot(client, input, userId));
   return getSpotDetail(spotId, userId, null, now);
 }

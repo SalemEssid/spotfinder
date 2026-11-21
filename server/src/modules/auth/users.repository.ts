@@ -38,7 +38,11 @@ export async function findUserWithHashByEmail(
   return rows[0] ? { user: toUser(rows[0]), passwordHash: rows[0].password_hash } : null;
 }
 
-export async function insertUser(input: { name: string; email: string; passwordHash: string }): Promise<User> {
+export async function insertUser(input: {
+  name: string;
+  email: string;
+  passwordHash: string;
+}): Promise<User> {
   const { rows } = await pool.query<UserRow>(
     'INSERT INTO users (name, email, password_hash) VALUES ($1, $2, $3) RETURNING *',
     [input.name, input.email, input.passwordHash],
@@ -47,7 +51,10 @@ export async function insertUser(input: { name: string; email: string; passwordH
 }
 
 export async function updateUserName(id: number, name: string): Promise<User | null> {
-  const { rows } = await pool.query<UserRow>('UPDATE users SET name = $2 WHERE id = $1 RETURNING *', [id, name]);
+  const { rows } = await pool.query<UserRow>(
+    'UPDATE users SET name = $2 WHERE id = $1 RETURNING *',
+    [id, name],
+  );
   return rows[0] ? toUser(rows[0]) : null;
 }
 

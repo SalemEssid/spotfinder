@@ -34,7 +34,10 @@ import type { SpotType } from '../../models/spot.model';
           <rect class="ink" x="34" y="36" width="30" height="18" rx="3" />
           <rect class="ink" x="30" y="53" width="38" height="4" rx="2" />
           <rect class="ink-soft" x="76" y="47" width="10" height="10" rx="2" />
-          <path class="leaf" d="M81 47c-6-4-6-11-2-14 2 5 3 9 2 14zm0 0c4-6 9-7 11-4-4 3-7 4-11 4z" />
+          <path
+            class="leaf"
+            d="M81 47c-6-4-6-11-2-14 2 5 3 9 2 14zm0 0c4-6 9-7 11-4-4 3-7 4-11 4z"
+          />
         }
         @default {
           <!-- café and others: laptop + cup -->

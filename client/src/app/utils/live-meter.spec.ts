@@ -20,24 +20,42 @@ describe('crowdBadgeText', () => {
   });
 
   it('says it is the usual level when there is no recent report', () => {
-    expect(crowdBadgeText(makeMeter({ source: 'habituel', occupancy: 28, level: 'calme' }))).toBe('Habituel · Calme');
+    expect(crowdBadgeText(makeMeter({ source: 'habituel', occupancy: 28, level: 'calme' }))).toBe(
+      'Habituel · Calme',
+    );
   });
 
   it('says so when there is no data at all', () => {
-    expect(crowdBadgeText(makeMeter({ source: 'aucun', occupancy: null, level: null }))).toBe('Pas de signalement');
+    expect(crowdBadgeText(makeMeter({ source: 'aucun', occupancy: null, level: null }))).toBe(
+      'Pas de signalement',
+    );
   });
 });
 
 describe('applyOptimisticReport', () => {
   it('with no live data, the new report is the whole estimate', () => {
-    const meter = applyOptimisticReport(makeMeter({ source: 'habituel', occupancy: 30, totalWeight: 0 }), 85, NOW);
-    expect(meter).toMatchObject({ source: 'live', occupancy: 85, level: 'sature', reportCount: 1, totalWeight: 1 });
+    const meter = applyOptimisticReport(
+      makeMeter({ source: 'habituel', occupancy: 30, totalWeight: 0 }),
+      85,
+      NOW,
+    );
+    expect(meter).toMatchObject({
+      source: 'live',
+      occupancy: 85,
+      level: 'sature',
+      reportCount: 1,
+      totalWeight: 1,
+    });
     expect(meter.lastReportAt).toBe(NOW.toISOString());
   });
 
   it('blends the new report (weight 1) with the current estimate (weight Σw)', () => {
     // (47 × 1.22 + 85 × 1) / 2.22 ≈ 64
-    const meter = applyOptimisticReport(makeMeter({ occupancy: 47, level: 'modere', totalWeight: 1.22, reportCount: 3 }), 85, NOW);
+    const meter = applyOptimisticReport(
+      makeMeter({ occupancy: 47, level: 'modere', totalWeight: 1.22, reportCount: 3 }),
+      85,
+      NOW,
+    );
     expect(meter.occupancy).toBe(64);
     expect(meter.reportCount).toBe(4);
     expect(meter.totalWeight).toBeCloseTo(2.22);

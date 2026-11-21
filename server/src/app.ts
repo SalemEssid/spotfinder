@@ -47,7 +47,12 @@ export function createApp() {
       // ('unsafe-inline' styles: Angular and Leaflet set inline style attributes.)
       contentSecurityPolicy: {
         directives: {
-          'img-src': ["'self'", 'data:', 'https://tile.openstreetmap.org', 'https://*.tile.openstreetmap.org'],
+          'img-src': [
+            "'self'",
+            'data:',
+            'https://tile.openstreetmap.org',
+            'https://*.tile.openstreetmap.org',
+          ],
           'style-src': ["'self'", "'unsafe-inline'"],
         },
       },
@@ -82,7 +87,9 @@ export function createApp() {
     app.use(express.static(CLIENT_DIST, { index: false, setHeaders: cacheHeaders }));
     // Angular routes (/explorer, /lieux/3…) all serve index.html; the client router takes over.
     app.get('/{*path}', (_req, res) =>
-      res.sendFile(path.join(CLIENT_DIST, 'index.html'), { headers: { 'Cache-Control': 'no-cache' } }),
+      res.sendFile(path.join(CLIENT_DIST, 'index.html'), {
+        headers: { 'Cache-Control': 'no-cache' },
+      }),
     );
   }
 

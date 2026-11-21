@@ -7,7 +7,10 @@ import { SpotIllustrationComponent } from '../spot-illustration/spot-illustratio
   imports: [SpotIllustrationComponent],
   template: `
     <div class="empty" [class.empty--error]="tone() === 'error'">
-      <app-spot-illustration class="empty__illustration" [type]="tone() === 'error' ? 'autre' : 'bibliotheque'" />
+      <app-spot-illustration
+        class="empty__illustration"
+        [type]="tone() === 'error' ? 'autre' : 'bibliotheque'"
+      />
       <h2 class="empty__title">{{ title() }}</h2>
       @if (message()) {
         <p class="empty__message">{{ message() }}</p>

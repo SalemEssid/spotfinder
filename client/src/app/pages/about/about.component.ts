@@ -2,7 +2,13 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { LucideCircleCheck, LucideClock, LucideSend, LucideShieldCheck, LucideUsers } from '@lucide/angular';
+import {
+  LucideCircleCheck,
+  LucideClock,
+  LucideSend,
+  LucideShieldCheck,
+  LucideUsers,
+} from '@lucide/angular';
 import { finalize } from 'rxjs';
 import { FORM_FIELD } from '../../components/form-field/form-field.component';
 import { SpinnerComponent } from '../../components/spinner/spinner.component';
@@ -49,7 +55,11 @@ export class AboutComponent {
     }),
     message: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required, Validators.minLength(10), Validators.maxLength(MESSAGE_MAX)],
+      validators: [
+        Validators.required,
+        Validators.minLength(10),
+        Validators.maxLength(MESSAGE_MAX),
+      ],
     }),
   });
   protected readonly fieldError = fieldError;
@@ -57,7 +67,9 @@ export class AboutComponent {
   /** After sending, the form is replaced by a thank-you message with the sender's name. */
   protected readonly sentBy = signal<string | null>(null);
 
-  private readonly message = toSignal(this.form.controls.message.valueChanges, { initialValue: '' });
+  private readonly message = toSignal(this.form.controls.message.valueChanges, {
+    initialValue: '',
+  });
   protected readonly remaining = computed(() => MESSAGE_MAX - this.message().length);
 
   protected submit(): void {
@@ -66,7 +78,11 @@ export class AboutComponent {
     this.sending.set(true);
     const value = this.form.getRawValue();
     this.account
-      .sendContactMessage({ name: value.name.trim(), email: value.email.trim(), message: value.message.trim() })
+      .sendContactMessage({
+        name: value.name.trim(),
+        email: value.email.trim(),
+        message: value.message.trim(),
+      })
       .pipe(finalize(() => this.sending.set(false)))
       .subscribe({
         next: () => {

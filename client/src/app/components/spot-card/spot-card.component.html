@@ -24,7 +24,9 @@
     <ul class="spot-card__badges" role="list" aria-label="Affluence et équipements">
       <li><app-crowd-badge [meter]="spot().liveMeter" /></li>
       @for (badge of badges(); track badge) {
-        <li><span class="badge">{{ badge }}</span></li>
+        <li>
+          <span class="badge">{{ badge }}</span>
+        </li>
       }
       @if (spot().status === 'a_verifier') {
         <li>

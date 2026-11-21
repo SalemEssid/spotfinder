@@ -20,15 +20,29 @@ const PHONE = { width: 390, height: 844 };
 
 const browser = await chromium.launch(channel ? { channel } : {});
 
-async function shoot(name, path, viewport, { setup, fullPage = false, login = false, wait = 1500 } = {}) {
-  const context = await browser.newContext({ viewport, deviceScaleFactor: 1, locale: 'fr-FR', timezoneId: 'Africa/Tunis' });
+async function shoot(
+  name,
+  path,
+  viewport,
+  { setup, fullPage = false, login = false, wait = 1500 } = {},
+) {
+  const context = await browser.newContext({
+    viewport,
+    deviceScaleFactor: 1,
+    locale: 'fr-FR',
+    timezoneId: 'Africa/Tunis',
+  });
   const page = await context.newPage();
   if (login === 'demo') {
-    await page.request.post(`${BASE}/api/auth/login`, { data: { email: 'demo@spotfinder.tn', password: 'SpotFinder2026' } });
+    await page.request.post(`${BASE}/api/auth/login`, {
+      data: { email: 'demo@spotfinder.tn', password: 'SpotFinder2026' },
+    });
   } else if (login === 'fresh') {
     // A new account, so "Je suis ici" is never blocked by the 15-minute rule.
     const email = `capture-${Date.now()}@example.tn`;
-    await page.request.post(`${BASE}/api/auth/register`, { data: { name: 'Nadia', email, password: 'Motdepasse1' } });
+    await page.request.post(`${BASE}/api/auth/register`, {
+      data: { name: 'Nadia', email, password: 'Motdepasse1' },
+    });
   }
   await page.goto(`${BASE}${path}`, { waitUntil: 'load' });
   await page.locator('main h1').first().waitFor({ state: 'attached', timeout: 30_000 }); // page rendered

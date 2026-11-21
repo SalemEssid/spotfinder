@@ -70,7 +70,10 @@ try {
       };
       // Audits that lost points, to know what to fix.
       const failing = Object.values(result.lhr.audits)
-        .filter((audit) => audit.score !== null && audit.score < 0.9 && audit.scoreDisplayMode !== 'informative')
+        .filter(
+          (audit) =>
+            audit.score !== null && audit.score < 0.9 && audit.scoreDisplayMode !== 'informative',
+        )
         .map((audit) => `${audit.id} (${Math.round(audit.score * 100)})`);
       summary.push({ page: page.path, formFactor, scores, metrics, failing });
       console.log(
@@ -84,5 +87,8 @@ try {
   await chrome.kill();
 }
 
-writeFileSync(`${OUT}summary.json`, JSON.stringify({ date: new Date().toISOString(), base: BASE, results: summary }, null, 2));
+writeFileSync(
+  `${OUT}summary.json`,
+  JSON.stringify({ date: new Date().toISOString(), base: BASE, results: summary }, null, 2),
+);
 console.log(`\nReports written to docs/lighthouse/`);

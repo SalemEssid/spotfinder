@@ -2,7 +2,9 @@
   <section class="auth__card" aria-labelledby="login-title">
     <header class="auth__header">
       <h1 id="login-title">Connexion</h1>
-      <p class="text-secondary">Pour signaler l’affluence, garder vos favoris et laisser des avis.</p>
+      <p class="text-secondary">
+        Pour signaler l’affluence, garder vos favoris et laisser des avis.
+      </p>
     </header>
 
     @if (serverError(); as error) {
@@ -12,11 +14,26 @@
     }
 
     <form class="auth__form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
-      <app-form-field label="Adresse e-mail" controlId="login-email" [error]="fieldError(form.controls.email)">
-        <input appFieldControl class="input" type="email" formControlName="email" autocomplete="email" inputmode="email" />
+      <app-form-field
+        label="Adresse e-mail"
+        controlId="login-email"
+        [error]="fieldError(form.controls.email)"
+      >
+        <input
+          appFieldControl
+          class="input"
+          type="email"
+          formControlName="email"
+          autocomplete="email"
+          inputmode="email"
+        />
       </app-form-field>
 
-      <app-form-field label="Mot de passe" controlId="login-password" [error]="fieldError(form.controls.password)">
+      <app-form-field
+        label="Mot de passe"
+        controlId="login-password"
+        [error]="fieldError(form.controls.password)"
+      >
         <div class="password">
           <input
             appFieldControl
@@ -53,7 +70,9 @@
       <p>
         Compte de démonstration : <code>{{ demo.email }}</code> / <code>{{ demo.password }}</code>
       </p>
-      <button type="button" class="btn btn--secondary" (click)="fillDemo()">Remplir avec le compte démo</button>
+      <button type="button" class="btn btn--secondary" (click)="fillDemo()">
+        Remplir avec le compte démo
+      </button>
     </div>
 
     <p class="auth__switch">
@@ -66,9 +85,14 @@
     <app-spot-illustration class="auth__illustration" type="coworking" />
     <h2>Un compte, trois super-pouvoirs</h2>
     <ul>
-      <li><svg lucideUsers aria-hidden="true"></svg>Signaler l’affluence en un geste avec « Je suis ici ».</li>
+      <li>
+        <svg lucideUsers aria-hidden="true"></svg>Signaler l’affluence en un geste avec « Je suis
+        ici ».
+      </li>
       <li><svg lucideHeart aria-hidden="true"></svg>Retrouver vos lieux favoris en deux clics.</li>
-      <li><svg lucideMapPinPlus aria-hidden="true"></svg>Proposer les bons coins que vous connaissez.</li>
+      <li>
+        <svg lucideMapPinPlus aria-hidden="true"></svg>Proposer les bons coins que vous connaissez.
+      </li>
     </ul>
   </aside>
 </div>

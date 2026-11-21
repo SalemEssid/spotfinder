@@ -50,7 +50,10 @@ export class LoginComponent {
 
   protected readonly demo = DEMO_ACCOUNT;
   protected readonly form = new FormGroup({
-    email: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.email] }),
+    email: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.email],
+    }),
     password: new FormControl('', { nonNullable: true, validators: Validators.required }),
   });
   protected readonly showPassword = signal(false);
@@ -78,7 +81,8 @@ export class LoginComponent {
           this.toast.success(`Bonjour ${user.name} !`);
           void this.router.navigateByUrl(safeRedirect(this.redirect()));
         },
-        error: (error: unknown) => this.serverError.set(apiErrorMessage(error, 'Connexion impossible. Réessayez.')),
+        error: (error: unknown) =>
+          this.serverError.set(apiErrorMessage(error, 'Connexion impossible. Réessayez.')),
       });
   }
 }

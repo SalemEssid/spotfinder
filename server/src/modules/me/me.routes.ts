@@ -35,7 +35,9 @@ meRouter.patch('/', async (req, res) => {
 meRouter.get('/favorites', async (req, res) => {
   const origin = z
     .object({ lat: z.coerce.number().optional(), lng: z.coerce.number().optional() })
-    .transform(({ lat, lng }) => (lat !== undefined && lng !== undefined ? { latitude: lat, longitude: lng } : null))
+    .transform(({ lat, lng }) =>
+      lat !== undefined && lng !== undefined ? { latitude: lat, longitude: lng } : null,
+    )
     .parse(req.query);
   res.json(await listSpots({ favoriteOfUserId: currentUser(req).id }, origin, new Date()));
 });

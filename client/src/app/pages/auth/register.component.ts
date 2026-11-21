@@ -2,7 +2,12 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, signal } f
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { LucideCheck, LucideCircleExclamationPoint, LucideEye, LucideEyeOff } from '@lucide/angular';
+import {
+  LucideCheck,
+  LucideCircleExclamationPoint,
+  LucideEye,
+  LucideEyeOff,
+} from '@lucide/angular';
 import { finalize } from 'rxjs';
 import { FORM_FIELD } from '../../components/form-field/form-field.component';
 import { SpinnerComponent } from '../../components/spinner/spinner.component';
@@ -46,8 +51,14 @@ export class RegisterComponent {
         nonNullable: true,
         validators: [Validators.required, Validators.minLength(2), Validators.maxLength(60)],
       }),
-      email: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.email] }),
-      password: new FormControl('', { nonNullable: true, validators: [Validators.required, passwordValidator] }),
+      email: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required, Validators.email],
+      }),
+      password: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required, passwordValidator],
+      }),
       confirmPassword: new FormControl('', { nonNullable: true, validators: Validators.required }),
     },
     { validators: passwordsMatchValidator },
@@ -57,7 +68,9 @@ export class RegisterComponent {
   protected readonly serverError = signal<string | null>(null);
   protected readonly fieldError = fieldError;
 
-  private readonly password = toSignal(this.form.controls.password.valueChanges, { initialValue: '' });
+  private readonly password = toSignal(this.form.controls.password.valueChanges, {
+    initialValue: '',
+  });
   /** Live checklist under the password field: each rule turns green when met. */
   protected readonly rules = computed(() =>
     PASSWORD_RULES.map((rule) => ({ label: rule.label, ok: rule.test(this.password()) })),
@@ -67,7 +80,9 @@ export class RegisterComponent {
     const confirm = this.form.controls.confirmPassword;
     if (!confirm.touched) return null;
     if (confirm.hasError('required')) return 'Confirmez votre mot de passe.';
-    return this.form.hasError('passwordsMismatch') ? 'Les deux mots de passe ne sont pas identiques.' : null;
+    return this.form.hasError('passwordsMismatch')
+      ? 'Les deux mots de passe ne sont pas identiques.'
+      : null;
   }
 
   protected submit(): void {

@@ -1,5 +1,10 @@
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { fieldError, passwordsMatchValidator, passwordValidator, safeRedirect } from './form-errors';
+import {
+  fieldError,
+  passwordsMatchValidator,
+  passwordValidator,
+  safeRedirect,
+} from './form-errors';
 
 describe('fieldError', () => {
   it('stays silent until the user touched the field', () => {
@@ -25,7 +30,10 @@ describe('password validators', () => {
   });
 
   it('checks that both passwords match', () => {
-    const group = new FormGroup({ password: new FormControl('Motdepasse1'), confirmPassword: new FormControl('Autre1234') });
+    const group = new FormGroup({
+      password: new FormControl('Motdepasse1'),
+      confirmPassword: new FormControl('Autre1234'),
+    });
     expect(passwordsMatchValidator(group)).toEqual({ passwordsMismatch: true });
     group.controls.confirmPassword.setValue('Motdepasse1');
     expect(passwordsMatchValidator(group)).toBeNull();

@@ -16,11 +16,18 @@
         @for (review of list; track review.id) {
           <li class="card review">
             <div class="review__header">
-              <h3><a [routerLink]="['/lieux', review.spot.id]">{{ review.spot.name }}</a></h3>
+              <h3>
+                <a [routerLink]="['/lieux', review.spot.id]">{{ review.spot.name }}</a>
+              </h3>
               <p class="caption">
-                <time [attr.datetime]="review.createdAt">{{ review.createdAt | date: 'd MMMM y' }}</time>
+                <time [attr.datetime]="review.createdAt">{{
+                  review.createdAt | date: 'd MMMM y'
+                }}</time>
                 @if (review.updatedAt) {
-                  · modifié le <time [attr.datetime]="review.updatedAt">{{ review.updatedAt | date: 'd MMMM y' }}</time>
+                  · modifié le
+                  <time [attr.datetime]="review.updatedAt">{{
+                    review.updatedAt | date: 'd MMMM y'
+                  }}</time>
                 }
               </p>
             </div>
@@ -47,8 +54,12 @@
               @if (confirmingId() === review.id) {
                 <div class="confirm" role="group" aria-label="Confirmer la suppression">
                   <span>Supprimer cet avis ?</span>
-                  <button type="button" class="btn btn--danger" (click)="remove(review)">Oui, supprimer</button>
-                  <button type="button" class="btn btn--ghost" (click)="confirmingId.set(null)">Annuler</button>
+                  <button type="button" class="btn btn--danger" (click)="remove(review)">
+                    Oui, supprimer
+                  </button>
+                  <button type="button" class="btn btn--ghost" (click)="confirmingId.set(null)">
+                    Annuler
+                  </button>
                 </div>
               } @else {
                 <div class="actions">
@@ -56,7 +67,11 @@
                     <svg lucidePencil aria-hidden="true"></svg>
                     Modifier<span class="visually-hidden"> l’avis sur {{ review.spot.name }}</span>
                   </button>
-                  <button type="button" class="btn btn--ghost delete" (click)="confirmingId.set(review.id)">
+                  <button
+                    type="button"
+                    class="btn btn--ghost delete"
+                    (click)="confirmingId.set(review.id)"
+                  >
                     <svg lucideTrash aria-hidden="true"></svg>
                     Supprimer<span class="visually-hidden"> l’avis sur {{ review.spot.name }}</span>
                   </button>

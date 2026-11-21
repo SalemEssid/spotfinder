@@ -11,7 +11,11 @@ const BCRYPT_ROUNDS = 10;
  */
 const DUMMY_HASH = bcrypt.hashSync('timing-attack-protection', BCRYPT_ROUNDS);
 
-export async function register(input: { name: string; email: string; password: string }): Promise<User> {
+export async function register(input: {
+  name: string;
+  email: string;
+  password: string;
+}): Promise<User> {
   const existing = await findUserWithHashByEmail(input.email);
   if (existing) {
     throw new HttpError(409, 'EMAIL_TAKEN', 'Un compte existe déjà avec cette adresse e-mail.', {

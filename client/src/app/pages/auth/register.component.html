@@ -2,7 +2,9 @@
   <section class="auth__card" aria-labelledby="register-title">
     <header class="auth__header">
       <h1 id="register-title">Créer un compte</h1>
-      <p class="text-secondary">Gratuit, en 30 secondes. On ne vous demandera jamais rien d’autre.</p>
+      <p class="text-secondary">
+        Gratuit, en 30 secondes. On ne vous demandera jamais rien d’autre.
+      </p>
     </header>
 
     @if (serverError(); as error) {
@@ -18,15 +20,36 @@
         hint="Affiché avec vos avis."
         [error]="fieldError(form.controls.name)"
       >
-        <input appFieldControl class="input" type="text" formControlName="name" autocomplete="nickname" />
+        <input
+          appFieldControl
+          class="input"
+          type="text"
+          formControlName="name"
+          autocomplete="nickname"
+        />
       </app-form-field>
 
-      <app-form-field label="Adresse e-mail" controlId="register-email" [error]="fieldError(form.controls.email)">
-        <input appFieldControl class="input" type="email" formControlName="email" autocomplete="email" inputmode="email" />
+      <app-form-field
+        label="Adresse e-mail"
+        controlId="register-email"
+        [error]="fieldError(form.controls.email)"
+      >
+        <input
+          appFieldControl
+          class="input"
+          type="email"
+          formControlName="email"
+          autocomplete="email"
+          inputmode="email"
+        />
       </app-form-field>
 
       <!-- No error text here: the rules list below already says, live, what is missing. -->
-      <app-form-field label="Mot de passe" controlId="register-password" describedBy="password-rules">
+      <app-form-field
+        label="Mot de passe"
+        controlId="register-password"
+        describedBy="password-rules"
+      >
         <div class="password">
           <input
             appFieldControl
@@ -55,13 +78,18 @@
               @if (rule.ok) {
                 <svg lucideCheck aria-hidden="true"></svg>
               }
-              {{ rule.label }}<span class="visually-hidden">{{ rule.ok ? ' : respecté' : ' : manquant' }}</span>
+              {{ rule.label
+              }}<span class="visually-hidden">{{ rule.ok ? ' : respecté' : ' : manquant' }}</span>
             </li>
           }
         </ul>
       </app-form-field>
 
-      <app-form-field label="Confirmez le mot de passe" controlId="register-confirm" [error]="confirmError()">
+      <app-form-field
+        label="Confirmez le mot de passe"
+        controlId="register-confirm"
+        [error]="confirmError()"
+      >
         <input
           appFieldControl
           class="input"
@@ -88,7 +116,8 @@
   <aside class="auth__aside" aria-label="Ce que vous pourrez faire">
     <h2>Rejoignez la communauté</h2>
     <p class="text-secondary">
-      Chaque signalement « Je suis ici » aide les autres étudiants à trouver une place calme, tout de suite.
+      Chaque signalement « Je suis ici » aide les autres étudiants à trouver une place calme, tout
+      de suite.
     </p>
   </aside>
 </div>

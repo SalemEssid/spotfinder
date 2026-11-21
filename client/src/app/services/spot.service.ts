@@ -21,7 +21,9 @@ export class SpotService {
 
   /** The API accepts the same French params as the Explorer URL, plus the reference point. */
   list(filters: SpotFilters, origin: GeoPoint = REFERENCE_POINT): Observable<SpotSummary[]> {
-    const params = new HttpParams({ fromObject: { ...filtersToParams(filters), ...originParams(origin) } });
+    const params = new HttpParams({
+      fromObject: { ...filtersToParams(filters), ...originParams(origin) },
+    });
     return this.http.get<SpotSummary[]>('/api/spots', { params });
   }
 

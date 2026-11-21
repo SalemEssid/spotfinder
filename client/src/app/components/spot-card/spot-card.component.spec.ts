@@ -26,14 +26,18 @@ describe('SpotCardComponent', () => {
   });
 
   it('always pairs the crowd colour with a word', async () => {
-    const { element } = await render(makeSpot({ liveMeter: makeMeter({ occupancy: 85, level: 'sature' }) }));
+    const { element } = await render(
+      makeSpot({ liveMeter: makeMeter({ occupancy: 85, level: 'sature' }) }),
+    );
     const badge = element.querySelector('.badge--sature');
     expect(badge?.textContent?.trim()).toBe('≈ 85 % · Saturé');
   });
 
   it('says when there is no report instead of showing a colour', async () => {
     const { element } = await render(
-      makeSpot({ liveMeter: makeMeter({ source: 'aucun', occupancy: null, level: null, reportCount: 0 }) }),
+      makeSpot({
+        liveMeter: makeMeter({ source: 'aucun', occupancy: null, level: null, reportCount: 0 }),
+      }),
     );
     expect(element.textContent).toContain('Pas de signalement');
     expect(element.querySelector('.badge--calme, .badge--modere, .badge--sature')).toBeNull();
@@ -45,14 +49,19 @@ describe('SpotCardComponent', () => {
 
     TestBed.resetTestingModule();
     const unrated = await render(
-      makeSpot({ ratings: { wifi: null, calm: null, outlets: null, price: null, count: 0 }, equipment: { ...makeSpot().equipment, wifiSpeed: 8, outletsCount: 0 } }),
+      makeSpot({
+        ratings: { wifi: null, calm: null, outlets: null, price: null, count: 0 },
+        equipment: { ...makeSpot().equipment, wifiSpeed: 8, outletsCount: 0 },
+      }),
     );
     expect(unrated.element.textContent).toContain('Wi-Fi lent');
     expect(unrated.element.textContent).toContain('Prises : non');
   });
 
   it('marks places waiting for verification and closed places', async () => {
-    const { element } = await render(makeSpot({ status: 'a_verifier', openNow: false, closesAt: null }));
+    const { element } = await render(
+      makeSpot({ status: 'a_verifier', openNow: false, closesAt: null }),
+    );
     expect(element.textContent).toContain('À vérifier');
     expect(element.textContent).toContain('Fermé');
   });

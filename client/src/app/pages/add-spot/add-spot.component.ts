@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, ElementRef, inject, signal, viewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
   type AbstractControl,
@@ -10,7 +17,14 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { LucideCircleExclamationPoint, LucideCopy, LucideLocateFixed, LucideMapPin, LucidePlus, LucideX } from '@lucide/angular';
+import {
+  LucideCircleExclamationPoint,
+  LucideCopy,
+  LucideLocateFixed,
+  LucideMapPin,
+  LucidePlus,
+  LucideX,
+} from '@lucide/angular';
 import { finalize } from 'rxjs';
 import { FORM_FIELD } from '../../components/form-field/form-field.component';
 import { MapViewComponent } from '../../components/map-view/map-view.component';
@@ -25,7 +39,11 @@ import { fieldError } from '../../utils/form-errors';
 import type { GeoPoint } from '../../utils/reference-point';
 
 type SlotGroup = FormGroup<{ opensAt: FormControl<string>; closesAt: FormControl<string> }>;
-type DayGroup = FormGroup<{ weekday: FormControl<number>; open: FormControl<boolean>; slots: FormArray<SlotGroup> }>;
+type DayGroup = FormGroup<{
+  weekday: FormControl<number>;
+  open: FormControl<boolean>;
+  slots: FormArray<SlotGroup>;
+}>;
 
 /** A time slot must end after it starts ("09:00" < "18:00" works as text comparison). */
 function slotOrderValidator(group: AbstractControl): ValidationErrors | null {
@@ -98,7 +116,10 @@ export class AddSpotComponent {
       validators: [Validators.required, Validators.minLength(2), Validators.maxLength(80)],
     }),
     type: new FormControl<SpotType>('cafe', { nonNullable: true }),
-    area: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.maxLength(60)] }),
+    area: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.maxLength(60)],
+    }),
     address: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required, Validators.minLength(5), Validators.maxLength(160)],
@@ -118,7 +139,9 @@ export class AddSpotComponent {
     hours: new FormArray(WEEK_ORDER.map(createDay)),
   });
 
-  protected readonly position = toSignal(this.form.controls.position.valueChanges, { initialValue: null });
+  protected readonly position = toSignal(this.form.controls.position.valueChanges, {
+    initialValue: null,
+  });
   protected readonly submitting = signal(false);
   protected readonly showSummary = signal(false);
   protected readonly locating = signal(false);
@@ -181,7 +204,8 @@ export class AddSpotComponent {
     for (const day of this.days.slice(1)) {
       day.controls.open.setValue(monday.controls.open.value);
       day.controls.slots.clear();
-      for (const slot of monday.controls.slots.getRawValue()) day.controls.slots.push(createSlot(slot.opensAt, slot.closesAt));
+      for (const slot of monday.controls.slots.getRawValue())
+        day.controls.slots.push(createSlot(slot.opensAt, slot.closesAt));
     }
     this.toast.info('Horaires du lundi copiés sur toute la semaine.');
   }
@@ -199,7 +223,9 @@ export class AddSpotComponent {
       this.showSummary.set(true);
       // Move the focus to the first field to fix (keyboard and screen-reader friendly).
       queueMicrotask(() =>
-        this.host.nativeElement.querySelector<HTMLElement>('[aria-invalid="true"], .ng-invalid input')?.focus(),
+        this.host.nativeElement
+          .querySelector<HTMLElement>('[aria-invalid="true"], .ng-invalid input')
+          ?.focus(),
       );
       return;
     }

@@ -26,7 +26,13 @@ const contactLimiter = rateLimit({
   legacyHeaders: false,
   skip: () => env.isTest,
   handler: (_req, _res, next) =>
-    next(new HttpError(429, 'TOO_MANY_MESSAGES', 'Vous avez envoyé beaucoup de messages. Réessayez plus tard.')),
+    next(
+      new HttpError(
+        429,
+        'TOO_MANY_MESSAGES',
+        'Vous avez envoyé beaucoup de messages. Réessayez plus tard.',
+      ),
+    ),
 });
 
 /** POST /api/contact — stored in the database (no e-mail is sent). */

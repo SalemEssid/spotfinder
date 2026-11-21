@@ -33,9 +33,14 @@ export const test = base.extend<{ page: Page }>({
 export { expect };
 
 /** A brand-new account, logged in through the API (the session cookie is shared with the page). */
-export async function registerFreshUser(request: APIRequestContext, name = 'Testeur E2E'): Promise<void> {
+export async function registerFreshUser(
+  request: APIRequestContext,
+  name = 'Testeur E2E',
+): Promise<void> {
   const email = `e2e-${Date.now()}-${Math.floor(Math.random() * 1e6)}@example.tn`;
-  const response = await request.post('/api/auth/register', { data: { name, email, password: 'Motdepasse1' } });
+  const response = await request.post('/api/auth/register', {
+    data: { name, email, password: 'Motdepasse1' },
+  });
   expect(response.status()).toBe(201);
 }
 

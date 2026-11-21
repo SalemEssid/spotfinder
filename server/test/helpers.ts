@@ -31,7 +31,13 @@ export async function newSpot(agent: ReturnType<typeof request.agent>): Promise<
       area: 'Ariana',
       latitude: 36.86,
       longitude: 10.19,
-      equipment: { wifiSpeed: 10, outletsCount: 2, noiseLevel: 'modere', priceLevel: 0, airConditioning: false },
+      equipment: {
+        wifiSpeed: 10,
+        outletsCount: 2,
+        noiseLevel: 'modere',
+        priceLevel: 0,
+        airConditioning: false,
+      },
       openingHours: [],
     })
     .expect(201);

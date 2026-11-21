@@ -13,7 +13,10 @@
 
   @case ('not-found') {
     <div class="container page">
-      <app-empty-state title="Ce lieu est introuvable" message="Il a peut-être été retiré, ou le lien est incomplet.">
+      <app-empty-state
+        title="Ce lieu est introuvable"
+        message="Il a peut-être été retiré, ou le lien est incomplet."
+      >
         <a class="btn btn--primary" routerLink="/explorer">Voir les lieux</a>
       </app-empty-state>
     </div>
@@ -21,7 +24,11 @@
 
   @case ('error') {
     <div class="container page">
-      <app-empty-state tone="error" title="Ce lieu n’a pas pu être chargé" [message]="errorMessage()">
+      <app-empty-state
+        tone="error"
+        title="Ce lieu n’a pas pu être chargé"
+        [message]="errorMessage()"
+      >
         <button type="button" class="btn btn--primary" (click)="retry()">Réessayer</button>
       </app-empty-state>
     </div>
@@ -48,7 +55,9 @@
             <ul class="badges" role="list" aria-label="Affluence et équipements">
               <li><app-crowd-badge [meter]="liveMeter()!" size="large" /></li>
               @for (badge of badges(); track badge) {
-                <li><span class="badge">{{ badge }}</span></li>
+                <li>
+                  <span class="badge">{{ badge }}</span>
+                </li>
               }
             </ul>
             @if (spot.status === 'a_verifier') {
@@ -63,14 +72,26 @@
             <app-live-meter [meter]="liveMeter()!" />
 
             @if (cooldownMinutes() > 0) {
-              <button type="button" class="btn btn--primary btn--block" disabled aria-describedby="cooldown-help">
-                <svg lucideCheck aria-hidden="true"></svg> Signalé · à nouveau dans {{ cooldownMinutes() }} min
+              <button
+                type="button"
+                class="btn btn--primary btn--block"
+                disabled
+                aria-describedby="cooldown-help"
+              >
+                <svg lucideCheck aria-hidden="true"></svg> Signalé · à nouveau dans
+                {{ cooldownMinutes() }} min
               </button>
               <p id="cooldown-help" class="caption live__help">
-                Un signalement par personne toutes les 15 minutes : cela évite qu’une seule personne fausse la jauge.
+                Un signalement par personne toutes les 15 minutes : cela évite qu’une seule personne
+                fausse la jauge.
               </p>
             } @else {
-              <button type="button" class="btn btn--primary btn--block report-button" [disabled]="reporting()" (click)="openReport()">
+              <button
+                type="button"
+                class="btn btn--primary btn--block report-button"
+                [disabled]="reporting()"
+                (click)="openReport()"
+              >
                 <svg lucideUsers aria-hidden="true"></svg> Je suis ici
               </button>
             }
@@ -91,9 +112,13 @@
             <h2 id="ratings-title">Notes de la communauté</h2>
             @if (spot.ratings.count > 0) {
               <app-rating-bars [ratings]="spot.ratings" />
-              <p class="caption">D’après {{ spot.ratings.count }} avis · <a href="#avis">Lire les avis</a></p>
+              <p class="caption">
+                D’après {{ spot.ratings.count }} avis · <a href="#avis">Lire les avis</a>
+              </p>
             } @else {
-              <p class="text-secondary">Pas encore de note. Soyez le premier à donner votre avis.</p>
+              <p class="text-secondary">
+                Pas encore de note. Soyez le premier à donner votre avis.
+              </p>
             }
           </section>
 
@@ -116,7 +141,9 @@
           <section class="section" aria-labelledby="hours-title">
             <h2 id="hours-title">Horaires</h2>
             <table class="hours">
-              <caption class="visually-hidden">Horaires d’ouverture, heure de Tunis</caption>
+              <caption class="visually-hidden">
+                Horaires d’ouverture, heure de Tunis
+              </caption>
               <tbody>
                 @for (day of week(); track day.weekday) {
                   <tr [class.is-today]="day.isToday">
@@ -157,11 +184,20 @@
           </section>
 
           <section class="section reviews" id="avis" aria-labelledby="reviews-title">
-            <h2 id="reviews-title">Avis @if (reviews(); as list) { ({{ list.length }}) }</h2>
+            <h2 id="reviews-title">
+              Avis
+              @if (reviews(); as list) {
+                ({{ list.length }})
+              }
+            </h2>
 
             @if (!auth.isLoggedIn()) {
               <p class="text-secondary">
-                <a routerLink="/connexion" [queryParams]="{ redirect: '/lieux/' + spot.id + '#avis' }">Connectez-vous</a>
+                <a
+                  routerLink="/connexion"
+                  [queryParams]="{ redirect: '/lieux/' + spot.id + '#avis' }"
+                  >Connectez-vous</a
+                >
                 pour laisser un avis.
               </p>
             } @else if (spot.hasReviewed) {
@@ -170,9 +206,17 @@
                 <a routerLink="/compte/avis">Mes avis</a>.
               </p>
             } @else if (reviewFormOpen()) {
-              <app-review-form [submitting]="postingReview()" (submitReview)="postReview($event)" (cancelled)="reviewFormOpen.set(false)" />
+              <app-review-form
+                [submitting]="postingReview()"
+                (submitReview)="postReview($event)"
+                (cancelled)="reviewFormOpen.set(false)"
+              />
             } @else {
-              <button type="button" class="btn btn--secondary review-toggle" (click)="reviewFormOpen.set(true)">
+              <button
+                type="button"
+                class="btn btn--secondary review-toggle"
+                (click)="reviewFormOpen.set(true)"
+              >
                 <svg lucideStar aria-hidden="true"></svg> Laisser un avis
               </button>
             }

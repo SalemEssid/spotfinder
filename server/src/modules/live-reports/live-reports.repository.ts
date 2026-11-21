@@ -71,7 +71,11 @@ export async function findHourlyAverages(
   return rows;
 }
 
-export async function findLastReportAt(db: Queryable, spotId: number, userId: number): Promise<Date | null> {
+export async function findLastReportAt(
+  db: Queryable,
+  spotId: number,
+  userId: number,
+): Promise<Date | null> {
   const { rows } = await db.query<{ created_at: Date }>(
     `SELECT created_at FROM live_reports
      WHERE spot_id = $1 AND user_id = $2
@@ -85,10 +89,8 @@ export async function insertReport(
   db: Queryable,
   report: { spotId: number; userId: number; occupancy: number; createdAt: Date },
 ): Promise<void> {
-  await db.query('INSERT INTO live_reports (spot_id, user_id, occupancy, created_at) VALUES ($1, $2, $3, $4)', [
-    report.spotId,
-    report.userId,
-    report.occupancy,
-    report.createdAt,
-  ]);
+  await db.query(
+    'INSERT INTO live_reports (spot_id, user_id, occupancy, created_at) VALUES ($1, $2, $3, $4)',
+    [report.spotId, report.userId, report.occupancy, report.createdAt],
+  );
 }

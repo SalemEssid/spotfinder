@@ -51,7 +51,8 @@ const NO_DATA: LiveMeterDto = {
   confidence: null,
 };
 
-const minutesBefore = (date: Date, minutes: number) => new Date(date.getTime() - minutes * MINUTE_MS);
+const minutesBefore = (date: Date, minutes: number) =>
+  new Date(date.getTime() - minutes * MINUTE_MS);
 
 /**
  * Live Meter of several places at once (3 queries in total, whatever the number of places):
@@ -59,7 +60,10 @@ const minutesBefore = (date: Date, minutes: number) => new Date(date.getTime() -
  * 2. places without recent reports → historical average for this weekday and hour
  * 3. otherwise → "Pas encore de signalement"
  */
-export async function getLiveMeters(spotIds: number[], now: Date): Promise<Map<number, LiveMeterDto>> {
+export async function getLiveMeters(
+  spotIds: number[],
+  now: Date,
+): Promise<Map<number, LiveMeterDto>> {
   const windowStart = minutesBefore(now, LIVE_WINDOW_MINUTES);
   const recentRows = await findReportsSince(spotIds, windowStart);
 
@@ -88,7 +92,13 @@ export async function getLiveMeters(spotIds: number[], now: Date): Promise<Map<n
 
   const withoutLiveData = spotIds.filter((id) => !meters.has(id));
   const historyStart = minutesBefore(now, HISTORY_WEEKS * 7 * 24 * 60);
-  const averages = await findHistoricalAverages(withoutLiveData, now, historyStart, windowStart, HISTORY_MIN_REPORTS);
+  const averages = await findHistoricalAverages(
+    withoutLiveData,
+    now,
+    historyStart,
+    windowStart,
+    HISTORY_MIN_REPORTS,
+  );
 
   for (const spotId of withoutLiveData) {
     const history = averages.get(spotId);
@@ -113,7 +123,11 @@ export async function getLiveMeter(spotId: number, now: Date): Promise<LiveMeter
 }
 
 /** When `userId` may report again for this place (null = right now). */
-export async function getNextReportAllowedAt(spotId: number, userId: number, now: Date): Promise<Date | null> {
+export async function getNextReportAllowedAt(
+  spotId: number,
+  userId: number,
+  now: Date,
+): Promise<Date | null> {
   const last = await findLastReportAt(pool, spotId, userId);
   if (!last) return null;
   const next = new Date(last.getTime() + REPORT_COOLDOWN_MINUTES * MINUTE_MS);
@@ -157,12 +171,19 @@ export async function reportCrowd(
         );
       }
     }
-    await insertReport(client, { spotId, userId, occupancy: OCCUPANCY_BY_CHOICE[choice], createdAt: now });
+    await insertReport(client, {
+      spotId,
+      userId,
+      occupancy: OCCUPANCY_BY_CHOICE[choice],
+      createdAt: now,
+    });
   });
 
   return {
     liveMeter: await getLiveMeter(spotId, now),
-    nextReportAllowedAt: new Date(now.getTime() + REPORT_COOLDOWN_MINUTES * MINUTE_MS).toISOString(),
+    nextReportAllowedAt: new Date(
+      now.getTime() + REPORT_COOLDOWN_MINUTES * MINUTE_MS,
+    ).toISOString(),
   };
 }
 
@@ -177,7 +198,11 @@ export async function getHourlyProfile(spotId: number, now: Date) {
 
   const hours = rows
     .filter((row) => row.count >= HISTORY_MIN_REPORTS)
-    .map((row) => ({ hour: row.hour, occupancy: Math.round(row.average), level: crowdLevelFor(row.average) }));
+    .map((row) => ({
+      hour: row.hour,
+      occupancy: Math.round(row.average),
+      level: crowdLevelFor(row.average),
+    }));
 
   // The calmest hour from now until closing (ties → the earliest).
   const upcoming = hours.filter((h) => h.hour >= currentHour);

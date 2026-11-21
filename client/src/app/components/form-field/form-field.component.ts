@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, Directive, inject, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  Directive,
+  inject,
+  input,
+} from '@angular/core';
 
 /**
  * One form field: label, the control (projected), an optional hint and the error message.
@@ -44,7 +51,11 @@ export class FormFieldComponent {
   readonly hintId = computed(() => `${this.controlId()}-hint`);
   readonly errorId = computed(() => `${this.controlId()}-error`);
   readonly ariaDescribedBy = computed(() => {
-    const ids = [this.hint() ? this.hintId() : null, this.describedBy(), this.error() ? this.errorId() : null];
+    const ids = [
+      this.hint() ? this.hintId() : null,
+      this.describedBy(),
+      this.error() ? this.errorId() : null,
+    ];
     return ids.filter(Boolean).join(' ') || null;
   });
 }

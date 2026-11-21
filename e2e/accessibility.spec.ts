@@ -6,7 +6,16 @@ import { expect, loginAsDemo, test } from './fixtures';
  * Automated tools catch roughly a third of accessibility problems, so this complements,
  * not replaces, the manual keyboard checks below.
  */
-const PUBLIC_PAGES = ['/', '/explorer', '/explorer?bruit=silencieux&prises=1', '/lieux/1', '/connexion', '/inscription', '/a-propos', '/page-qui-n-existe-pas'];
+const PUBLIC_PAGES = [
+  '/',
+  '/explorer',
+  '/explorer?bruit=silencieux&prises=1',
+  '/lieux/1',
+  '/connexion',
+  '/inscription',
+  '/a-propos',
+  '/page-qui-n-existe-pas',
+];
 const MEMBER_PAGES = ['/ajouter', '/compte/profil', '/compte/favoris', '/compte/avis'];
 
 test.describe('Accessibilité (axe-core, WCAG 2.1 AA)', () => {
@@ -28,7 +37,9 @@ test.describe('Accessibilité (axe-core, WCAG 2.1 AA)', () => {
         .exclude('.leaflet-control-attribution')
         .analyze();
 
-      const summary = results.violations.map((v) => `${v.id} (${v.impact}): ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`);
+      const summary = results.violations.map(
+        (v) => `${v.id} (${v.impact}): ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`,
+      );
       expect(summary).toEqual([]);
     });
   }
@@ -52,7 +63,10 @@ test.describe('Clavier', () => {
   test.skip(({ isMobile }) => isMobile, 'keyboard tests run on desktop browsers');
 
   test('le lien d’évitement mène au contenu', async ({ page, browserName }) => {
-    test.skip(browserName === 'webkit', 'Safari does not focus links with Tab by default (OS setting)');
+    test.skip(
+      browserName === 'webkit',
+      'Safari does not focus links with Tab by default (OS setting)',
+    );
     await page.goto('/a-propos');
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible(); // the app has rendered
     await page.keyboard.press('Tab');

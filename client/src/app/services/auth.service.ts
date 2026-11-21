@@ -26,7 +26,9 @@ export class AuthService {
   }
 
   login(email: string, password: string): Observable<User> {
-    return this.http.post<User>('/api/auth/login', { email, password }).pipe(tap((user) => this.currentUser.set(user)));
+    return this.http
+      .post<User>('/api/auth/login', { email, password })
+      .pipe(tap((user) => this.currentUser.set(user)));
   }
 
   register(name: string, email: string, password: string): Observable<User> {

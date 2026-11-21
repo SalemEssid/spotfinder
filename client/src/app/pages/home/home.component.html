@@ -2,9 +2,16 @@
   <div class="container hero__inner">
     <div class="hero__text">
       <h1 id="home-title">Trouvez où travailler, maintenant.</h1>
-      <p class="hero__subtitle">Wi-Fi, prises, calme et affluence en direct, signalés par la communauté.</p>
+      <p class="hero__subtitle">
+        Wi-Fi, prises, calme et affluence en direct, signalés par la communauté.
+      </p>
 
-      <form class="search" role="search" aria-label="Chercher un lieu pour travailler" (submit)="search($event)">
+      <form
+        class="search"
+        role="search"
+        aria-label="Chercher un lieu pour travailler"
+        (submit)="search($event)"
+      >
         <div class="search__field">
           <label class="visually-hidden" for="home-search">Où ? Quartier ou nom d’un lieu</label>
           <svg lucideSearch class="search__icon" aria-hidden="true"></svg>
@@ -48,17 +55,26 @@
         <rect class="m-ground" width="440" height="320" rx="20" />
         <rect class="m-park" x="264" y="256" width="88" height="42" rx="8" />
         <path class="m-road" d="M120 0h30v320h-30zM317 0h22v320h-22z" />
-        <path class="m-road" d="M0 86 440 80v28L0 114zM0 217c150-8 290-8 440 4v14C290 224 150 224 0 231z" />
+        <path
+          class="m-road"
+          d="M0 86 440 80v28L0 114zM0 217c150-8 290-8 440 4v14C290 224 150 224 0 231z"
+        />
         <g class="m-pin m-pin--calme" transform="translate(100 98)">
-          <path d="M20 0C9 0 0 8.6 0 19.3 0 33.8 18 50.5 18.8 51.2a1.8 1.8 0 0 0 2.4 0C22 50.5 40 33.8 40 19.3 40 8.6 31 0 20 0Z" />
+          <path
+            d="M20 0C9 0 0 8.6 0 19.3 0 33.8 18 50.5 18.8 51.2a1.8 1.8 0 0 0 2.4 0C22 50.5 40 33.8 40 19.3 40 8.6 31 0 20 0Z"
+          />
           <circle cx="20" cy="19" r="7" />
         </g>
         <g class="m-pin m-pin--calme" transform="translate(230 58)">
-          <path d="M20 0C9 0 0 8.6 0 19.3 0 33.8 18 50.5 18.8 51.2a1.8 1.8 0 0 0 2.4 0C22 50.5 40 33.8 40 19.3 40 8.6 31 0 20 0Z" />
+          <path
+            d="M20 0C9 0 0 8.6 0 19.3 0 33.8 18 50.5 18.8 51.2a1.8 1.8 0 0 0 2.4 0C22 50.5 40 33.8 40 19.3 40 8.6 31 0 20 0Z"
+          />
           <circle cx="20" cy="19" r="7" />
         </g>
         <g class="m-pin m-pin--sature" transform="translate(350 123)">
-          <path d="M20 0C9 0 0 8.6 0 19.3 0 33.8 18 50.5 18.8 51.2a1.8 1.8 0 0 0 2.4 0C22 50.5 40 33.8 40 19.3 40 8.6 31 0 20 0Z" />
+          <path
+            d="M20 0C9 0 0 8.6 0 19.3 0 33.8 18 50.5 18.8 51.2a1.8 1.8 0 0 0 2.4 0C22 50.5 40 33.8 40 19.3 40 8.6 31 0 20 0Z"
+          />
           <circle cx="20" cy="19" r="7" />
         </g>
         <g transform="translate(168 228)">
@@ -89,7 +105,8 @@
     </div>
   } @else if (loadFailed()) {
     <p class="text-secondary" role="alert">
-      Les lieux n’ont pas pu être chargés pour l’instant. <a routerLink="/explorer">Réessayer dans l’Explorer</a>.
+      Les lieux n’ont pas pu être chargés pour l’instant.
+      <a routerLink="/explorer">Réessayer dans l’Explorer</a>.
     </p>
   } @else {
     <ul class="cards" role="list">
@@ -106,7 +123,10 @@
     <li class="step">
       <span class="step__icon"><svg lucideSlidersHorizontal aria-hidden="true"></svg></span>
       <h3>1. Filtrez</h3>
-      <p>Calme, Wi-Fi rapide, prises, budget, ouvert maintenant : gardez seulement ce qui compte pour vous.</p>
+      <p>
+        Calme, Wi-Fi rapide, prises, budget, ouvert maintenant : gardez seulement ce qui compte pour
+        vous.
+      </p>
     </li>
     <li class="step">
       <span class="step__icon"><svg lucideClock aria-hidden="true"></svg></span>
@@ -116,7 +136,10 @@
     <li class="step">
       <span class="step__icon"><svg lucideUsers aria-hidden="true"></svg></span>
       <h3>3. Signalez « Je suis ici »</h3>
-      <p>Sur place, un geste suffit pour aider les suivants. La jauge se met à jour pour tout le monde.</p>
+      <p>
+        Sur place, un geste suffit pour aider les suivants. La jauge se met à jour pour tout le
+        monde.
+      </p>
     </li>
   </ol>
 </section>

@@ -31,7 +31,9 @@ export class ReportSheetComponent {
 
   protected readonly choices = REPORT_CHOICES;
   protected readonly choice = signal<ReportChoice | null>(null);
-  protected readonly selectedHint = computed(() => this.choices.find((c) => c.value === this.choice())?.hint ?? '');
+  protected readonly selectedHint = computed(
+    () => this.choices.find((c) => c.value === this.choice())?.hint ?? '',
+  );
   private readonly dialog = viewChild.required<ElementRef<HTMLDialogElement>>('dialog');
 
   constructor() {

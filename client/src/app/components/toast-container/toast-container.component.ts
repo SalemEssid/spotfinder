@@ -1,5 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { LucideCircleCheck, LucideCircleExclamationPoint, LucideInfo, LucideX } from '@lucide/angular';
+import {
+  LucideCircleCheck,
+  LucideCircleExclamationPoint,
+  LucideInfo,
+  LucideX,
+} from '@lucide/angular';
 import { ToastService } from '../../services/toast.service';
 
 /**

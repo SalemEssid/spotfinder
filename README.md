@@ -30,11 +30,11 @@ The user interface is in French; code, comments and commits are in English.
 
 ### Requirements
 
-| Tool | Version | Why |
-|---|---|---|
-| **Node.js** | **24** (see `.nvmrc`, `nvm use`) | Angular 22 and the API; `engines` in `package.json` checks it |
-| **Docker Desktop** | recent, running | PostgreSQL 17 in one command (recommended) |
-| _or_ PostgreSQL | 14 or later | if Docker is not available (see below) |
+| Tool               | Version                          | Why                                                           |
+| ------------------ | -------------------------------- | ------------------------------------------------------------- |
+| **Node.js**        | **24** (see `.nvmrc`, `nvm use`) | Angular 22 and the API; `engines` in `package.json` checks it |
+| **Docker Desktop** | recent, running                  | PostgreSQL 17 in one command (recommended)                    |
+| _or_ PostgreSQL    | 14 or later                      | if Docker is not available (see below)                        |
 
 ### With Docker (recommended): two commands
 
@@ -62,8 +62,8 @@ The `spotfinder` and `spotfinder_test` databases are created automatically if th
 
 ### Demo account
 
-| E-mail | Password |
-|---|---|
+| E-mail               | Password         |
+| -------------------- | ---------------- |
 | `demo@spotfinder.tn` | `SpotFinder2026` |
 
 The login page has a "Remplir avec le compte démo" (fill in the demo account) button. This account already has
@@ -71,16 +71,16 @@ The login page has a "Remplir avec le compte démo" (fill in the demo account) b
 
 ### Useful commands
 
-| Command | What it does |
-|---|---|
-| `npm run dev` | start everything (Docker + API + Angular) |
-| `npm run db:reset` | wipe and re-create the demo data |
+| Command                | What it does                                                                                      |
+| ---------------------- | ------------------------------------------------------------------------------------------------- |
+| `npm run dev`          | start everything (Docker + API + Angular)                                                         |
+| `npm run db:reset`     | wipe and re-create the demo data                                                                  |
 | `npm run demo:refresh` | **before a demo**: regenerate only the recent crowd reports (keeps accounts, reviews, favourites) |
-| `npm test` | server unit and API tests, then Angular tests (the database must be running) |
-| `npm run e2e` | end-to-end tests in Chrome, Edge, Firefox, WebKit and on a phone viewport |
-| `npm run lint` | ESLint + TypeScript type-check, both parts |
-| `npm run preview` | production version: compiled Angular served by Express on http://localhost:3000 |
-| `npm run screenshots` | regenerate the screenshots of this README |
+| `npm test`             | server unit and API tests, then Angular tests (the database must be running)                      |
+| `npm run e2e`          | end-to-end tests in Chrome, Edge, Firefox, WebKit and on a phone viewport                         |
+| `npm run lint`         | ESLint + TypeScript type-check, both parts                                                        |
+| `npm run preview`      | production version: compiled Angular served by Express on http://localhost:3000                   |
+| `npm run screenshots`  | regenerate the screenshots of this README                                                         |
 
 > Demo crowd reports are dated relative to when the database was seeded and expire after 2 hours:
 > run `npm run demo:refresh` just before presenting. Without recent reports the meter shows the
@@ -92,15 +92,15 @@ The login page has a "Remplir avec le compte démo" (fill in the demo account) b
 
 Every page of the sitemap (Objective 2) is at most 3 clicks from the home page and is fed by the API.
 
-| Page | Route | Content |
-|---|---|---|
-| Home (Accueil) | `/` | search, quick filters, places "Près de SUP'COM" (near SUP'COM) with their crowd level, live activity |
-| Explorer | `/explorer` | list + map kept in sync, filters stored in the URL, list/map toggle on phones |
-| Place page (Fiche d'un lieu) | `/lieux/:id` | details, equipment, opening hours, ratings per criterion, reviews, **Live Meter**, "Je suis ici", favourites |
-| Add a place (Ajouter un lieu) | `/ajouter` | dynamic form, pin placed on the map, opening hours per day (several time slots) |
-| Member area (Espace membre) | `/compte/profil`, `/favoris`, `/avis` | profile and stats, favourites, my reviews (login required) |
-| Login / Sign-up | `/connexion`, `/inscription` | validated forms, back to the requested page afterwards |
-| About / Contact | `/a-propos` | how the meter works, contact form, legal notice |
+| Page                          | Route                                 | Content                                                                                                      |
+| ----------------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Home (Accueil)                | `/`                                   | search, quick filters, places "Près de SUP'COM" (near SUP'COM) with their crowd level, live activity         |
+| Explorer                      | `/explorer`                           | list + map kept in sync, filters stored in the URL, list/map toggle on phones                                |
+| Place page (Fiche d'un lieu)  | `/lieux/:id`                          | details, equipment, opening hours, ratings per criterion, reviews, **Live Meter**, "Je suis ici", favourites |
+| Add a place (Ajouter un lieu) | `/ajouter`                            | dynamic form, pin placed on the map, opening hours per day (several time slots)                              |
+| Member area (Espace membre)   | `/compte/profil`, `/favoris`, `/avis` | profile and stats, favourites, my reviews (login required)                                                   |
+| Login / Sign-up               | `/connexion`, `/inscription`          | validated forms, back to the requested page afterwards                                                       |
+| About / Contact               | `/a-propos`                           | how the meter works, contact form, legal notice                                                              |
 
 ### Priority 1 (must work perfectly)
 
@@ -137,14 +137,14 @@ Every page of the sitemap (Objective 2) is at most 3 clicks from the home page a
 
 Generated with `npm run screenshots` on the production build (demo data).
 
-| Home (1440 px) | Place page (1440 px) |
-|---|---|
-| ![Home](docs/screenshots/01-accueil.png) | ![Place page](docs/screenshots/03-fiche.png) |
-| **Member area, favourites** | **Add a place** |
+| Home (1440 px)                                 | Place page (1440 px)                            |
+| ---------------------------------------------- | ----------------------------------------------- |
+| ![Home](docs/screenshots/01-accueil.png)       | ![Place page](docs/screenshots/03-fiche.png)    |
+| **Member area, favourites**                    | **Add a place**                                 |
 | ![Favourites](docs/screenshots/08-favoris.png) | ![Add a place](docs/screenshots/09-ajouter.png) |
 
-| Place page (phone) | "Je suis ici" (phone) | Explorer, map (phone) | Explorer (tablet, 768 px) |
-|---|---|---|---|
+| Place page (phone)                                             | "Je suis ici" (phone)                                      | Explorer, map (phone)                                            | Explorer (tablet, 768 px)                            |
+| -------------------------------------------------------------- | ---------------------------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------- |
 | ![Place page on a phone](docs/screenshots/04-fiche-mobile.png) | ![Je suis ici](docs/screenshots/05-je-suis-ici-mobile.png) | ![Map on a phone](docs/screenshots/06-explorer-mobile-carte.png) | ![Tablet](docs/screenshots/07-explorer-tablette.png) |
 
 Reference Figma mockups (Objective 2): [`docs/design/`](docs/design/).
@@ -156,8 +156,8 @@ Reference Figma mockups (Objective 2): [`docs/design/`](docs/design/).
 Our signature feature. Code: [`server/src/live-meter/compute-occupancy.ts`](server/src/live-meter/compute-occupancy.ts)
 (a pure function, no database and no clock inside) and its tests.
 
-**Reporting.** On the place page, "Je suis ici" (I'm here) opens a sheet: *Calme* (quiet, 25 %), *Moyen*
-(medium, 55 %) or *Saturé* (packed, 85 %). One report per person and place every **15 minutes**, enforced on the
+**Reporting.** On the place page, "Je suis ici" (I'm here) opens a sheet: _Calme_ (quiet, 25 %), _Moyen_
+(medium, 55 %) or _Saturé_ (packed, 85 %). One report per person and place every **15 minutes**, enforced on the
 server (`429` response with the remaining wait, explained kindly in the interface). A PostgreSQL lock
 (`pg_advisory_xact_lock`) prevents a double click from creating two reports.
 
@@ -186,24 +186,24 @@ then replaces that value, or the previous one comes back if the request fails.
 
 ## Technical choices
 
-| Layer | Choice | In one line |
-|---|---|---|
-| Framework | **Angular 22** (standalone components, `OnPush`, no zone.js) | chosen in Objective 1; clear, typed structure that suits a team project |
-| State | **Signals** in services | simpler than NgRx or `BehaviorSubject`s for an app this size |
-| Async | **RxJS** where time matters | `debounceTime` for the search, `switchMap` to cancel an outdated request |
-| Forms | **Reactive Forms** | typed, testable validation; `FormArray` for the dynamic opening hours |
-| Map | **Leaflet 1.9** + OpenStreetMap tiles | free, no API key; used directly in a single `MapViewComponent` |
-| Icons | **@lucide/angular** | the icon set of the style guide; each icon is a component, only the ones used are shipped |
-| Fonts | Space Grotesk + DM Sans via **Fontsource** | the Google Fonts of the style guide, self-hosted (no blocking third-party request) |
-| API | **Node.js 24 + Express 5** in TypeScript (`tsx`) | Express 5 forwards errors thrown in `async` handlers to the error handler, no `try/catch` everywhere |
-| Database | **PostgreSQL 17** + `pg` with **parameterised SQL** | every query is visible and explainable; it is the SQL of Objective 1 |
-| Migrations | plain `.sql` files + a small script | no ORM "magic" |
-| Validation | **Zod** (French messages) | one schema = runtime validation + TypeScript type |
-| Passwords | **bcryptjs** (cost 10) | slow hashing against brute force, pure JavaScript (nothing to compile on Windows) |
-| Session | **JWT** in an `httpOnly`, `SameSite=Lax` cookie, 7 days | unreadable by JavaScript (XSS), not sent by other sites (CSRF), no session table |
-| HTTP security | helmet (CSP), restricted CORS, login rate limiting | basic protections without heavy configuration |
-| Tests | **Vitest** (server and Angular), Supertest, **Playwright** + axe-core | one test runner on both sides; multi-browser end-to-end tests |
-| Dev | npm workspaces, `concurrently`, Docker Compose, Angular proxy | `npm run dev` starts everything; the browser only talks to `localhost:4200` |
+| Layer         | Choice                                                                | In one line                                                                                          |
+| ------------- | --------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Framework     | **Angular 22** (standalone components, `OnPush`, no zone.js)          | chosen in Objective 1; clear, typed structure that suits a team project                              |
+| State         | **Signals** in services                                               | simpler than NgRx or `BehaviorSubject`s for an app this size                                         |
+| Async         | **RxJS** where time matters                                           | `debounceTime` for the search, `switchMap` to cancel an outdated request                             |
+| Forms         | **Reactive Forms**                                                    | typed, testable validation; `FormArray` for the dynamic opening hours                                |
+| Map           | **Leaflet 1.9** + OpenStreetMap tiles                                 | free, no API key; used directly in a single `MapViewComponent`                                       |
+| Icons         | **@lucide/angular**                                                   | the icon set of the style guide; each icon is a component, only the ones used are shipped            |
+| Fonts         | Space Grotesk + DM Sans via **Fontsource**                            | the Google Fonts of the style guide, self-hosted (no blocking third-party request)                   |
+| API           | **Node.js 24 + Express 5** in TypeScript (`tsx`)                      | Express 5 forwards errors thrown in `async` handlers to the error handler, no `try/catch` everywhere |
+| Database      | **PostgreSQL 17** + `pg` with **parameterised SQL**                   | every query is visible and explainable; it is the SQL of Objective 1                                 |
+| Migrations    | plain `.sql` files + a small script                                   | no ORM "magic"                                                                                       |
+| Validation    | **Zod** (French messages)                                             | one schema = runtime validation + TypeScript type                                                    |
+| Passwords     | **bcryptjs** (cost 10)                                                | slow hashing against brute force, pure JavaScript (nothing to compile on Windows)                    |
+| Session       | **JWT** in an `httpOnly`, `SameSite=Lax` cookie, 7 days               | unreadable by JavaScript (XSS), not sent by other sites (CSRF), no session table                     |
+| HTTP security | helmet (CSP), restricted CORS, login rate limiting                    | basic protections without heavy configuration                                                        |
+| Tests         | **Vitest** (server and Angular), Supertest, **Playwright** + axe-core | one test runner on both sides; multi-browser end-to-end tests                                        |
+| Dev           | npm workspaces, `concurrently`, Docker Compose, Angular proxy         | `npm run dev` starts everything; the browser only talks to `localhost:4200`                          |
 
 **Why the Angular proxy?** `client/proxy.conf.json` forwards `/api/*` from port 4200 to Express (3000): for the
 browser everything is on the same origin, so the session cookie is sent automatically, with no CORS setup.
@@ -246,36 +246,41 @@ spotfinder/
 
 All routes are prefixed with `/api`. Responses are JSON, dates are ISO 8601.
 
-| Method | Route | Auth | Purpose | Status codes |
-|---|---|---|---|---|
-| GET | `/health` | | API and database status | 200 |
-| POST | `/auth/register` | | sign up (opens the session) | 201, 400, 409, 429 |
-| POST | `/auth/login` | | log in | 200, 400, 401, 429 |
-| POST | `/auth/logout` | | log out | 204 |
-| GET | `/auth/me` | | current user, or `{ user: null }` | 200 |
-| GET | `/spots?q&bruit&wifi&prises&clim&budget&ouvert&type&lat&lng` | | filtered list, sorted by distance | 200, 400 |
-| GET | `/spots/:id` | | place detail (+ favourite, already reviewed, next report allowed at) | 200, 400, 404 |
-| POST | `/spots` | ✓ | add a place (status `a_verifier`) | 201, 400, 401 |
-| GET | `/spots/:id/live` | | Live Meter estimate | 200, 404 |
-| GET | `/spots/:id/live/hourly` | | usual crowd level per hour today | 200, 404 |
-| POST | `/spots/:id/live-reports` | ✓ | "Je suis ici" `{ level: calme / moyen / sature }` | 201, 400, 401, 404, 429 |
-| GET | `/spots/:id/reviews` | | reviews of a place | 200, 404 |
-| POST | `/spots/:id/reviews` | ✓ | leave a review | 201, 400, 401, 404, 409 |
-| DELETE | `/reviews/:id` | ✓ | delete one's own review | 204, 403, 404 |
-| GET | `/me` | ✓ | profile + counters | 200, 401 |
-| PATCH | `/me` | ✓ | change one's display name | 200, 400, 401 |
-| GET | `/me/favorites` | ✓ | my favourites | 200, 401 |
-| PUT / DELETE | `/me/favorites/:spotId` | ✓ | add / remove a favourite (idempotent) | 204, 401, 404 |
-| GET | `/me/reviews` | ✓ | my reviews | 200, 401 |
-| POST | `/contact` | | contact message | 201, 400, 429 |
+| Method       | Route                                                        | Auth | Purpose                                                              | Status codes            |
+| ------------ | ------------------------------------------------------------ | ---- | -------------------------------------------------------------------- | ----------------------- |
+| GET          | `/health`                                                    |      | API and database status                                              | 200                     |
+| POST         | `/auth/register`                                             |      | sign up (opens the session)                                          | 201, 400, 409, 429      |
+| POST         | `/auth/login`                                                |      | log in                                                               | 200, 400, 401, 429      |
+| POST         | `/auth/logout`                                               |      | log out                                                              | 204                     |
+| GET          | `/auth/me`                                                   |      | current user, or `{ user: null }`                                    | 200                     |
+| GET          | `/spots?q&bruit&wifi&prises&clim&budget&ouvert&type&lat&lng` |      | filtered list, sorted by distance                                    | 200, 400                |
+| GET          | `/spots/:id`                                                 |      | place detail (+ favourite, already reviewed, next report allowed at) | 200, 400, 404           |
+| POST         | `/spots`                                                     | ✓    | add a place (status `a_verifier`)                                    | 201, 400, 401           |
+| GET          | `/spots/:id/live`                                            |      | Live Meter estimate                                                  | 200, 404                |
+| GET          | `/spots/:id/live/hourly`                                     |      | usual crowd level per hour today                                     | 200, 404                |
+| POST         | `/spots/:id/live-reports`                                    | ✓    | "Je suis ici" `{ level: calme / moyen / sature }`                    | 201, 400, 401, 404, 429 |
+| GET          | `/spots/:id/reviews`                                         |      | reviews of a place                                                   | 200, 404                |
+| POST         | `/spots/:id/reviews`                                         | ✓    | leave a review                                                       | 201, 400, 401, 404, 409 |
+| DELETE       | `/reviews/:id`                                               | ✓    | delete one's own review                                              | 204, 403, 404           |
+| GET          | `/me`                                                        | ✓    | profile + counters                                                   | 200, 401                |
+| PATCH        | `/me`                                                        | ✓    | change one's display name                                            | 200, 400, 401           |
+| GET          | `/me/favorites`                                              | ✓    | my favourites                                                        | 200, 401                |
+| PUT / DELETE | `/me/favorites/:spotId`                                      | ✓    | add / remove a favourite (idempotent)                                | 204, 401, 404           |
+| GET          | `/me/reviews`                                                | ✓    | my reviews                                                           | 200, 401                |
+| POST         | `/contact`                                                   |      | contact message                                                      | 201, 400, 429           |
 
 Query parameters are French because they also appear in the Explorer URL that users share.
 
 **One error format** (messages in French, ready to display):
 
 ```json
-{ "error": { "code": "VALIDATION_ERROR", "message": "Certains champs sont invalides.",
-             "details": [{ "field": "email", "message": "Adresse e-mail invalide." }] } }
+{
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Certains champs sont invalides.",
+    "details": [{ "field": "email", "message": "Adresse e-mail invalide." }]
+  }
+}
 ```
 
 A `429` on `/live-reports` adds `retryAfterSeconds` and `nextReportAllowedAt`, and the `Retry-After` header.
@@ -304,12 +309,12 @@ reports. The seed is deterministic: everyone gets the same data.
 
 ### Automated tests (all passing)
 
-| Suite | Tool | Tests | What is covered |
-|---|---|---|---|
-| Server, unit | Vitest | 31 | `computeOccupancy` (the 47 % example, 2-hour window, report "from the future"), thresholds, reliability, filters → SQL (including an injection attempt), Tunis time, distances |
-| API | Vitest + Supertest | 39 | every resource: auth (`httpOnly` cookie, identical 401, 409), places (filters, accents, distance sort, 404, validated creation), Live Meter (live / usual / none, 429, double click), reviews (409, 403), favourites, profile, contact, JSON errors |
-| Angular | Vitest (Angular CLI) | 71 | `SpotCardComponent`, `FilterBarComponent` (debounce), `LiveMeterComponent`, "Je suis ici" sheet, review form, "Add a place" (`FormArray`), `AuthService` + guard, utilities |
-| End-to-end | Playwright + axe-core | 20 scenarios | the 3 journeys of the brief, the guard, keyboard use, the accessibility audit; **fails if any error appears in the browser console** |
+| Suite        | Tool                  | Tests        | What is covered                                                                                                                                                                                                                                     |
+| ------------ | --------------------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Server, unit | Vitest                | 31           | `computeOccupancy` (the 47 % example, 2-hour window, report "from the future"), thresholds, reliability, filters → SQL (including an injection attempt), Tunis time, distances                                                                      |
+| API          | Vitest + Supertest    | 39           | every resource: auth (`httpOnly` cookie, identical 401, 409), places (filters, accents, distance sort, 404, validated creation), Live Meter (live / usual / none, 429, double click), reviews (409, 403), favourites, profile, contact, JSON errors |
+| Angular      | Vitest (Angular CLI)  | 71           | `SpotCardComponent`, `FilterBarComponent` (debounce), `LiveMeterComponent`, "Je suis ici" sheet, review form, "Add a place" (`FormArray`), `AuthService` + guard, utilities                                                                         |
+| End-to-end   | Playwright + axe-core | 20 scenarios | the 3 journeys of the brief, the guard, keyboard use, the accessibility audit; **fails if any error appears in the browser console**                                                                                                                |
 
 ```bash
 npm test     # server (unit + API, separate test database) then Angular
@@ -318,13 +323,13 @@ npm run e2e  # with the app running (npm run dev)
 
 ### Browsers
 
-| Browser | End-to-end result |
-|---|---|
-| Chrome (Windows) | 20/20, including the 12-page accessibility audit |
-| Edge | 7/7 |
-| Firefox | 7/7 |
-| WebKit (Safari's engine) | 6/6 |
-| Phone (Pixel 7, Chrome) | 4/4 |
+| Browser                  | End-to-end result                                |
+| ------------------------ | ------------------------------------------------ |
+| Chrome (Windows)         | 20/20, including the 12-page accessibility audit |
+| Edge                     | 7/7                                              |
+| Firefox                  | 7/7                                              |
+| WebKit (Safari's engine) | 6/6                                              |
+| Phone (Pixel 7, Chrome)  | 4/4                                              |
 
 The accessibility audit runs once (in Chrome): the HTML is the same everywhere. Playwright's WebKit crashed on the
 View Transitions API (cross-fade between pages), so it is turned off for WebKit browsers (Safari, iPhone), which
@@ -401,15 +406,15 @@ All agreed with the team in Phase 0, or listed here:
 `main` always works. One branch per phase/feature, merged with `--no-ff` so it stays visible in the history;
 Conventional Commits messages (`feat:`, `fix:`, `test:`, `docs:`, `chore:`).
 
-| Branch | Content |
-|---|---|
-| `feat/skeleton` | workspaces, Docker, schema, seed, full API, Angular skeleton, design tokens |
-| `feat/explorer` | Explorer, filters, map |
-| `feat/live-meter` | place page, Live Meter, "Je suis ici" |
-| `feat/auth-account` | login, sign-up, member area, favourites, reviews |
-| `feat/add-spot-contact` | add a place, about / contact, home page, 404 |
-| `chore/quality-pass` | multi-browser e2e, accessibility audit, local fonts, focus management |
-| `docs/readme` | this README, screenshots, AI log |
+| Branch                  | Content                                                                     |
+| ----------------------- | --------------------------------------------------------------------------- |
+| `feat/skeleton`         | workspaces, Docker, schema, seed, full API, Angular skeleton, design tokens |
+| `feat/explorer`         | Explorer, filters, map                                                      |
+| `feat/live-meter`       | place page, Live Meter, "Je suis ici"                                       |
+| `feat/auth-account`     | login, sign-up, member area, favourites, reviews                            |
+| `feat/add-spot-contact` | add a place, about / contact, home page, 404                                |
+| `chore/quality-pass`    | multi-browser e2e, accessibility audit, local fonts, focus management       |
+| `docs/readme`           | this README, screenshots, AI log                                            |
 
 `git log --graph --oneline` shows the structure.
 

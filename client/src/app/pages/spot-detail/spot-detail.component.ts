@@ -1,6 +1,15 @@
 import { Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal, untracked } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+  untracked,
+} from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { Title } from '@angular/platform-browser';
 import { Router, RouterLink } from '@angular/router';
@@ -18,7 +27,19 @@ import {
   LucideWallet,
   LucideWifi,
 } from '@lucide/angular';
-import { catchError, EMPTY, filter, finalize, interval, map, merge, of, Subject, switchMap, tap } from 'rxjs';
+import {
+  catchError,
+  EMPTY,
+  filter,
+  finalize,
+  interval,
+  map,
+  merge,
+  of,
+  Subject,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { CrowdBadgeComponent } from '../../components/crowd-badge/crowd-badge.component';
 import { EmptyStateComponent } from '../../components/empty-state/empty-state.component';
 import { LiveMeterComponent } from '../../components/live-meter/live-meter.component';
@@ -123,8 +144,11 @@ export class SpotDetailComponent {
   protected readonly infoLine = computed(() => {
     const spot = this.spot();
     if (!spot) return '';
-    const parts = [spot.openNow ? `Ouvert · ferme à ${formatTime(spot.closesAt ?? '')}` : 'Fermé actuellement'];
-    if (spot.distanceMeters !== null) parts.push(`${formatDistance(spot.distanceMeters)} de ${REFERENCE_POINT.label}`);
+    const parts = [
+      spot.openNow ? `Ouvert · ferme à ${formatTime(spot.closesAt ?? '')}` : 'Fermé actuellement',
+    ];
+    if (spot.distanceMeters !== null)
+      parts.push(`${formatDistance(spot.distanceMeters)} de ${REFERENCE_POINT.label}`);
     return parts.join(' · ');
   });
 
@@ -132,7 +156,9 @@ export class SpotDetailComponent {
     const spot = this.spot();
     if (!spot) return [];
     const wifi =
-      spot.ratings.wifi !== null ? `Wi-Fi ${formatRating(Math.round(spot.ratings.wifi))}/5` : wifiLabel(spot.equipment.wifiSpeed);
+      spot.ratings.wifi !== null
+        ? `Wi-Fi ${formatRating(Math.round(spot.ratings.wifi))}/5`
+        : wifiLabel(spot.equipment.wifiSpeed);
     return [wifi, `Prises : ${spot.equipment.outletsCount > 0 ? 'oui' : 'non'}`];
   });
 
@@ -141,8 +167,14 @@ export class SpotDetailComponent {
     if (!spot) return null;
     const e = spot.equipment;
     return {
-      wifi: e.wifiSpeed === 0 ? 'Pas de Wi-Fi' : `${wifiLabel(e.wifiSpeed)} · environ ${e.wifiSpeed} Mb/s`,
-      outlets: e.outletsCount === 0 ? 'Pas de prise accessible' : `${e.outletsCount} prise${e.outletsCount > 1 ? 's' : ''}`,
+      wifi:
+        e.wifiSpeed === 0
+          ? 'Pas de Wi-Fi'
+          : `${wifiLabel(e.wifiSpeed)} · environ ${e.wifiSpeed} Mb/s`,
+      outlets:
+        e.outletsCount === 0
+          ? 'Pas de prise accessible'
+          : `${e.outletsCount} prise${e.outletsCount > 1 ? 's' : ''}`,
       noise: NOISE_DESCRIPTIONS[e.noiseLevel],
       price: PRICE_LABELS[e.priceLevel] ?? '',
       airConditioning: e.airConditioning ? 'Climatisé' : 'Sans climatisation',
@@ -160,7 +192,9 @@ export class SpotDetailComponent {
         weekday,
         label: WEEKDAY_LABELS[weekday]!,
         isToday: weekday === today,
-        text: slots.length ? slots.map((s) => `${formatTime(s.opensAt)} – ${formatTime(s.closesAt)}`).join(', ') : 'Fermé',
+        text: slots.length
+          ? slots.map((s) => `${formatTime(s.opensAt)} – ${formatTime(s.closesAt)}`).join(', ')
+          : 'Fermé',
       };
     });
   });
@@ -200,7 +234,10 @@ export class SpotDetailComponent {
           this.isFavorite.set(spot.isFavorite);
           this.title.setTitle(`${spot.name} · SpotFinder`);
           this.status.set('ready');
-        } else if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 400)) {
+        } else if (
+          error instanceof HttpErrorResponse &&
+          (error.status === 404 || error.status === 400)
+        ) {
           this.status.set('not-found');
         } else {
           this.errorMessage.set(apiErrorMessage(error, 'Impossible de charger ce lieu.'));
@@ -222,7 +259,10 @@ export class SpotDetailComponent {
       .pipe(
         switchMap((id) =>
           interval(LIVE_REFRESH_MS).pipe(
-            filter(() => !this.reporting() && !this.sheetOpen() && document.visibilityState === 'visible'),
+            filter(
+              () =>
+                !this.reporting() && !this.sheetOpen() && document.visibilityState === 'visible',
+            ),
             switchMap(() => this.spotService.liveMeter(id).pipe(catchError(() => EMPTY))),
           ),
         ),
@@ -235,7 +275,11 @@ export class SpotDetailComponent {
       if (this.signaler() === '1' && this.status() === 'ready' && this.auth.isLoggedIn()) {
         untracked(() => {
           this.openReport();
-          void this.router.navigate([], { queryParams: { signaler: null }, queryParamsHandling: 'merge', replaceUrl: true });
+          void this.router.navigate([], {
+            queryParams: { signaler: null },
+            queryParamsHandling: 'merge',
+            replaceUrl: true,
+          });
         });
       }
     });
@@ -254,7 +298,9 @@ export class SpotDetailComponent {
   protected openReport(): void {
     if (!this.auth.isLoggedIn()) {
       this.toast.info('Connectez-vous pour signaler l’affluence : ça prend 30 secondes.');
-      void this.router.navigate(['/connexion'], { queryParams: { redirect: `/lieux/${this.id()}?signaler=1` } });
+      void this.router.navigate(['/connexion'], {
+        queryParams: { redirect: `/lieux/${this.id()}?signaler=1` },
+      });
       return;
     }
     if (this.cooldownMinutes() > 0) return;
@@ -268,7 +314,8 @@ export class SpotDetailComponent {
   protected submitReport(choice: ReportChoice): void {
     const previousMeter = this.liveMeter();
     const occupancy = REPORT_CHOICES.find((c) => c.value === choice)!.occupancy;
-    if (previousMeter) this.liveMeter.set(applyOptimisticReport(previousMeter, occupancy, new Date()));
+    if (previousMeter)
+      this.liveMeter.set(applyOptimisticReport(previousMeter, occupancy, new Date()));
     this.sheetOpen.set(false);
     this.reporting.set(true);
 
@@ -286,7 +333,9 @@ export class SpotDetailComponent {
           this.liveMeter.set(previousMeter); // rollback
           const nextAllowed = apiErrorBody(error)?.nextReportAllowedAt;
           if (nextAllowed) this.nextReportAllowedAt.set(nextAllowed);
-          this.toast.error(apiErrorMessage(error, 'Votre signalement n’a pas pu être envoyé. Réessayez.'));
+          this.toast.error(
+            apiErrorMessage(error, 'Votre signalement n’a pas pu être envoyé. Réessayez.'),
+          );
         },
       });
   }
@@ -305,7 +354,8 @@ export class SpotDetailComponent {
           // Refresh the averages ("Notes de la communauté") without showing the loading state.
           this.spotService.get(id).subscribe((spot) => this.spot.set(spot));
         },
-        error: (error: unknown) => this.toast.error(apiErrorMessage(error, 'Votre avis n’a pas pu être publié.')),
+        error: (error: unknown) =>
+          this.toast.error(apiErrorMessage(error, 'Votre avis n’a pas pu être publié.')),
       });
   }
 
@@ -313,7 +363,9 @@ export class SpotDetailComponent {
   protected toggleFavorite(): void {
     if (!this.auth.isLoggedIn()) {
       this.toast.info('Connectez-vous pour garder vos lieux favoris.');
-      void this.router.navigate(['/connexion'], { queryParams: { redirect: `/lieux/${this.id()}` } });
+      void this.router.navigate(['/connexion'], {
+        queryParams: { redirect: `/lieux/${this.id()}` },
+      });
       return;
     }
     const wasFavorite = this.isFavorite();
