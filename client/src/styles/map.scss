@@ -1,9 +1,11 @@
 // Leaflet base styles + SpotFinder map pins (style guide "Repère carte").
+// Built as a separate file (map.css) that MapViewComponent loads the first time a map is shown:
+// pages without a map never download it.
 @use 'leaflet/dist/leaflet';
 
 .leaflet-container {
   font-family: var(--font-texte);
-  background: #e6e9e4;
+  background: var(--map-fond);
 
   a {
     color: var(--vert-canard);

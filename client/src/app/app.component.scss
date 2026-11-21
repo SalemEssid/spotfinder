@@ -6,6 +6,9 @@
 
 main {
   flex: 1;
+  // At least one screen tall: while a page is loading, the footer stays below the fold instead of
+  // showing up and then jumping down when the content arrives (a "layout shift" in Lighthouse).
+  min-height: calc(100dvh - var(--header-h));
   outline: none;
 }
 

@@ -1,0 +1,4 @@
+# SpotFinder: every public page may be indexed; the member area and the API are private.
+User-agent: *
+Disallow: /api/
+Disallow: /compte/

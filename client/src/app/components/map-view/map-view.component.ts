@@ -15,6 +15,7 @@ import * as L from 'leaflet';
 import type { LiveMeter } from '../../models/spot.model';
 import { ClockService } from '../../services/clock.service';
 import { crowdBadgeText, isFreshReport } from '../../utils/live-meter';
+import { loadStylesheet } from '../../utils/load-stylesheet';
 import { REFERENCE_POINT, type GeoPoint } from '../../utils/reference-point';
 
 export interface MapMarker {
@@ -51,6 +52,9 @@ function pinSvg(level: LiveMeter['level']): string {
 /** Below this zoom level, pins are too close for their text labels: only the bars remain. */
 const LABELS_MIN_ZOOM = 13;
 
+/** Leaflet + pin styles, built separately (angular.json "map" bundle) and loaded on demand. */
+const MAP_STYLESHEET = 'map.css';
+
 const escapeHtml = (text: string) =>
   text.replace(/[&<>"']/g, (char) => `&#${char.charCodeAt(0)};`);
 
@@ -66,7 +70,7 @@ const escapeHtml = (text: string) =>
       display: block;
       overflow: hidden;
       border-radius: var(--radius-lg);
-      background: #e6e9e4;
+      background: var(--map-fond);
     }
 
     .map {
@@ -103,24 +107,33 @@ export class MapViewComponent {
   private pickedMarker?: L.Marker;
 
   constructor() {
-    const destroyRef = inject(DestroyRef);
-    // Leaflet needs a real DOM element with a size: create the map after the first render.
+    let destroyed = false;
+    let resizeObserver: ResizeObserver | undefined;
+    inject(DestroyRef).onDestroy(() => {
+      destroyed = true;
+      resizeObserver?.disconnect();
+      this.map?.remove();
+    });
+
+    // Leaflet needs a real DOM element with a size: create the map after the first render,
+    // once the map styles are loaded (a map drawn without them is a jumble of tiles).
     afterNextRender(() => {
-      this.createMap();
-      // The map can be hidden (phones: "Liste" view) when the places arrive. A hidden map has no
-      // size, so framing the pins then gives a whole-world view: re-frame when it becomes visible.
-      let wasHidden = this.container().nativeElement.offsetWidth === 0;
-      const resizeObserver = new ResizeObserver(([entry]) => {
-        this.map?.invalidateSize();
-        const isHidden = (entry?.contentRect.width ?? 0) === 0;
-        if (wasHidden && !isHidden) this.fitBounds(this.markers());
-        wasHidden = isHidden;
-      });
-      resizeObserver.observe(this.container().nativeElement);
-      destroyRef.onDestroy(() => {
-        resizeObserver.disconnect();
-        this.map?.remove();
-      });
+      void loadStylesheet(MAP_STYLESHEET)
+        .catch(() => undefined) // without the styles the map looks rough, but it still works
+        .then(() => {
+          if (destroyed) return;
+          this.createMap();
+          // The map can be hidden (phones: "Liste" view) when the places arrive. A hidden map has
+          // no size, so framing the pins then gives a whole-world view: re-frame when it appears.
+          let wasHidden = this.container().nativeElement.offsetWidth === 0;
+          resizeObserver = new ResizeObserver(([entry]) => {
+            this.map?.invalidateSize();
+            const isHidden = (entry?.contentRect.width ?? 0) === 0;
+            if (wasHidden && !isHidden) this.fitBounds(this.markers());
+            wasHidden = isHidden;
+          });
+          resizeObserver.observe(this.container().nativeElement);
+        });
     });
 
     // Re-draw the pins when the list of places changes.

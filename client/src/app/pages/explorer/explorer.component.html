@@ -67,14 +67,20 @@
   </section>
 
   <section class="map-area" aria-label="Carte">
-    <app-map-view
-      class="map"
-      [markers]="spots() ?? []"
-      [highlightedId]="highlightedId()"
-      ariaLabel="Carte des lieux trouvés. Chaque repère indique l’affluence. La liste contient les mêmes lieux."
-      (markerHover)="highlightedId.set($event)"
-      (markerSelect)="onMarkerSelect($event)"
-    />
+    <!-- @defer: the map and Leaflet (40 kB) are downloaded and drawn once the browser is idle,
+         after the list. The list shows up sooner, and it is what people read first. -->
+    @defer (on idle) {
+      <app-map-view
+        class="map"
+        [markers]="spots() ?? []"
+        [highlightedId]="highlightedId()"
+        ariaLabel="Carte des lieux trouvés. Chaque repère indique l’affluence. La liste contient les mêmes lieux."
+        (markerHover)="highlightedId.set($event)"
+        (markerSelect)="onMarkerSelect($event)"
+      />
+    } @placeholder {
+      <div class="map map-placeholder" aria-hidden="true"></div>
+    }
 
     @if (preview(); as spot) {
       <div class="map-preview">
