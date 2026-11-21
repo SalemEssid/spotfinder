@@ -24,7 +24,8 @@ describe('AddSpotComponent (dynamic form)', () => {
   beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [AddSpotComponent],
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+      // Catch-all route: after saving, the page navigates to the new place (/lieux/:id).
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([{ path: '**', children: [] }])],
     });
     // The map needs a real browser: replace the template, keep the form logic.
     TestBed.overrideComponent(AddSpotComponent, { set: { template: '', imports: [] } });
