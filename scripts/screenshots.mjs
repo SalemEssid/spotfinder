@@ -78,5 +78,16 @@ await shoot('07-explorer-tablette', '/explorer?ouvert=1', TABLET, { wait: 3500 }
 await shoot('08-favoris', '/compte/favoris', DESKTOP, { login: 'demo' });
 await shoot('09-ajouter', '/ajouter', DESKTOP, { login: 'demo', wait: 2500 });
 await shoot('10-a-propos', '/a-propos', DESKTOP);
+await shoot('11-modifier-avis', '/compte/avis', DESKTOP, {
+  login: 'demo',
+  setup: async (page) => {
+    await page
+      .getByRole('button', { name: /^Modifier/ })
+      .first()
+      .click();
+    await page.mouse.move(1300, 600); // away from the stars, or they show their hover preview
+    await page.waitForTimeout(500);
+  },
+});
 
 await browser.close();
