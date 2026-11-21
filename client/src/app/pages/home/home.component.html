@@ -94,7 +94,7 @@
   } @else {
     <ul class="cards" role="list">
       @for (spot of nearby(); track spot.id) {
-        <li><app-spot-card [spot]="spot" layout="grid" /></li>
+        <li class="appear" [style.--i]="$index"><app-spot-card [spot]="spot" layout="grid" /></li>
       }
     </ul>
   }

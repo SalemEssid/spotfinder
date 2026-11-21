@@ -54,7 +54,7 @@
     } @else {
       <ul class="results__list" role="list" [class.is-refreshing]="loading()">
         @for (spot of spots(); track spot.id) {
-          <li>
+          <li class="appear" [style.--i]="$index">
             <app-spot-card
               [spot]="spot"
               [highlighted]="highlightedId() === spot.id"

@@ -157,3 +157,17 @@ ol[role='list'] {
     animation: none !important;
   }
 }
+
+// Light entrance animation for lists of cards: each item fades in slightly after the previous one
+// (set --i to the item's index). Items that stay in the list are not animated again.
+.appear {
+  animation: appear 320ms var(--ease-out) both;
+  animation-delay: calc(min(var(--i, 0), 8) * 40ms);
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
