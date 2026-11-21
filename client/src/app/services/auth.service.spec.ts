@@ -6,14 +6,22 @@ import { authGuard } from '../guards/auth.guard';
 import type { User } from '../models/user.model';
 import { AuthService } from './auth.service';
 
-const USER: User = { id: 1, name: 'Compte Démo', email: 'demo@spotfinder.tn', role: 'user', createdAt: '2026-11-01T00:00:00Z' };
+const USER: User = {
+  id: 1,
+  name: 'Compte Démo',
+  email: 'demo@spotfinder.tn',
+  role: 'user',
+  createdAt: '2026-11-01T00:00:00Z',
+};
 
 describe('AuthService', () => {
   let service: AuthService;
   let http: HttpTestingController;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({ providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])] });
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+    });
     service = TestBed.inject(AuthService);
     http = TestBed.inject(HttpTestingController);
   });
@@ -45,7 +53,10 @@ describe('AuthService', () => {
   it('logs in and out', () => {
     service.login('demo@spotfinder.tn', 'SpotFinder2026').subscribe();
     const request = http.expectOne('/api/auth/login');
-    expect(request.request.body).toEqual({ email: 'demo@spotfinder.tn', password: 'SpotFinder2026' });
+    expect(request.request.body).toEqual({
+      email: 'demo@spotfinder.tn',
+      password: 'SpotFinder2026',
+    });
     request.flush(USER);
     expect(service.user()?.name).toBe('Compte Démo');
 
@@ -57,17 +68,19 @@ describe('AuthService', () => {
 
 describe('authGuard', () => {
   beforeEach(() => {
-    TestBed.configureTestingModule({ providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])] });
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+    });
   });
 
   const runGuard = (url: string) =>
-    TestBed.runInInjectionContext(() =>
-      authGuard({} as never, { url } as never),
-    );
+    TestBed.runInInjectionContext(() => authGuard({} as never, { url } as never));
 
   it('sends visitors to the login page, remembering where they wanted to go', () => {
     const result = runGuard('/compte/favoris') as UrlTree;
-    expect(TestBed.inject(Router).serializeUrl(result)).toBe('/connexion?redirect=%2Fcompte%2Ffavoris');
+    expect(TestBed.inject(Router).serializeUrl(result)).toBe(
+      '/connexion?redirect=%2Fcompte%2Ffavoris',
+    );
   });
 
   it('lets logged-in members through', () => {

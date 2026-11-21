@@ -45,23 +45,30 @@ const toDto = (row: ReviewRow): ReviewDto => ({
   id: row.id,
   spot: { id: row.spot_id, name: row.spot_name },
   author: { id: row.user_id, name: row.author_name },
-  ratings: { wifi: row.rating_wifi, calm: row.rating_calm, outlets: row.rating_outlets, price: row.rating_price },
+  ratings: {
+    wifi: row.rating_wifi,
+    calm: row.rating_calm,
+    outlets: row.rating_outlets,
+    price: row.rating_price,
+  },
   comment: row.comment,
   createdAt: row.created_at.toISOString(),
   updatedAt: row.updated_at?.toISOString() ?? null,
 });
 
 export async function findReviewsOfSpot(spotId: number): Promise<ReviewDto[]> {
-  const { rows } = await pool.query<ReviewRow>(`${REVIEW_SELECT} WHERE r.spot_id = $1 ORDER BY r.created_at DESC`, [
-    spotId,
-  ]);
+  const { rows } = await pool.query<ReviewRow>(
+    `${REVIEW_SELECT} WHERE r.spot_id = $1 ORDER BY r.created_at DESC`,
+    [spotId],
+  );
   return rows.map(toDto);
 }
 
 export async function findReviewsOfUser(userId: number): Promise<ReviewDto[]> {
-  const { rows } = await pool.query<ReviewRow>(`${REVIEW_SELECT} WHERE r.user_id = $1 ORDER BY r.created_at DESC`, [
-    userId,
-  ]);
+  const { rows } = await pool.query<ReviewRow>(
+    `${REVIEW_SELECT} WHERE r.user_id = $1 ORDER BY r.created_at DESC`,
+    [userId],
+  );
   return rows.map(toDto);
 }
 
@@ -70,11 +77,21 @@ export async function findReviewById(id: number): Promise<ReviewDto | null> {
   return rows[0] ? toDto(rows[0]) : null;
 }
 
-export async function insertReview(input: ReviewInput & { spotId: number; userId: number }): Promise<number> {
+export async function insertReview(
+  input: ReviewInput & { spotId: number; userId: number },
+): Promise<number> {
   const { rows } = await pool.query<{ id: number }>(
     `INSERT INTO reviews (spot_id, user_id, rating_wifi, rating_calm, rating_outlets, rating_price, comment)
      VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
-    [input.spotId, input.userId, input.ratingWifi, input.ratingCalm, input.ratingOutlets, input.ratingPrice, input.comment],
+    [
+      input.spotId,
+      input.userId,
+      input.ratingWifi,
+      input.ratingCalm,
+      input.ratingOutlets,
+      input.ratingPrice,
+      input.comment,
+    ],
   );
   return rows[0]!.id;
 }

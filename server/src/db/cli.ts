@@ -19,7 +19,9 @@ async function main(): Promise<void> {
     case 'prepare': {
       await ensureDatabaseExists(env.databaseUrl);
       await migrate();
-      const { rows } = await pool.query<{ count: number }>('SELECT COUNT(*)::int AS count FROM spots');
+      const { rows } = await pool.query<{ count: number }>(
+        'SELECT COUNT(*)::int AS count FROM spots',
+      );
       if (rows[0]!.count === 0) await seed();
       else console.log('✔ Database already contains data (use `npm run db:reset` to start over)');
       break;
@@ -45,7 +47,9 @@ async function main(): Promise<void> {
 
 async function migrate(): Promise<void> {
   const applied = await runMigrations(pool);
-  console.log(applied.length ? `✔ Migrations applied: ${applied.join(', ')}` : '✔ Schema up to date');
+  console.log(
+    applied.length ? `✔ Migrations applied: ${applied.join(', ')}` : '✔ Schema up to date',
+  );
 }
 
 async function seed(): Promise<void> {
@@ -55,7 +59,8 @@ async function seed(): Promise<void> {
 
 /** Connection failures come as an AggregateError with an empty message but a `code`. */
 function isConnectionError(error: unknown): boolean {
-  const code = typeof error === 'object' && error !== null && 'code' in error ? error.code : undefined;
+  const code =
+    typeof error === 'object' && error !== null && 'code' in error ? error.code : undefined;
   return code === 'ECONNREFUSED' || code === 'ENOTFOUND' || code === 'ETIMEDOUT';
 }
 

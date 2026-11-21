@@ -12,7 +12,12 @@ export const sessionExpiredInterceptor: HttpInterceptorFn = (request, next) => {
   return next(request).pipe(
     catchError((error: unknown) => {
       const isSessionCheck = request.url.startsWith('/api/auth/');
-      if (error instanceof HttpErrorResponse && error.status === 401 && !isSessionCheck && auth.isLoggedIn()) {
+      if (
+        error instanceof HttpErrorResponse &&
+        error.status === 401 &&
+        !isSessionCheck &&
+        auth.isLoggedIn()
+      ) {
         auth.clearSession();
       }
       return throwError(() => error);

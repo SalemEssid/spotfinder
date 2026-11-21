@@ -16,7 +16,9 @@ describe('buildSpotFilterSql', () => {
 
   it('combines several filters with AND', () => {
     const { where, params } = buildSpotFilterSql({ fastWifi: true, outlets: true, openNow: true });
-    expect(where).toBe(`WHERE e.wifi_speed >= $1 AND e.outlets_count > 0 AND open_now.closes_at IS NOT NULL`);
+    expect(where).toBe(
+      `WHERE e.wifi_speed >= $1 AND e.outlets_count > 0 AND open_now.closes_at IS NOT NULL`,
+    );
     expect(params).toEqual([FAST_WIFI_MBPS]);
   });
 

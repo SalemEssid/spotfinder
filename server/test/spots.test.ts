@@ -26,7 +26,9 @@ describe('GET /api/spots', () => {
   });
 
   it('filters by noise, fast Wi-Fi and outlets', async () => {
-    const { body } = await request(app).get('/api/spots?bruit=silencieux&wifi=1&prises=1').expect(200);
+    const { body } = await request(app)
+      .get('/api/spots?bruit=silencieux&wifi=1&prises=1')
+      .expect(200);
     expect(body.length).toBeGreaterThan(0);
     for (const spot of body as Spot[]) {
       expect(spot.equipment.noiseLevel).toBe('silencieux');
@@ -46,7 +48,9 @@ describe('GET /api/spots', () => {
   });
 
   it('sorts by distance from the reference point', async () => {
-    const { body } = await request(app).get(`/api/spots?lat=${SUPCOM.lat}&lng=${SUPCOM.lng}`).expect(200);
+    const { body } = await request(app)
+      .get(`/api/spots?lat=${SUPCOM.lat}&lng=${SUPCOM.lng}`)
+      .expect(200);
     const distances = (body as Spot[]).map((s) => s.distanceMeters!);
     expect(distances).toEqual([...distances].sort((a, b) => a - b));
     expect(body[0].name).toBe('Café Le Pupitre'); // ≈ 350 m, as in the mockup
@@ -83,7 +87,13 @@ describe('POST /api/spots', () => {
     description: 'Un café créé par les tests.',
     latitude: 36.86,
     longitude: 10.19,
-    equipment: { wifiSpeed: 25, outletsCount: 5, noiseLevel: 'modere', priceLevel: 1, airConditioning: true },
+    equipment: {
+      wifiSpeed: 25,
+      outletsCount: 5,
+      noiseLevel: 'modere',
+      priceLevel: 1,
+      airConditioning: true,
+    },
     openingHours: [
       { weekday: 1, opensAt: '08:00', closesAt: '12:00' },
       { weekday: 1, opensAt: '14:00', closesAt: '19:00' },

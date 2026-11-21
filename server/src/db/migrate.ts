@@ -62,7 +62,9 @@ export async function ensureDatabaseExists(connectionString: string): Promise<vo
   const admin = new pg.Client({ connectionString: url.toString() });
   await admin.connect();
   try {
-    const { rowCount } = await admin.query('SELECT 1 FROM pg_database WHERE datname = $1', [databaseName]);
+    const { rowCount } = await admin.query('SELECT 1 FROM pg_database WHERE datname = $1', [
+      databaseName,
+    ]);
     if (rowCount === 0) {
       // Identifiers cannot be query parameters; the name was validated above.
       await admin.query(`CREATE DATABASE ${databaseName}`);

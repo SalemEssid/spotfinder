@@ -1,6 +1,13 @@
 <!-- The keyboard equivalent of the backdrop click is the Esc key (handled natively by <dialog>). -->
 <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
-<dialog #dialog class="sheet" aria-labelledby="report-title" aria-describedby="report-help" (close)="closed.emit()" (click)="onDialogClick($event)">
+<dialog
+  #dialog
+  class="sheet"
+  aria-labelledby="report-title"
+  aria-describedby="report-help"
+  (close)="closed.emit()"
+  (click)="onDialogClick($event)"
+>
   <form class="sheet__content" (submit)="submit($event)">
     <span class="sheet__handle" aria-hidden="true"></span>
     <h2 id="report-title">Il y a du monde ici ?</h2>
@@ -29,7 +36,9 @@
     </fieldset>
     <p class="sheet__hint" aria-live="polite">{{ selectedHint() }}</p>
 
-    <button type="submit" class="btn btn--primary btn--block" [disabled]="choice() === null">Envoyer</button>
+    <button type="submit" class="btn btn--primary btn--block" [disabled]="choice() === null">
+      Envoyer
+    </button>
     <button type="button" class="btn btn--ghost btn--block" (click)="close()">Annuler</button>
   </form>
 </dialog>

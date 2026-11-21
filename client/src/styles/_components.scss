@@ -261,7 +261,12 @@ select.input {
 // --- Loading skeleton -------------------------------------------------------------------------
 .skeleton {
   border-radius: var(--radius-sm);
-  background: linear-gradient(90deg, var(--neutre-bg) 25%, var(--surface) 50%, var(--neutre-bg) 75%);
+  background: linear-gradient(
+    90deg,
+    var(--neutre-bg) 25%,
+    var(--surface) 50%,
+    var(--neutre-bg) 75%
+  );
   background-size: 200% 100%;
   animation: skeleton-shimmer 1.4s ease-in-out infinite;
 }

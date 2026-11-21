@@ -43,9 +43,13 @@ describe('ReviewFormComponent', () => {
     await fixture.whenStable();
     const element = fixture.nativeElement as HTMLElement;
 
-    expect(element.querySelector<HTMLInputElement>('input[name="rating-calm"][value="5"]')!.checked).toBe(true);
+    expect(
+      element.querySelector<HTMLInputElement>('input[name="rating-calm"][value="5"]')!.checked,
+    ).toBe(true);
     expect(element.querySelector('textarea')!.value).toBe('Très calme.');
-    expect(element.querySelector('button[type="submit"]')!.textContent).toContain('Enregistrer les modifications');
+    expect(element.querySelector('button[type="submit"]')!.textContent).toContain(
+      'Enregistrer les modifications',
+    );
 
     element.querySelector('form')!.dispatchEvent(new Event('submit')); // unchanged values are valid as is
     expect(submitted[0]).toMatchObject({ ratingWifi: 2, ratingCalm: 5, comment: 'Très calme.' });
@@ -65,7 +69,13 @@ describe('ReviewFormComponent', () => {
 
     await submit();
     expect(submitted).toEqual([
-      { ratingWifi: 4, ratingCalm: 5, ratingOutlets: 3, ratingPrice: 2, comment: 'Très calme le matin.' },
+      {
+        ratingWifi: 4,
+        ratingCalm: 5,
+        ratingOutlets: 3,
+        ratingPrice: 2,
+        comment: 'Très calme le matin.',
+      },
     ]);
   });
 });

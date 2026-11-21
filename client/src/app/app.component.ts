@@ -11,7 +11,13 @@ import { NavigationHistoryService } from './services/navigation-history.service'
 /** Page frame shared by every route: header, main content, footer, mobile tab bar, toasts. */
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, HeaderComponent, FooterComponent, MobileNavComponent, ToastContainerComponent],
+  imports: [
+    RouterOutlet,
+    HeaderComponent,
+    FooterComponent,
+    MobileNavComponent,
+    ToastContainerComponent,
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -55,8 +55,7 @@ const LABELS_MIN_ZOOM = 13;
 /** Leaflet + pin styles, built separately (angular.json "map" bundle) and loaded on demand. */
 const MAP_STYLESHEET = 'map.css';
 
-const escapeHtml = (text: string) =>
-  text.replace(/[&<>"']/g, (char) => `&#${char.charCodeAt(0)};`);
+const escapeHtml = (text: string) => text.replace(/[&<>"']/g, (char) => `&#${char.charCodeAt(0)};`);
 
 /**
  * Leaflet map wrapped in one component, so no other part of the app touches Leaflet directly.
@@ -148,7 +147,10 @@ export class MapViewComponent {
       if (!this.ready()) return;
       for (const [id, marker] of this.markerById) {
         const isHighlighted = id === highlightedId;
-        marker.getElement()?.querySelector('.sf-pin')?.classList.toggle('is-highlighted', isHighlighted);
+        marker
+          .getElement()
+          ?.querySelector('.sf-pin')
+          ?.classList.toggle('is-highlighted', isHighlighted);
         marker.setZIndexOffset(isHighlighted ? 1000 : 0);
       }
     });
@@ -181,7 +183,10 @@ export class MapViewComponent {
     this.markerLayer.addTo(this.map);
 
     const updateLabelVisibility = () =>
-      this.container().nativeElement.classList.toggle('sf-map--compact', this.map!.getZoom() < LABELS_MIN_ZOOM);
+      this.container().nativeElement.classList.toggle(
+        'sf-map--compact',
+        this.map!.getZoom() < LABELS_MIN_ZOOM,
+      );
     this.map.on('zoomend', updateLabelVisibility);
     updateLabelVisibility();
 
@@ -191,7 +196,12 @@ export class MapViewComponent {
         keyboard: false,
         interactive: false,
       })
-        .bindTooltip(REFERENCE_POINT.label, { permanent: true, direction: 'bottom', offset: [0, 16], className: 'sf-reference-label' })
+        .bindTooltip(REFERENCE_POINT.label, {
+          permanent: true,
+          direction: 'bottom',
+          offset: [0, 16],
+          className: 'sf-reference-label',
+        })
         .addTo(this.map);
     }
 

@@ -10,10 +10,23 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { LucideClock, LucidePlug, LucideRotateCcw, LucideSearch, LucideSnowflake, LucideWifi } from '@lucide/angular';
+import {
+  LucideClock,
+  LucidePlug,
+  LucideRotateCcw,
+  LucideSearch,
+  LucideSnowflake,
+  LucideWifi,
+} from '@lucide/angular';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs';
 import type { NoiseLevel } from '../../models/spot.model';
-import { BUDGET_LABELS, countActiveFilters, EMPTY_FILTERS, NOISE_LABELS, type SpotFilters } from '../../utils/filters';
+import {
+  BUDGET_LABELS,
+  countActiveFilters,
+  EMPTY_FILTERS,
+  NOISE_LABELS,
+  type SpotFilters,
+} from '../../utils/filters';
 
 /** Waiting time after the last key stroke before searching (avoids one request per letter). */
 export const SEARCH_DEBOUNCE_MS = 300;
@@ -26,7 +39,15 @@ type ToggleFilter = 'fastWifi' | 'outlets' | 'airConditioning' | 'openNow';
  */
 @Component({
   selector: 'app-filter-bar',
-  imports: [ReactiveFormsModule, LucideSearch, LucideWifi, LucidePlug, LucideSnowflake, LucideClock, LucideRotateCcw],
+  imports: [
+    ReactiveFormsModule,
+    LucideSearch,
+    LucideWifi,
+    LucidePlug,
+    LucideSnowflake,
+    LucideClock,
+    LucideRotateCcw,
+  ],
   templateUrl: './filter-bar.component.html',
   styleUrl: './filter-bar.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -43,11 +64,15 @@ export class FilterBarComponent {
     value,
     label: NOISE_LABELS[value],
   }));
-  protected readonly budgetOptions = (Object.keys(BUDGET_LABELS) as ('0' | '3' | '6')[]).map((value) => ({
-    value,
-    label: BUDGET_LABELS[value],
-  }));
-  protected readonly canReset = computed(() => countActiveFilters(this.filters()) > 0 || this.filters().q !== '');
+  protected readonly budgetOptions = (Object.keys(BUDGET_LABELS) as ('0' | '3' | '6')[]).map(
+    (value) => ({
+      value,
+      label: BUDGET_LABELS[value],
+    }),
+  );
+  protected readonly canReset = computed(
+    () => countActiveFilters(this.filters()) > 0 || this.filters().q !== '',
+  );
 
   constructor() {
     // Keep the field in sync when the filters change from outside (URL, "Réinitialiser"…).
@@ -82,7 +107,9 @@ export class FilterBarComponent {
 
   protected toggleNoise(level: NoiseLevel): void {
     const noise = this.filters().noise;
-    this.emit({ noise: noise.includes(level) ? noise.filter((n) => n !== level) : [...noise, level] });
+    this.emit({
+      noise: noise.includes(level) ? noise.filter((n) => n !== level) : [...noise, level],
+    });
   }
 
   protected toggle(key: ToggleFilter): void {

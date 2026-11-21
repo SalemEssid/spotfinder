@@ -14,7 +14,12 @@ export const LEVEL_LABELS: Record<CrowdLevel, string> = {
   sature: 'Saturé',
 };
 
-export const REPORT_CHOICES: { value: ReportChoice; label: string; occupancy: number; hint: string }[] = [
+export const REPORT_CHOICES: {
+  value: ReportChoice;
+  label: string;
+  occupancy: number;
+  hint: string;
+}[] = [
   { value: 'calme', label: 'Calme', occupancy: 25, hint: 'Beaucoup de places libres' },
   { value: 'moyen', label: 'Moyen', occupancy: 55, hint: 'Quelques places libres' },
   { value: 'sature', label: 'Saturé', occupancy: 85, hint: 'Difficile de trouver une place' },
@@ -29,7 +34,8 @@ export function levelFor(percent: number): CrowdLevel {
 
 /** "≈ 30 % · Calme", "Habituel · Calme", "Pas de signalement". Colour is never shown without these words. */
 export function crowdBadgeText(meter: LiveMeter): string {
-  if (meter.source === 'aucun' || meter.occupancy === null || meter.level === null) return 'Pas de signalement';
+  if (meter.source === 'aucun' || meter.occupancy === null || meter.level === null)
+    return 'Pas de signalement';
   if (meter.source === 'habituel') return `Habituel · ${LEVEL_LABELS[meter.level]}`;
   return `≈ ${meter.occupancy} % · ${LEVEL_LABELS[meter.level]}`;
 }

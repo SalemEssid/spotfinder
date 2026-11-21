@@ -8,8 +8,13 @@ export const spotsRouter = Router();
 
 /** Optional reference point for distances on the detail page. */
 const originSchema = z
-  .object({ lat: z.coerce.number().min(-90).max(90).optional(), lng: z.coerce.number().min(-180).max(180).optional() })
-  .transform(({ lat, lng }) => (lat !== undefined && lng !== undefined ? { latitude: lat, longitude: lng } : null));
+  .object({
+    lat: z.coerce.number().min(-90).max(90).optional(),
+    lng: z.coerce.number().min(-180).max(180).optional(),
+  })
+  .transform(({ lat, lng }) =>
+    lat !== undefined && lng !== undefined ? { latitude: lat, longitude: lng } : null,
+  );
 
 /** GET /api/spots?q=&bruit=&wifi=&prises=&clim=&budget=&ouvert=&type=&lat=&lng= */
 spotsRouter.get('/', async (req, res) => {

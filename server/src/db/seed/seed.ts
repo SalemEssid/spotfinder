@@ -123,15 +123,27 @@ export async function seedDatabase(client: pg.PoolClient, now: Date): Promise<vo
       const average = ratings.reduce((a, b) => a + b, 0) / ratings.length;
       const comments =
         average >= 3.8 ? POSITIVE_COMMENTS : average >= 2.8 ? MIXED_COMMENTS : NEGATIVE_COMMENTS;
-      await insertReview(client, spotIdByName.get(spot.name)!, authorId, ratings, random.pick(comments),
-        daysAgo(now, random.int(2, 40)));
+      await insertReview(
+        client,
+        spotIdByName.get(spot.name)!,
+        authorId,
+        ratings,
+        random.pick(comments),
+        daysAgo(now, random.int(2, 40)),
+      );
     }
   }
 
   // The demo account's own reviews and favourites.
   for (const review of DEMO_REVIEWS) {
-    await insertReview(client, spotIdByName.get(review.spot)!, demoUserId, review.ratings, review.comment,
-      daysAgo(now, random.int(1, 10)));
+    await insertReview(
+      client,
+      spotIdByName.get(review.spot)!,
+      demoUserId,
+      review.ratings,
+      review.comment,
+      daysAgo(now, random.int(1, 10)),
+    );
   }
   for (const name of DEMO_FAVORITES) {
     await client.query(`INSERT INTO favorites (user_id, spot_id, created_at) VALUES ($1, $2, $3)`, [
@@ -161,12 +173,19 @@ export async function refreshRecentReports(client: pg.PoolClient, now: Date): Pr
   // Recent reports (including real ones made during a previous demo) are replaced by fresh ones.
   await client.query(`DELETE FROM live_reports WHERE created_at > $1`, [windowStart]);
 
-  const { rows: spots } = await client.query<{ id: number; name: string }>(`SELECT id, name FROM spots`);
+  const { rows: spots } = await client.query<{ id: number; name: string }>(
+    `SELECT id, name FROM spots`,
+  );
   const spotIdByName = new Map(spots.map((s) => [s.name, s.id]));
   const { rows: users } = await client.query<{ id: number }>(
     `SELECT id FROM users WHERE email LIKE 'membre%@spotfinder.tn' ORDER BY id`,
   );
-  const reports = generateRecentReports(spotIdByName, users.map((u) => u.id), now, random);
+  const reports = generateRecentReports(
+    spotIdByName,
+    users.map((u) => u.id),
+    now,
+    random,
+  );
   await insertReports(client, reports);
   return reports.length;
 }
@@ -243,7 +262,8 @@ function generateHistory(
       for (let hour = openHour; hour < closeHour; hour++) {
         const reportsThisHour = random.int(1, 2);
         for (let n = 0; n < reportsThisHour; n++) {
-          const busyness = typicalBusyness(spot.type, weekday, hour) + spot.busyness + (random.next() - 0.5) * 0.3;
+          const busyness =
+            typicalBusyness(spot.type, weekday, hour) + spot.busyness + (random.next() - 0.5) * 0.3;
           const localTime = localMidnight + (hour * 60 + random.int(0, 59)) * MINUTE_MS;
           reports.push({
             spotId,

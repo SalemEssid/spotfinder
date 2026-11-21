@@ -2,7 +2,9 @@
   <h2 id="profile-title">Profil</h2>
 
   @if (loadError()) {
-    <p class="text-secondary" role="alert">Votre profil n’a pas pu être chargé. Rechargez la page.</p>
+    <p class="text-secondary" role="alert">
+      Votre profil n’a pas pu être chargé. Rechargez la page.
+    </p>
   } @else if (profile(); as p) {
     <dl class="stats">
       <div class="stat">
@@ -37,8 +39,12 @@
                 autocomplete="nickname"
                 [attr.aria-invalid]="!!fieldError(nameControl)"
               />
-              <button type="submit" class="btn btn--primary" [disabled]="saving()">Enregistrer</button>
-              <button type="button" class="btn btn--ghost" (click)="editing.set(false)">Annuler</button>
+              <button type="submit" class="btn btn--primary" [disabled]="saving()">
+                Enregistrer
+              </button>
+              <button type="button" class="btn btn--ghost" (click)="editing.set(false)">
+                Annuler
+              </button>
               @if (fieldError(nameControl); as error) {
                 <p class="field__error">{{ error }}</p>
               }

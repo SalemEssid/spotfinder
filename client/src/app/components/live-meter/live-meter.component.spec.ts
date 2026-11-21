@@ -17,14 +17,20 @@ async function render(meter: LiveMeter) {
   fixture.componentRef.setInput('meter', meter);
   await fixture.whenStable();
   const element = fixture.nativeElement as HTMLElement;
-  const text = (selector: string) => element.querySelector(selector)?.textContent?.replace(/\s+/g, ' ').trim();
+  const text = (selector: string) =>
+    element.querySelector(selector)?.textContent?.replace(/\s+/g, ' ').trim();
   return { fixture, element, text };
 }
 
 describe('LiveMeterComponent', () => {
   it('shows the estimate with its word and its source (brief example: ≈ 47 % · Modéré)', async () => {
     const { text } = await render(
-      makeMeter({ occupancy: 47, level: 'modere', reportCount: 3, lastReportAt: '2026-11-12T13:50:00Z' }),
+      makeMeter({
+        occupancy: 47,
+        level: 'modere',
+        reportCount: 3,
+        lastReportAt: '2026-11-12T13:50:00Z',
+      }),
     );
     expect(text('.meter__title')).toBe('Affluence maintenant');
     // "≈" is shown, "environ" is read by screen readers.
@@ -47,15 +53,31 @@ describe('LiveMeterComponent', () => {
 
   it('labels the historical fallback "Estimation habituelle"', async () => {
     const { text } = await render(
-      makeMeter({ source: 'habituel', occupancy: 28, level: 'calme', reportCount: 12, lastReportAt: null, confidence: null }),
+      makeMeter({
+        source: 'habituel',
+        occupancy: 28,
+        level: 'calme',
+        reportCount: 12,
+        lastReportAt: null,
+        confidence: null,
+      }),
     );
     expect(text('.meter__title')).toBe('Affluence habituelle à cette heure');
-    expect(text('.meter__source')).toBe('Estimation habituelle · 12 signalements passés le jeudi vers 15 h');
+    expect(text('.meter__source')).toBe(
+      'Estimation habituelle · 12 signalements passés le jeudi vers 15 h',
+    );
   });
 
   it('says "Pas encore de signalement" when there is no data at all', async () => {
     const { element, text } = await render(
-      makeMeter({ source: 'aucun', occupancy: null, level: null, reportCount: 0, lastReportAt: null, confidence: null }),
+      makeMeter({
+        source: 'aucun',
+        occupancy: null,
+        level: null,
+        reportCount: 0,
+        lastReportAt: null,
+        confidence: null,
+      }),
     );
     expect(text('.meter__value')).toBe('Pas encore de signalement');
     expect(element.querySelector('[role="meter"]')).toBeNull();

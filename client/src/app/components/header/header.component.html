@@ -5,15 +5,31 @@
       <span>SpotFinder</span>
     </a>
 
-    <nav id="menu-principal" class="nav" [class.is-open]="menuOpen()" aria-label="Navigation principale">
-      <a routerLink="/explorer" routerLinkActive="is-active" ariaCurrentWhenActive="page">Explorer</a>
-      <a routerLink="/ajouter" routerLinkActive="is-active" ariaCurrentWhenActive="page">Ajouter un lieu</a>
-      <a routerLink="/a-propos" routerLinkActive="is-active" ariaCurrentWhenActive="page">À propos</a>
+    <nav
+      id="menu-principal"
+      class="nav"
+      [class.is-open]="menuOpen()"
+      aria-label="Navigation principale"
+    >
+      <a routerLink="/explorer" routerLinkActive="is-active" ariaCurrentWhenActive="page"
+        >Explorer</a
+      >
+      <a routerLink="/ajouter" routerLinkActive="is-active" ariaCurrentWhenActive="page"
+        >Ajouter un lieu</a
+      >
+      <a routerLink="/a-propos" routerLinkActive="is-active" ariaCurrentWhenActive="page"
+        >À propos</a
+      >
     </nav>
 
     <div class="header__actions">
       @if (auth.user(); as user) {
-        <a class="account-link" routerLink="/compte" routerLinkActive="is-active" ariaCurrentWhenActive="page">
+        <a
+          class="account-link"
+          routerLink="/compte"
+          routerLinkActive="is-active"
+          ariaCurrentWhenActive="page"
+        >
           <span class="avatar" aria-hidden="true">{{ userInitials() }}</span>
           <span class="account-link__label">Mon espace</span>
         </a>

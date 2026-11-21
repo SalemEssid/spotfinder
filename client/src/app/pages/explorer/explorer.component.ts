@@ -65,12 +65,20 @@ export class ExplorerComponent {
   protected readonly referenceLabel = REFERENCE_POINT.label;
   protected readonly skeletons = [1, 2, 3, 4];
   protected readonly filtersToParams = filtersToParams;
-  protected readonly preview = computed(() => this.spots()?.find((s) => s.id === this.previewId()) ?? null);
+  protected readonly preview = computed(
+    () => this.spots()?.find((s) => s.id === this.previewId()) ?? null,
+  );
   /** "Essayez sans le filtre « Prises »": the last two active filters, most recent first. */
-  protected readonly suggestions = computed(() => describeActiveFilters(this.filters()).slice(-2).reverse());
+  protected readonly suggestions = computed(() =>
+    describeActiveFilters(this.filters()).slice(-2).reverse(),
+  );
   protected readonly resultText = computed(() => {
     const count = this.spots()?.length ?? 0;
-    return count === 0 ? 'Aucun lieu trouvé' : count === 1 ? '1 lieu trouvé' : `${count} lieux trouvés`;
+    return count === 0
+      ? 'Aucun lieu trouvé'
+      : count === 1
+        ? '1 lieu trouvé'
+        : `${count} lieux trouvés`;
   });
 
   private readonly retry$ = new Subject<void>();
@@ -91,7 +99,10 @@ export class ExplorerComponent {
           this.spotService.list(filters).pipe(
             map((spots) => ({ spots, error: null })),
             catchError((error: unknown) =>
-              of({ spots: null, error: apiErrorMessage(error, 'Impossible de charger les lieux.') }),
+              of({
+                spots: null,
+                error: apiErrorMessage(error, 'Impossible de charger les lieux.'),
+              }),
             ),
           ),
         ),

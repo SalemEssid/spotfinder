@@ -9,13 +9,19 @@ import { LucideStar } from '@lucide/angular';
 @Component({
   selector: 'app-star-rating',
   imports: [LucideStar],
-  providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => StarRatingComponent), multi: true }],
+  providers: [
+    { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => StarRatingComponent), multi: true },
+  ],
   template: `
     <fieldset class="stars" [disabled]="disabled()" (focusout)="onTouched()">
       <legend class="stars__legend">{{ label() }}</legend>
       <div class="stars__row" (mouseleave)="hovered.set(null)">
         @for (star of stars; track star) {
-          <label class="star" [class.is-on]="star <= (hovered() ?? value() ?? 0)" (mouseenter)="hovered.set(star)">
+          <label
+            class="star"
+            [class.is-on]="star <= (hovered() ?? value() ?? 0)"
+            (mouseenter)="hovered.set(star)"
+          >
             <input
               type="radio"
               [name]="name()"

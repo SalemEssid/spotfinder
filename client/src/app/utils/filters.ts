@@ -100,7 +100,11 @@ export function describeActiveFilters(filters: SpotFilters): ActiveFilter[] {
   if (filters.budget !== null) add(BUDGET_LABELS[filters.budget], { ...filters, budget: null });
   if (filters.openNow) add('Ouvert maintenant', { ...filters, openNow: false });
   if (filters.q.trim()) {
-    active.push({ label: 'Sans la recherche', hint: `la recherche « ${filters.q.trim()} »`, without: { ...filters, q: '' } });
+    active.push({
+      label: 'Sans la recherche',
+      hint: `la recherche « ${filters.q.trim()} »`,
+      without: { ...filters, q: '' },
+    });
   }
   return active;
 }

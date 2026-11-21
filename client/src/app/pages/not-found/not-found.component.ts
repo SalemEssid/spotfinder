@@ -10,7 +10,9 @@ import { SpotIllustrationComponent } from '../../components/spot-illustration/sp
       <app-spot-illustration class="not-found__illustration" type="autre" />
       <p class="code" aria-hidden="true">404</p>
       <h1 id="not-found-title">Cette page a quitté son bureau</h1>
-      <p class="text-secondary">Le lien est peut-être incomplet. Pas grave : il reste plein de places libres ailleurs.</p>
+      <p class="text-secondary">
+        Le lien est peut-être incomplet. Pas grave : il reste plein de places libres ailleurs.
+      </p>
       <div class="actions">
         <a class="btn btn--primary" routerLink="/explorer">Trouver un lieu</a>
         <a class="btn btn--ghost" routerLink="/">Retour à l’accueil</a>

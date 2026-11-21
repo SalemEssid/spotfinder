@@ -9,7 +9,12 @@ import { AuthService } from '../../services/auth.service';
   imports: [RouterLink, RouterLinkActive, LucideHouse, LucideCompass, LucideHeart, LucideUser],
   template: `
     <nav class="tabs" aria-label="Navigation mobile">
-      <a routerLink="/" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }" ariaCurrentWhenActive="page">
+      <a
+        routerLink="/"
+        routerLinkActive="is-active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        ariaCurrentWhenActive="page"
+      >
         <svg lucideHouse></svg><span>Accueil</span>
       </a>
       <a routerLink="/explorer" routerLinkActive="is-active" ariaCurrentWhenActive="page">

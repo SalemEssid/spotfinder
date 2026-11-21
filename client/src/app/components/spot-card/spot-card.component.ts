@@ -2,7 +2,13 @@ import { ChangeDetectionStrategy, Component, computed, input, output } from '@an
 import { RouterLink } from '@angular/router';
 import { LucideHourglass } from '@lucide/angular';
 import type { SpotSummary } from '../../models/spot.model';
-import { formatDistance, formatRating, formatTime, SPOT_TYPE_LABELS, wifiLabel } from '../../utils/format';
+import {
+  formatDistance,
+  formatRating,
+  formatTime,
+  SPOT_TYPE_LABELS,
+  wifiLabel,
+} from '../../utils/format';
 import { REFERENCE_POINT } from '../../utils/reference-point';
 import { CrowdBadgeComponent } from '../crowd-badge/crowd-badge.component';
 import { SpotIllustrationComponent } from '../spot-illustration/spot-illustration.component';
@@ -46,7 +52,9 @@ export class SpotCardComponent {
   protected readonly badges = computed(() => {
     const { equipment, ratings } = this.spot();
     const wifi =
-      ratings.wifi !== null ? `Wi-Fi ${formatRating(Math.round(ratings.wifi))}/5` : wifiLabel(equipment.wifiSpeed);
+      ratings.wifi !== null
+        ? `Wi-Fi ${formatRating(Math.round(ratings.wifi))}/5`
+        : wifiLabel(equipment.wifiSpeed);
     return [wifi, `Prises : ${equipment.outletsCount > 0 ? 'oui' : 'non'}`];
   });
 }

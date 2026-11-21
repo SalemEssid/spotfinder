@@ -2,8 +2,9 @@
   <header class="page-header hero">
     <h1>À propos de SpotFinder</h1>
     <p class="lead">
-      Trouver un endroit calme pour travailler, avec du Wi-Fi et une prise, <strong>en moins de 30 secondes</strong>.
-      SpotFinder rassemble cafés, bibliothèques et coworkings, et la communauté indique en direct s’il y a du monde.
+      Trouver un endroit calme pour travailler, avec du Wi-Fi et une prise,
+      <strong>en moins de 30 secondes</strong>. SpotFinder rassemble cafés, bibliothèques et
+      coworkings, et la communauté indique en direct s’il y a du monde.
     </p>
   </header>
 
@@ -29,27 +30,28 @@
     <h2 id="meter-title">Comment fonctionne la jauge d’affluence ?</h2>
     <ol>
       <li>
-        Sur place, vous touchez <strong>« Je suis ici »</strong> et choisissez <em>Calme</em>, <em>Moyen</em> ou
-        <em>Saturé</em> (enregistrés comme 25 %, 55 % ou 85 % d’occupation).
+        Sur place, vous touchez <strong>« Je suis ici »</strong> et choisissez <em>Calme</em>,
+        <em>Moyen</em> ou <em>Saturé</em> (enregistrés comme 25 %, 55 % ou 85 % d’occupation).
       </li>
       <li>
-        Les signalements des <strong>2 dernières heures</strong> sont combinés. Un signalement récent compte plus qu’un
-        ancien : son poids vaut <code>e<sup>−âge / 30 min</sup></code> (1 s’il vient d’arriver, 0,37 après 30 min,
-        0,14 après 1 h).
+        Les signalements des <strong>2 dernières heures</strong> sont combinés. Un signalement
+        récent compte plus qu’un ancien : son poids vaut <code>e<sup>−âge / 30 min</sup></code> (1
+        s’il vient d’arriver, 0,37 après 30 min, 0,14 après 1 h).
       </li>
       <li>
         L’estimation est la moyenne pondérée : <code>Σ (poids × occupation) / Σ poids</code>.
         <span class="example">
-          Exemple : à 15 h, des signalements à 14 h (80 %), 14 h 30 (50 %) et 14 h 50 (40 %) donnent ≈ 47 %, soit
-          « Modéré ».
+          Exemple : à 15 h, des signalements à 14 h (80 %), 14 h 30 (50 %) et 14 h 50 (40 %) donnent
+          ≈ 47 %, soit « Modéré ».
         </span>
       </li>
       <li>
-        Pas de signalement récent ? On affiche l’<strong>estimation habituelle</strong> : la moyenne des semaines
-        passées, le même jour à la même heure.
+        Pas de signalement récent ? On affiche l’<strong>estimation habituelle</strong> : la moyenne
+        des semaines passées, le même jour à la même heure.
       </li>
       <li>
-        Pour qu’une seule personne ne fausse pas la jauge, chacun peut signaler <strong>une fois toutes les 15 minutes</strong>
+        Pour qu’une seule personne ne fausse pas la jauge, chacun peut signaler
+        <strong>une fois toutes les 15 minutes</strong>
         par lieu.
       </li>
     </ol>
@@ -69,25 +71,53 @@
       <div class="card sent" role="status">
         <svg lucideCircleCheck aria-hidden="true"></svg>
         <div>
-          <p><strong>Merci {{ name }} !</strong> Votre message est bien arrivé. Nous vous répondrons par e-mail.</p>
-          <button type="button" class="btn btn--ghost" (click)="writeAnother()">Écrire un autre message</button>
+          <p>
+            <strong>Merci {{ name }} !</strong> Votre message est bien arrivé. Nous vous répondrons
+            par e-mail.
+          </p>
+          <button type="button" class="btn btn--ghost" (click)="writeAnother()">
+            Écrire un autre message
+          </button>
         </div>
       </div>
     } @else {
       <form class="card contact__form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
-        <app-form-field label="Nom" controlId="contact-name" [error]="fieldError(form.controls.name)">
+        <app-form-field
+          label="Nom"
+          controlId="contact-name"
+          [error]="fieldError(form.controls.name)"
+        >
           <input appFieldControl class="input" formControlName="name" autocomplete="name" />
         </app-form-field>
-        <app-form-field label="Adresse e-mail" controlId="contact-email" [error]="fieldError(form.controls.email)">
-          <input appFieldControl class="input" type="email" formControlName="email" autocomplete="email" />
+        <app-form-field
+          label="Adresse e-mail"
+          controlId="contact-email"
+          [error]="fieldError(form.controls.email)"
+        >
+          <input
+            appFieldControl
+            class="input"
+            type="email"
+            formControlName="email"
+            autocomplete="email"
+          />
         </app-form-field>
         <app-form-field
           label="Message"
           controlId="contact-message"
           [hint]="remaining() + ' caractères restants'"
-          [error]="fieldError(form.controls.message, { minlength: 'Votre message doit contenir au moins 10 caractères.' })"
+          [error]="
+            fieldError(form.controls.message, {
+              minlength: 'Votre message doit contenir au moins 10 caractères.',
+            })
+          "
         >
-          <textarea appFieldControl class="input" formControlName="message" [attr.maxlength]="messageMax"></textarea>
+          <textarea
+            appFieldControl
+            class="input"
+            formControlName="message"
+            [attr.maxlength]="messageMax"
+          ></textarea>
         </app-form-field>
         <button type="submit" class="btn btn--primary" [disabled]="sending()">
           @if (sending()) {
@@ -104,16 +134,20 @@
   <section id="mentions" class="legal" aria-labelledby="legal-title">
     <h2 id="legal-title">Mentions légales</h2>
     <p>
-      SpotFinder est un projet pédagogique réalisé par des étudiants de SUP’COM (Projet Web, 2026). Les lieux, avis et
-      signalements affichés sont <strong>fictifs</strong>.
+      SpotFinder est un projet pédagogique réalisé par des étudiants de SUP’COM (Projet Web, 2026).
+      Les lieux, avis et signalements affichés sont <strong>fictifs</strong>.
     </p>
     <p>
-      Fond de carte © les contributeurs d’<a href="https://www.openstreetmap.org/copyright" rel="noopener" target="_blank">OpenStreetMap</a>.
-      Icônes Lucide (licence ISC).
+      Fond de carte © les contributeurs d’<a
+        href="https://www.openstreetmap.org/copyright"
+        rel="noopener"
+        target="_blank"
+        >OpenStreetMap</a
+      >. Icônes Lucide (licence ISC).
     </p>
     <p>
-      Cookies : un seul cookie technique, nécessaire à la connexion (illisible par les scripts de la page). Aucun suivi
-      publicitaire, aucune mesure d’audience.
+      Cookies : un seul cookie technique, nécessaire à la connexion (illisible par les scripts de la
+      page). Aucun suivi publicitaire, aucune mesure d’audience.
     </p>
   </section>
 </div>

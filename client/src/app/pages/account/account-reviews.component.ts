@@ -14,7 +14,14 @@ import { apiErrorMessage } from '../../utils/api-error';
 /** "Mes avis": read, edit (same form as on the place page) and delete one's own reviews. */
 @Component({
   selector: 'app-account-reviews',
-  imports: [RouterLink, DatePipe, EmptyStateComponent, ReviewFormComponent, LucidePencil, LucideTrash],
+  imports: [
+    RouterLink,
+    DatePipe,
+    EmptyStateComponent,
+    ReviewFormComponent,
+    LucidePencil,
+    LucideTrash,
+  ],
   templateUrl: './account-reviews.component.html',
   styleUrl: './account-reviews.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -64,11 +71,14 @@ export class AccountReviewsComponent {
       .pipe(finalize(() => this.saving.set(false)))
       .subscribe({
         next: (updated) => {
-          this.reviews.update((list) => list?.map((r) => (r.id === updated.id ? updated : r)) ?? null);
+          this.reviews.update(
+            (list) => list?.map((r) => (r.id === updated.id ? updated : r)) ?? null,
+          );
           this.editing.set(null);
           this.toast.success('Avis modifié.');
         },
-        error: (error: unknown) => this.toast.error(apiErrorMessage(error, 'Impossible de modifier cet avis.')),
+        error: (error: unknown) =>
+          this.toast.error(apiErrorMessage(error, 'Impossible de modifier cet avis.')),
       });
   }
 
@@ -79,7 +89,8 @@ export class AccountReviewsComponent {
         this.reviews.update((list) => list?.filter((r) => r.id !== review.id) ?? null);
         this.toast.success('Avis supprimé.');
       },
-      error: (error: unknown) => this.toast.error(apiErrorMessage(error, 'Impossible de supprimer cet avis.')),
+      error: (error: unknown) =>
+        this.toast.error(apiErrorMessage(error, 'Impossible de supprimer cet avis.')),
     });
   }
 }

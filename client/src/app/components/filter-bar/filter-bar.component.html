@@ -1,4 +1,9 @@
-<form class="filter-bar" role="search" aria-label="Rechercher et filtrer les lieux" (submit)="submitSearch($event)">
+<form
+  class="filter-bar"
+  role="search"
+  aria-label="Rechercher et filtrer les lieux"
+  (submit)="submitSearch($event)"
+>
   <div class="search">
     <label class="visually-hidden" for="spot-search">Rechercher un lieu ou un quartier</label>
     <svg lucideSearch class="search__icon" aria-hidden="true"></svg>
@@ -32,10 +37,20 @@
     <span class="separator" aria-hidden="true"></span>
 
     <div class="chip-group" role="group" aria-label="Équipements et horaires">
-      <button type="button" class="chip" [attr.aria-pressed]="filters().fastWifi" (click)="toggle('fastWifi')">
+      <button
+        type="button"
+        class="chip"
+        [attr.aria-pressed]="filters().fastWifi"
+        (click)="toggle('fastWifi')"
+      >
         <svg lucideWifi aria-hidden="true"></svg> Wi-Fi rapide
       </button>
-      <button type="button" class="chip" [attr.aria-pressed]="filters().outlets" (click)="toggle('outlets')">
+      <button
+        type="button"
+        class="chip"
+        [attr.aria-pressed]="filters().outlets"
+        (click)="toggle('outlets')"
+      >
         <svg lucidePlug aria-hidden="true"></svg> Prises
       </button>
       <button
@@ -57,11 +72,18 @@
       >
         <option value="">Budget : tous</option>
         @for (option of budgetOptions; track option.value) {
-          <option [value]="option.value" [selected]="filters().budget === option.value">{{ option.label }}</option>
+          <option [value]="option.value" [selected]="filters().budget === option.value">
+            {{ option.label }}
+          </option>
         }
       </select>
 
-      <button type="button" class="chip" [attr.aria-pressed]="filters().openNow" (click)="toggle('openNow')">
+      <button
+        type="button"
+        class="chip"
+        [attr.aria-pressed]="filters().openNow"
+        (click)="toggle('openNow')"
+      >
         <svg lucideClock aria-hidden="true"></svg> Ouvert maintenant
       </button>
     </div>

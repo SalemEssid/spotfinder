@@ -3,14 +3,22 @@ import type { AbstractControl, FormGroup } from '@angular/forms';
 import type { ApiErrorBody } from '../models/user.model';
 
 function body(error: unknown): ApiErrorBody['error'] | null {
-  if (error instanceof HttpErrorResponse && error.error && typeof error.error === 'object' && 'error' in error.error) {
+  if (
+    error instanceof HttpErrorResponse &&
+    error.error &&
+    typeof error.error === 'object' &&
+    'error' in error.error
+  ) {
     return (error.error as ApiErrorBody).error;
   }
   return null;
 }
 
 /** A message the user can read, whatever went wrong. */
-export function apiErrorMessage(error: unknown, fallback = 'Une erreur est survenue. Réessayez.'): string {
+export function apiErrorMessage(
+  error: unknown,
+  fallback = 'Une erreur est survenue. Réessayez.',
+): string {
   if (error instanceof HttpErrorResponse && error.status === 0) {
     return 'Impossible de joindre le serveur. Vérifiez votre connexion.';
   }

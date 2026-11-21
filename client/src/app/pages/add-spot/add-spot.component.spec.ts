@@ -25,7 +25,11 @@ describe('AddSpotComponent (dynamic form)', () => {
     TestBed.configureTestingModule({
       imports: [AddSpotComponent],
       // Catch-all route: after saving, the page navigates to the new place (/lieux/:id).
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([{ path: '**', children: [] }])],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([{ path: '**', children: [] }]),
+      ],
     });
     // The map needs a real browser: replace the template, keep the form logic.
     TestBed.overrideComponent(AddSpotComponent, { set: { template: '', imports: [] } });
@@ -38,7 +42,11 @@ describe('AddSpotComponent (dynamic form)', () => {
   afterEach(() => http.verify());
 
   function fillRequiredFields(): void {
-    component.form.patchValue({ name: 'Café du Test', area: 'Ariana', address: '12 avenue de la Liberté' });
+    component.form.patchValue({
+      name: 'Café du Test',
+      area: 'Ariana',
+      address: '12 avenue de la Liberté',
+    });
   }
 
   it('does not send anything while the place is not on the map', () => {
@@ -54,7 +62,15 @@ describe('AddSpotComponent (dynamic form)', () => {
     const monday = component.days[0]!;
     component.addSlot(monday); // 08:00–20:00 + 14:00–18:00 by default → make them valid split hours
     component.form.patchValue({
-      hours: [{ open: true, slots: [{ opensAt: '08:00', closesAt: '12:00' }, { opensAt: '14:00', closesAt: '18:00' }] }],
+      hours: [
+        {
+          open: true,
+          slots: [
+            { opensAt: '08:00', closesAt: '12:00' },
+            { opensAt: '14:00', closesAt: '18:00' },
+          ],
+        },
+      ],
     });
     component.copyMondayToAll();
     component.submit();
@@ -73,7 +89,9 @@ describe('AddSpotComponent (dynamic form)', () => {
   it('refuses a slot that closes before it opens', () => {
     fillRequiredFields();
     component.setPosition({ latitude: 36.86, longitude: 10.19 });
-    component.form.patchValue({ hours: [{ open: true, slots: [{ opensAt: '18:00', closesAt: '09:00' }] }] });
+    component.form.patchValue({
+      hours: [{ open: true, slots: [{ opensAt: '18:00', closesAt: '09:00' }] }],
+    });
     component.submit();
     http.expectNone('/api/spots');
   });

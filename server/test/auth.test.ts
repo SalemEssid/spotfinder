@@ -61,7 +61,10 @@ describe('Auth API', () => {
   });
 
   it('ignores a forged session cookie', async () => {
-    await request(app).get('/api/auth/me').set('Cookie', 'sf_session=not-a-real-token').expect(200, { user: null });
+    await request(app)
+      .get('/api/auth/me')
+      .set('Cookie', 'sf_session=not-a-real-token')
+      .expect(200, { user: null });
     await request(app).get('/api/me').set('Cookie', 'sf_session=not-a-real-token').expect(401);
   });
 });

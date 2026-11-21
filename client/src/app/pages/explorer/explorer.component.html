@@ -18,7 +18,11 @@
     </div>
 
     @if (error(); as message) {
-      <app-empty-state tone="error" title="Oups, la liste n’a pas pu être chargée" [message]="message">
+      <app-empty-state
+        tone="error"
+        title="Oups, la liste n’a pas pu être chargée"
+        [message]="message"
+      >
         <button type="button" class="btn btn--primary" (click)="retry()">Réessayer</button>
       </app-empty-state>
     } @else if (spots() === null) {
@@ -45,7 +49,12 @@
         "
       >
         @for (suggestion of suggestions(); track suggestion.label) {
-          <a class="btn btn--secondary" routerLink="." [queryParams]="filtersToParams(suggestion.without)" replaceUrl>
+          <a
+            class="btn btn--secondary"
+            routerLink="."
+            [queryParams]="filtersToParams(suggestion.without)"
+            replaceUrl
+          >
             {{ suggestion.label }}
           </a>
         }
@@ -85,7 +94,11 @@
     @if (preview(); as spot) {
       <div class="map-preview">
         <app-spot-card [spot]="spot" />
-        <button type="button" class="map-preview__close btn btn--icon" (click)="previewId.set(null)">
+        <button
+          type="button"
+          class="map-preview__close btn btn--icon"
+          (click)="previewId.set(null)"
+        >
           <svg lucideX aria-hidden="true"></svg><span class="visually-hidden">Fermer l’aperçu</span>
         </button>
       </div>
@@ -94,10 +107,18 @@
 
   <!-- Phones: switch between list and map (both stay in the DOM, the list stays accessible). -->
   <div class="view-toggle" role="group" aria-label="Affichage">
-    <button type="button" [attr.aria-pressed]="mobileView() === 'list'" (click)="showOnMobile('list')">
+    <button
+      type="button"
+      [attr.aria-pressed]="mobileView() === 'list'"
+      (click)="showOnMobile('list')"
+    >
       <svg lucideList aria-hidden="true"></svg> Liste
     </button>
-    <button type="button" [attr.aria-pressed]="mobileView() === 'map'" (click)="showOnMobile('map')">
+    <button
+      type="button"
+      [attr.aria-pressed]="mobileView() === 'map'"
+      (click)="showOnMobile('map')"
+    >
       <svg lucideMap aria-hidden="true"></svg> Carte
     </button>
   </div>

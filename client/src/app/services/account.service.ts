@@ -46,7 +46,11 @@ export class AccountService {
     return this.http.delete<void>(`/api/reviews/${reviewId}`);
   }
 
-  sendContactMessage(message: { name: string; email: string; message: string }): Observable<{ id: number }> {
+  sendContactMessage(message: {
+    name: string;
+    email: string;
+    message: string;
+  }): Observable<{ id: number }> {
     return this.http.post<{ id: number }>('/api/contact', message);
   }
 }

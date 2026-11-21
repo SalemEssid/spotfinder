@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, computed, effect, input, output, signal, untracked } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  input,
+  output,
+  signal,
+  untracked,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import type { NewReview } from '../../models/user.model';
@@ -90,16 +99,26 @@ export class ReviewFormComponent {
     ratingCalm: new FormControl<number | null>(null, Validators.required),
     ratingOutlets: new FormControl<number | null>(null, Validators.required),
     ratingPrice: new FormControl<number | null>(null, Validators.required),
-    comment: new FormControl('', { nonNullable: true, validators: Validators.maxLength(COMMENT_MAX) }),
+    comment: new FormControl('', {
+      nonNullable: true,
+      validators: Validators.maxLength(COMMENT_MAX),
+    }),
   });
 
   private readonly triedToSubmit = signal(false);
-  private readonly formValue = toSignal(this.form.valueChanges, { initialValue: this.form.getRawValue() });
+  private readonly formValue = toSignal(this.form.valueChanges, {
+    initialValue: this.form.getRawValue(),
+  });
 
-  protected readonly remaining = computed(() => COMMENT_MAX - (this.formValue().comment?.length ?? 0));
+  protected readonly remaining = computed(
+    () => COMMENT_MAX - (this.formValue().comment?.length ?? 0),
+  );
   protected readonly ratingsMissing = computed(() => {
     const v = this.formValue();
-    return this.triedToSubmit() && [v.ratingWifi, v.ratingCalm, v.ratingOutlets, v.ratingPrice].some((r) => !r);
+    return (
+      this.triedToSubmit() &&
+      [v.ratingWifi, v.ratingCalm, v.ratingOutlets, v.ratingPrice].some((r) => !r)
+    );
   });
   protected readonly commentError = computed(() => {
     this.formValue(); // re-evaluate on each change

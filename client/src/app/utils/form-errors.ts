@@ -16,7 +16,10 @@ const DEFAULT_MESSAGES: Record<string, (error: unknown) => string> = {
  * The message to show under a field, or null. Shown only once the user has interacted with
  * the field (or tried to submit), so a fresh form is not covered in red.
  */
-export function fieldError(control: AbstractControl | null, custom: Record<string, string> = {}): string | null {
+export function fieldError(
+  control: AbstractControl | null,
+  custom: Record<string, string> = {},
+): string | null {
   if (!control?.errors || !(control.touched || control.dirty)) return null;
   const [key, value] = Object.entries(control.errors)[0]!;
   return custom[key] ?? DEFAULT_MESSAGES[key]?.(value) ?? 'Valeur invalide.';

@@ -40,18 +40,32 @@ describe('Live Meter API', () => {
     const { agent } = await newLoggedInUser();
     const id = await newSpot(agent); // a place with no data at all
 
-    const first = await agent.post(`/api/spots/${id}/live-reports`).send({ level: 'sature' }).expect(201);
-    expect(first.body.liveMeter).toMatchObject({ source: 'live', occupancy: 85, level: 'sature', reportCount: 1 });
+    const first = await agent
+      .post(`/api/spots/${id}/live-reports`)
+      .send({ level: 'sature' })
+      .expect(201);
+    expect(first.body.liveMeter).toMatchObject({
+      source: 'live',
+      occupancy: 85,
+      level: 'sature',
+      reportCount: 1,
+    });
     expect(first.body.liveMeter.totalWeight).toBeCloseTo(1, 2);
 
-    const second = await agent.post(`/api/spots/${id}/live-reports`).send({ level: 'calme' }).expect(429);
+    const second = await agent
+      .post(`/api/spots/${id}/live-reports`)
+      .send({ level: 'calme' })
+      .expect(429);
     expect(second.body.error.code).toBe('REPORT_TOO_SOON');
     expect(second.body.error.retryAfterSeconds).toBeGreaterThan(14 * 60);
     expect(second.headers['retry-after']).toBeDefined();
 
     // Another user can still report right away.
     const other = await newLoggedInUser();
-    const third = await other.agent.post(`/api/spots/${id}/live-reports`).send({ level: 'calme' }).expect(201);
+    const third = await other.agent
+      .post(`/api/spots/${id}/live-reports`)
+      .send({ level: 'calme' })
+      .expect(201);
     expect(third.body.liveMeter.reportCount).toBe(2);
     expect(third.body.liveMeter.occupancy).toBe(55); // (85 + 25) / 2 with two fresh reports
   });

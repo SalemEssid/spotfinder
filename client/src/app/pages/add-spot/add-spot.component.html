@@ -2,8 +2,8 @@
   <header class="page-header">
     <h1>Ajouter un lieu</h1>
     <p class="text-secondary">
-      Vous connaissez un bon coin pour travailler ? Partagez-le. Il apparaîtra tout de suite avec la mention
-      « À vérifier ».
+      Vous connaissez un bon coin pour travailler ? Partagez-le. Il apparaîtra tout de suite avec la
+      mention « À vérifier ».
     </p>
   </header>
 
@@ -20,7 +20,11 @@
       <legend><span class="step" aria-hidden="true">1</span> Le lieu</legend>
 
       <div class="grid-2">
-        <app-form-field label="Nom du lieu" controlId="spot-name" [error]="fieldError(form.controls.name)">
+        <app-form-field
+          label="Nom du lieu"
+          controlId="spot-name"
+          [error]="fieldError(form.controls.name)"
+        >
           <input appFieldControl class="input" formControlName="name" />
         </app-form-field>
 
@@ -32,12 +36,30 @@
           </select>
         </app-form-field>
 
-        <app-form-field label="Quartier" controlId="spot-area" [error]="fieldError(form.controls.area)">
-          <input appFieldControl class="input" formControlName="area" placeholder="Ariana, El Ghazala, Ennasr…" />
+        <app-form-field
+          label="Quartier"
+          controlId="spot-area"
+          [error]="fieldError(form.controls.area)"
+        >
+          <input
+            appFieldControl
+            class="input"
+            formControlName="area"
+            placeholder="Ariana, El Ghazala, Ennasr…"
+          />
         </app-form-field>
 
-        <app-form-field label="Adresse" controlId="spot-address" [error]="fieldError(form.controls.address)">
-          <input appFieldControl class="input" formControlName="address" autocomplete="street-address" />
+        <app-form-field
+          label="Adresse"
+          controlId="spot-address"
+          [error]="fieldError(form.controls.address)"
+        >
+          <input
+            appFieldControl
+            class="input"
+            formControlName="address"
+            autocomplete="street-address"
+          />
         </app-form-field>
       </div>
 
@@ -56,8 +78,8 @@
     <fieldset class="section">
       <legend><span class="step" aria-hidden="true">2</span> Sur la carte</legend>
       <p id="map-help" class="field__hint">
-        Cliquez sur la carte à l’endroit exact du lieu (vous pouvez ensuite déplacer le repère). Au clavier : déplacez la
-        carte avec les flèches, puis « Placer au centre ».
+        Cliquez sur la carte à l’endroit exact du lieu (vous pouvez ensuite déplacer le repère). Au
+        clavier : déplacez la carte avec les flèches, puis « Placer au centre ».
       </p>
 
       <app-map-view
@@ -73,12 +95,22 @@
         <button type="button" class="btn btn--secondary" (click)="placeAtMapCenter()">
           <svg lucideMapPin aria-hidden="true"></svg> Placer au centre de la carte
         </button>
-        <button type="button" class="btn btn--ghost" [disabled]="locating()" (click)="useMyLocation()">
-          <svg lucideLocateFixed aria-hidden="true"></svg> {{ locating() ? 'Localisation…' : 'Utiliser ma position' }}
+        <button
+          type="button"
+          class="btn btn--ghost"
+          [disabled]="locating()"
+          (click)="useMyLocation()"
+        >
+          <svg lucideLocateFixed aria-hidden="true"></svg>
+          {{ locating() ? 'Localisation…' : 'Utiliser ma position' }}
         </button>
       </div>
 
-      <p class="picker__status" aria-live="polite" [class.is-error]="form.controls.position.touched && !position()">
+      <p
+        class="picker__status"
+        aria-live="polite"
+        [class.is-error]="form.controls.position.touched && !position()"
+      >
         @if (position(); as p) {
           Repère placé · {{ p.latitude.toFixed(5) }}, {{ p.longitude.toFixed(5) }}
         } @else if (form.controls.position.touched) {
@@ -130,7 +162,10 @@
           <legend>Niveau de bruit</legend>
           <div class="radios__row">
             @for (option of noiseOptions; track option[0]) {
-              <label class="chip" [class.is-active]="form.controls.equipment.controls.noiseLevel.value === option[0]">
+              <label
+                class="chip"
+                [class.is-active]="form.controls.equipment.controls.noiseLevel.value === option[0]"
+              >
                 <input type="radio" formControlName="noiseLevel" [value]="option[0]" />
                 {{ option[1] }}
               </label>
@@ -149,7 +184,9 @@
     <fieldset class="section">
       <legend><span class="step" aria-hidden="true">4</span> Horaires</legend>
       <div class="hours__toolbar">
-        <p class="field__hint">Heure de Tunis. Ajoutez un deuxième créneau si le lieu ferme à midi.</p>
+        <p class="field__hint">
+          Heure de Tunis. Ajoutez un deuxième créneau si le lieu ferme à midi.
+        </p>
         <button type="button" class="btn btn--ghost" (click)="copyMondayToAll()">
           <svg lucideCopy aria-hidden="true"></svg> Copier le lundi sur toute la semaine
         </button>
@@ -167,7 +204,10 @@
               <div class="day__slots" formArrayName="slots">
                 @for (slot of day.controls.slots.controls; track slot; let i = $index) {
                   <div class="slot" [formGroupName]="i">
-                    <label class="visually-hidden" [for]="'open-' + day.controls.weekday.value + '-' + i">
+                    <label
+                      class="visually-hidden"
+                      [for]="'open-' + day.controls.weekday.value + '-' + i"
+                    >
                       Ouverture {{ weekdayLabels[day.controls.weekday.value] }}, créneau {{ i + 1 }}
                     </label>
                     <input
@@ -178,7 +218,10 @@
                       [attr.aria-invalid]="!!slotError(slot)"
                     />
                     <span aria-hidden="true">à</span>
-                    <label class="visually-hidden" [for]="'close-' + day.controls.weekday.value + '-' + i">
+                    <label
+                      class="visually-hidden"
+                      [for]="'close-' + day.controls.weekday.value + '-' + i"
+                    >
                       Fermeture {{ weekdayLabels[day.controls.weekday.value] }}, créneau {{ i + 1 }}
                     </label>
                     <input
@@ -188,7 +231,11 @@
                       formControlName="closesAt"
                       [attr.aria-invalid]="!!slotError(slot)"
                     />
-                    <button type="button" class="btn btn--ghost btn--icon" (click)="removeSlot(day, i)">
+                    <button
+                      type="button"
+                      class="btn btn--ghost btn--icon"
+                      (click)="removeSlot(day, i)"
+                    >
                       <svg lucideX aria-hidden="true"></svg>
                       <span class="visually-hidden">Supprimer ce créneau</span>
                     </button>

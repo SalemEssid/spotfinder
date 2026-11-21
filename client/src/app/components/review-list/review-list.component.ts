@@ -15,7 +15,9 @@ import { initials } from '../../utils/format';
           <div class="review__body">
             <p class="review__header">
               <strong>{{ review.author.name }}</strong>
-              <time class="caption" [attr.datetime]="review.createdAt">{{ review.createdAt | date: 'd MMMM y' }}</time>
+              <time class="caption" [attr.datetime]="review.createdAt">{{
+                review.createdAt | date: 'd MMMM y'
+              }}</time>
               @if (review.updatedAt) {
                 <span class="caption">(modifié)</span>
               }

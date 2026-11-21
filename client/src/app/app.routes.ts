@@ -14,42 +14,52 @@ export const routes: Routes = [
   {
     path: 'explorer',
     title: 'Explorer · SpotFinder',
-    loadComponent: () => import('./pages/explorer/explorer.component').then((m) => m.ExplorerComponent),
+    loadComponent: () =>
+      import('./pages/explorer/explorer.component').then((m) => m.ExplorerComponent),
   },
   {
     path: 'lieux/:id',
     title: 'Fiche du lieu · SpotFinder',
-    loadComponent: () => import('./pages/spot-detail/spot-detail.component').then((m) => m.SpotDetailComponent),
+    loadComponent: () =>
+      import('./pages/spot-detail/spot-detail.component').then((m) => m.SpotDetailComponent),
   },
   {
     path: 'ajouter',
     title: 'Ajouter un lieu · SpotFinder',
     canActivate: [authGuard],
-    loadComponent: () => import('./pages/add-spot/add-spot.component').then((m) => m.AddSpotComponent),
+    loadComponent: () =>
+      import('./pages/add-spot/add-spot.component').then((m) => m.AddSpotComponent),
   },
   {
     path: 'compte',
     canActivate: [authGuard],
-    loadComponent: () => import('./pages/account/account.component').then((m) => m.AccountComponent),
+    loadComponent: () =>
+      import('./pages/account/account.component').then((m) => m.AccountComponent),
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'profil' },
       {
         path: 'profil',
         title: 'Mon profil · SpotFinder',
         loadComponent: () =>
-          import('./pages/account/account-profile.component').then((m) => m.AccountProfileComponent),
+          import('./pages/account/account-profile.component').then(
+            (m) => m.AccountProfileComponent,
+          ),
       },
       {
         path: 'favoris',
         title: 'Mes favoris · SpotFinder',
         loadComponent: () =>
-          import('./pages/account/account-favorites.component').then((m) => m.AccountFavoritesComponent),
+          import('./pages/account/account-favorites.component').then(
+            (m) => m.AccountFavoritesComponent,
+          ),
       },
       {
         path: 'avis',
         title: 'Mes avis · SpotFinder',
         loadComponent: () =>
-          import('./pages/account/account-reviews.component').then((m) => m.AccountReviewsComponent),
+          import('./pages/account/account-reviews.component').then(
+            (m) => m.AccountReviewsComponent,
+          ),
       },
     ],
   },
@@ -73,6 +83,7 @@ export const routes: Routes = [
   {
     path: '**',
     title: 'Page introuvable · SpotFinder',
-    loadComponent: () => import('./pages/not-found/not-found.component').then((m) => m.NotFoundComponent),
+    loadComponent: () =>
+      import('./pages/not-found/not-found.component').then((m) => m.NotFoundComponent),
   },
 ];

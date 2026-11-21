@@ -6,7 +6,12 @@ import { FORM_FIELD } from './form-field.component';
 @Component({
   imports: [FORM_FIELD],
   template: `
-    <app-form-field label="Adresse e-mail" controlId="email" hint="Jamais affichée." [error]="error()">
+    <app-form-field
+      label="Adresse e-mail"
+      controlId="email"
+      hint="Jamais affichée."
+      [error]="error()"
+    >
       <input appFieldControl type="email" />
     </app-form-field>
   `,

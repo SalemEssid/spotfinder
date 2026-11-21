@@ -4,7 +4,13 @@ import { currentUser, requireAuth } from '../../middleware/auth';
 import { forbidden, HttpError, notFound } from '../../utils/http-error';
 import { hasReviewed, spotExists } from '../spots/spots.repository';
 import { idParamSchema } from '../spots/spots.schemas';
-import { deleteReview, findReviewById, findReviewsOfSpot, insertReview, updateReview } from './reviews.repository';
+import {
+  deleteReview,
+  findReviewById,
+  findReviewsOfSpot,
+  insertReview,
+  updateReview,
+} from './reviews.repository';
 
 const rating = z
   .number('Donnez une note de 1 à 5.')
@@ -50,7 +56,8 @@ async function ownReview(rawId: unknown, userId: number, action: string) {
   const id = idParamSchema.parse(rawId);
   const review = await findReviewById(id);
   if (!review) throw notFound('Cet avis n’existe pas.');
-  if (review.author.id !== userId) throw forbidden(`Vous ne pouvez ${action} que vos propres avis.`);
+  if (review.author.id !== userId)
+    throw forbidden(`Vous ne pouvez ${action} que vos propres avis.`);
   return review;
 }
 

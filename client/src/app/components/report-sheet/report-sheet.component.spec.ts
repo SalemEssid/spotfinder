@@ -37,7 +37,9 @@ describe('ReportSheetComponent', () => {
 
   it('cannot be sent before a choice is made', async () => {
     const { element } = await render();
-    const send = [...element.querySelectorAll('button')].find((b) => b.textContent?.includes('Envoyer'))!;
+    const send = [...element.querySelectorAll('button')].find((b) =>
+      b.textContent?.includes('Envoyer'),
+    )!;
     expect(send.disabled).toBe(true);
   });
 
@@ -54,7 +56,9 @@ describe('ReportSheetComponent', () => {
 
   it('reports when it is closed (Annuler)', async () => {
     const { element, closedCount } = await render();
-    [...element.querySelectorAll('button')].find((b) => b.textContent?.includes('Annuler'))!.click();
+    [...element.querySelectorAll('button')]
+      .find((b) => b.textContent?.includes('Annuler'))!
+      .click();
     expect(closedCount()).toBe(1);
   });
 });
