@@ -158,6 +158,12 @@ describe('API basics', () => {
     await request(app).get('/api/health').expect(200, { status: 'ok' });
   });
 
+  it('sends a CSP, without the HTTPS upgrade when the site is served over HTTP (blank page in Safari)', async () => {
+    const res = await request(app).get('/api/health').expect(200);
+    expect(res.headers['content-security-policy']).toContain("script-src 'self'");
+    expect(res.headers['content-security-policy']).not.toContain('upgrade-insecure-requests');
+  });
+
   it('404 in the standard error format for an unknown route', async () => {
     const { body } = await request(app).get('/api/nope').expect(404);
     expect(body.error.code).toBe('NOT_FOUND');
