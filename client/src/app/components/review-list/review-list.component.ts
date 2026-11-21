@@ -16,6 +16,9 @@ import { initials } from '../../utils/format';
             <p class="review__header">
               <strong>{{ review.author.name }}</strong>
               <time class="caption" [attr.datetime]="review.createdAt">{{ review.createdAt | date: 'd MMMM y' }}</time>
+              @if (review.updatedAt) {
+                <span class="caption">(modifié)</span>
+              }
             </p>
             <p class="review__scores">
               Wi-Fi {{ review.ratings.wifi }}/5 · Calme {{ review.ratings.calm }}/5 · Prises

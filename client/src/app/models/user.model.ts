@@ -17,6 +17,8 @@ export interface Review {
   ratings: { wifi: number; calm: number; outlets: number; price: number };
   comment: string;
   createdAt: string;
+  /** Date of the last edit, null if never edited. */
+  updatedAt: string | null;
 }
 
 export interface NewReview {

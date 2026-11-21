@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import type { Observable } from 'rxjs';
 import type { SpotSummary } from '../models/spot.model';
-import type { Profile, Review, User } from '../models/user.model';
+import type { NewReview, Profile, Review, User } from '../models/user.model';
 import { REFERENCE_POINT } from '../utils/reference-point';
 
 /** Espace membre: profile, favourites, my reviews (all under /api/me, session required). */
@@ -35,6 +35,11 @@ export class AccountService {
 
   myReviews(): Observable<Review[]> {
     return this.http.get<Review[]>('/api/me/reviews');
+  }
+
+  /** Replaces the ratings and comment of one of my reviews. */
+  updateReview(reviewId: number, review: NewReview): Observable<Review> {
+    return this.http.put<Review>(`/api/reviews/${reviewId}`, review);
   }
 
   deleteReview(reviewId: number): Observable<void> {
