@@ -1,0 +1,194 @@
+{
+  "date": "2026-11-21T18:58:03.704Z",
+  "base": "http://localhost:3000",
+  "results": [
+    {
+      "page": "/",
+      "formFactor": "mobile",
+      "scores": {
+        "performance": 81,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "fcp": "0.8 s",
+        "lcp": "3.0 s",
+        "tbt": "530 ms",
+        "cls": "0"
+      },
+      "failing": [
+        "largest-contentful-paint (77)",
+        "total-blocking-time (55)",
+        "max-potential-fid (42)",
+        "unused-javascript (0)",
+        "network-dependency-tree-insight (0)",
+        "render-blocking-insight (0)"
+      ]
+    },
+    {
+      "page": "/explorer",
+      "formFactor": "mobile",
+      "scores": {
+        "performance": 71,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "fcp": "0.8 s",
+        "lcp": "3.3 s",
+        "tbt": "960 ms",
+        "cls": "0"
+      },
+      "failing": [
+        "largest-contentful-paint (70)",
+        "total-blocking-time (28)",
+        "max-potential-fid (30)",
+        "interactive (89)",
+        "mainthread-work-breakdown (0)",
+        "bootup-time (0)",
+        "unused-javascript (0)",
+        "cache-insight (50)",
+        "network-dependency-tree-insight (0)",
+        "render-blocking-insight (0)"
+      ]
+    },
+    {
+      "page": "/lieux/1",
+      "formFactor": "mobile",
+      "scores": {
+        "performance": 78,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "fcp": "0.8 s",
+        "lcp": "3.2 s",
+        "tbt": "590 ms",
+        "cls": "0"
+      },
+      "failing": [
+        "largest-contentful-paint (73)",
+        "total-blocking-time (50)",
+        "max-potential-fid (38)",
+        "unused-javascript (0)",
+        "network-dependency-tree-insight (0)",
+        "render-blocking-insight (0)"
+      ]
+    },
+    {
+      "page": "/connexion",
+      "formFactor": "mobile",
+      "scores": {
+        "performance": 86,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "fcp": "0.8 s",
+        "lcp": "2.9 s",
+        "tbt": "380 ms",
+        "cls": "0"
+      },
+      "failing": [
+        "largest-contentful-paint (79)",
+        "total-blocking-time (70)",
+        "max-potential-fid (48)",
+        "unused-javascript (0)",
+        "network-dependency-tree-insight (0)",
+        "render-blocking-insight (0)"
+      ]
+    },
+    {
+      "page": "/",
+      "formFactor": "desktop",
+      "scores": {
+        "performance": 100,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "fcp": "0.2 s",
+        "lcp": "0.8 s",
+        "tbt": "40 ms",
+        "cls": "0.003"
+      },
+      "failing": [
+        "unused-javascript (0)",
+        "network-dependency-tree-insight (0)",
+        "render-blocking-insight (0)"
+      ]
+    },
+    {
+      "page": "/explorer",
+      "formFactor": "desktop",
+      "scores": {
+        "performance": 94,
+        "accessibility": 97,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "fcp": "0.2 s",
+        "lcp": "1.6 s",
+        "tbt": "40 ms",
+        "cls": "0"
+      },
+      "failing": [
+        "largest-contentful-paint (76)",
+        "target-size (0)",
+        "unused-javascript (0)",
+        "forced-reflow-insight (0)",
+        "lcp-discovery-insight (0)",
+        "network-dependency-tree-insight (0)",
+        "render-blocking-insight (0)"
+      ]
+    },
+    {
+      "page": "/lieux/1",
+      "formFactor": "desktop",
+      "scores": {
+        "performance": 100,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "fcp": "0.2 s",
+        "lcp": "0.8 s",
+        "tbt": "20 ms",
+        "cls": "0"
+      },
+      "failing": [
+        "unused-javascript (0)",
+        "network-dependency-tree-insight (0)",
+        "render-blocking-insight (0)"
+      ]
+    },
+    {
+      "page": "/connexion",
+      "formFactor": "desktop",
+      "scores": {
+        "performance": 100,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "fcp": "0.2 s",
+        "lcp": "0.8 s",
+        "tbt": "50 ms",
+        "cls": "0"
+      },
+      "failing": [
+        "unused-javascript (0)",
+        "network-dependency-tree-insight (0)",
+        "render-blocking-insight (0)"
+      ]
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # SpotFinder: project conventions
 
-Student project (SUP'COM, Projet Web · Objectif 3). **`descProjt.md` is the source of truth** for scope,
+Student project (SUP'COM, Projet Web · Objectifs 3 et 4). **`descProjt.md` is the source of truth** for scope,
 priorities and the Live Meter spec. If it conflicts with this file, the brief wins. Ask before deviating.
 
 ## Commands (Node 24, see `.nvmrc`)
@@ -13,9 +13,12 @@ npm run db:reset      wipe and re-seed the demo data
 npm run demo:refresh  regenerate only the recent live reports (keeps users, reviews, favourites)
 npm test              server (unit + API, needs the DB) then client tests
 npm run e2e           Playwright: journeys, keyboard, axe audit (Chrome, Edge, Firefox, WebKit, phone)
-npm run lint          ESLint + type-check, both workspaces
+npm run lint          Prettier check + ESLint + type-check, both workspaces
+npm run format        apply Prettier
 npm run preview       production build served by Express on :3000 (stop `npm run dev` first)
+npm run lighthouse    Lighthouse, 4 pages × mobile/desktop, median of 3 (needs `npm run preview`)
 npm run screenshots   regenerate docs/screenshots (BASE_URL=http://localhost:3000 for the preview)
+E2E_BASE_URL=http://localhost:3000 npm run e2e    e2e on the production build
 ```
 
 Gotchas learned the hard way:
@@ -24,6 +27,9 @@ Gotchas learned the hard way:
 - A Leaflet map created while hidden has no size: `MapViewComponent` re-frames when it becomes visible.
 - View transitions are disabled on WebKit (crashed in Playwright's WebKit); see `app.config.ts`.
 - e2e tests write to the dev database: run `npm run db:reset` afterwards.
+- Leaflet's CSS is the separate `map.css` bundle (`inject: false`), loaded by `MapViewComponent`: don't import it
+  in `styles.scss`, it would grow the global stylesheet again.
+- Forms use `<app-form-field>` + `appFieldControl` (label, hint, error and aria wiring): don't hand-write them.
 
 ## Dev proxy: why the browser only talks to localhost:4200
 

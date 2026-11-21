@@ -4,7 +4,8 @@
 coworking space nearby, with Wi-Fi, power outlets, budget, opening hours and, above all, **live crowd levels**
 reported by the community (the "Live Meter").
 
-Web Project · Objective 3 "Development and integration of the main features" · SUP'COM 2026.
+Web Project · Objective 3 "Development and integration of the main features" and Objective 4 "Finalisation and
+optimisation" ([what Objective 4 added](#objective-4-finalisation-and-optimisation)) · SUP'COM 2026.
 The user interface is in French; code, comments and commits are in English.
 
 ![Explorer: list, map and filters](docs/screenshots/02-explorer.png)
@@ -18,11 +19,13 @@ The user interface is in French; code, comments and commits are in English.
 5. [Architecture](#architecture)
 6. [REST API](#rest-api)
 7. [Data model](#data-model)
-8. [Quality: tests, accessibility, performance](#quality-tests-accessibility-performance)
-9. [Deliberate differences from the brief and the mockups](#deliberate-differences-from-the-brief-and-the-mockups)
-10. [Git workflow](#git-workflow)
-11. [AI usage (Utilisation de l'IA)](#ai-usage-utilisation-de-lia)
-12. [Next steps (P3)](#next-steps-p3)
+8. [Objective 4: finalisation and optimisation](#objective-4-finalisation-and-optimisation)
+9. [Quality: tests, accessibility, performance](#quality-tests-accessibility-performance)
+10. [Deliberate differences from the brief and the mockups](#deliberate-differences-from-the-brief-and-the-mockups)
+11. [Team and roles](#team-and-roles)
+12. [Git workflow](#git-workflow)
+13. [AI usage (Utilisation de l'IA)](#ai-usage-utilisation-de-lia)
+14. [Next steps (P3)](#next-steps-p3)
 
 ---
 
@@ -81,6 +84,8 @@ The login page has a "Remplir avec le compte démo" (fill in the demo account) b
 | `npm run lint`         | ESLint + TypeScript type-check, both parts                                                        |
 | `npm run preview`      | production version: compiled Angular served by Express on http://localhost:3000                   |
 | `npm run screenshots`  | regenerate the screenshots of this README                                                         |
+| `npm run lighthouse`   | Lighthouse audit of 4 pages, mobile and desktop (run `npm run preview` first)                     |
+| `npm run format`       | format the code with Prettier (`npm run lint` checks it)                                          |
 
 > Demo crowd reports are dated relative to when the database was seeded and expire after 2 hours:
 > run `npm run demo:refresh` just before presenting. Without recent reports the meter shows the
@@ -137,11 +142,13 @@ Every page of the sitemap (Objective 2) is at most 3 clicks from the home page a
 
 Generated with `npm run screenshots` on the production build (demo data).
 
-| Home (1440 px)                                 | Place page (1440 px)                            |
-| ---------------------------------------------- | ----------------------------------------------- |
-| ![Home](docs/screenshots/01-accueil.png)       | ![Place page](docs/screenshots/03-fiche.png)    |
-| **Member area, favourites**                    | **Add a place**                                 |
-| ![Favourites](docs/screenshots/08-favoris.png) | ![Add a place](docs/screenshots/09-ajouter.png) |
+| Home (1440 px)                                          | Place page (1440 px)                            |
+| ------------------------------------------------------- | ----------------------------------------------- |
+| ![Home](docs/screenshots/01-accueil.png)                | ![Place page](docs/screenshots/03-fiche.png)    |
+| **Member area, favourites**                             | **Add a place**                                 |
+| ![Favourites](docs/screenshots/08-favoris.png)          | ![Add a place](docs/screenshots/09-ajouter.png) |
+| **Editing a review (Objective 4)**                      | **About / contact**                             |
+| ![Edit a review](docs/screenshots/11-modifier-avis.png) | ![About](docs/screenshots/10-a-propos.png)      |
 
 | Place page (phone)                                             | "Je suis ici" (phone)                                      | Explorer, map (phone)                                            | Explorer (tablet, 768 px)                            |
 | -------------------------------------------------------------- | ---------------------------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------- |
@@ -261,7 +268,8 @@ All routes are prefixed with `/api`. Responses are JSON, dates are ISO 8601.
 | POST         | `/spots/:id/live-reports`                                    | ✓    | "Je suis ici" `{ level: calme / moyen / sature }`                    | 201, 400, 401, 404, 429 |
 | GET          | `/spots/:id/reviews`                                         |      | reviews of a place                                                   | 200, 404                |
 | POST         | `/spots/:id/reviews`                                         | ✓    | leave a review                                                       | 201, 400, 401, 404, 409 |
-| DELETE       | `/reviews/:id`                                               | ✓    | delete one's own review                                              | 204, 403, 404           |
+| PUT          | `/reviews/:id`                                               | ✓    | edit one's own review (sets `updatedAt`)                             | 200, 400, 401, 403, 404 |
+| DELETE       | `/reviews/:id`                                               | ✓    | delete one's own review                                              | 204, 401, 403, 404      |
 | GET          | `/me`                                                        | ✓    | profile + counters                                                   | 200, 401                |
 | PATCH        | `/me`                                                        | ✓    | change one's display name                                            | 200, 400, 401           |
 | GET          | `/me/favorites`                                              | ✓    | my favourites                                                        | 200, 401                |
@@ -305,35 +313,124 @@ reports. The seed is deterministic: everyone gets the same data.
 
 ---
 
+## Objective 4: finalisation and optimisation
+
+What the Objective 4 brief asked for, and what we did. Each part has its own branch (see [Git workflow](#git-workflow)).
+
+| The brief asks for                                     | What we did                                                                                                                                                                                      |
+| ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Finished pages, reusable components, consistent design | every route of the sitemap is finished; new `FormFieldComponent` + `appFieldControl` directive and `SpinnerComponent`, used by all 5 forms; one folder per page/component, `.component.ts` names |
+| Dynamic data: display, create **and update**           | reviews can now be **edited** from "Mes avis" (`PUT /api/reviews/:id`), shown as "(modifié)"                                                                                                     |
+| Light animations, loading states, responsive nav, a11y | staggered fade-in of place lists, spinner + "Envoi…" in submit buttons, skeletons, bottom tab bar on phones; reduced motion now also removes the animation delays                                |
+| Performance, Lighthouse, clean code, ESLint/Prettier   | Lighthouse measured and acted on (below); gzip + cache headers; map code and styles loaded on demand; Prettier on the whole codebase; unused variables fail the build                            |
+
+### Reusable form field
+
+Before, each form repeated the label, the hint, the error message and the `aria-describedby` / `aria-invalid`
+wiring by hand. Now:
+
+```html
+<app-form-field label="Adresse e-mail" controlId="email" [error]="emailError()">
+  <input appFieldControl type="email" formControlName="email" />
+</app-form-field>
+```
+
+`FormFieldComponent` ([`form-field.component.ts`](client/src/app/components/form-field/form-field.component.ts))
+draws the label, hint and error; the `appFieldControl` directive injects its parent field and sets `id`,
+`aria-describedby` and `aria-invalid` on the input. Login, sign-up, contact, add a place and the review form use it:
+183 lines of form markup became 131, and no field can be left without its label or error link.
+
+### Editing a review (update)
+
+- API: `PUT /api/reviews/:id`, same Zod schema as creation. One helper checks that the review exists (404) and
+  belongs to the user (403) for both `PUT` and `DELETE`, so the two rules cannot drift apart.
+- Database: migration [`002_review_updated_at.sql`](server/src/db/migrations/002_review_updated_at.sql) adds
+  `reviews.updated_at` (`NULL` = never edited) without touching existing rows.
+- Client: "Mes avis" → "Modifier" opens the same `ReviewFormComponent`, pre-filled (`initial` input). Saving
+  replaces the review in the list and shows the toast "Avis modifié."; readers see "(modifié)".
+
+### Lighthouse (production build)
+
+`npm run preview` then `npm run lighthouse` ([`scripts/lighthouse.mjs`](scripts/lighthouse.mjs)): 4 pages, mobile
+(Lighthouse default: slow 4G and a CPU 4× slower) and desktop. Scores vary from one run to the next, so each page is
+audited 3 times and the **median** run is kept. HTML reports: [`docs/lighthouse/`](docs/lighthouse/).
+
+| Page       | Desktop before | Desktop after | Mobile after | Accessibility · Best practices · SEO (after) |
+| ---------- | -------------: | ------------: | -----------: | -------------------------------------------- |
+| Home       |             96 |       **100** |           81 | 100 · 100 · 100                              |
+| Explorer   |             60 |        **94** |           71 | 100 · 100 · 100 (97 on desktop, see below)   |
+| Place page |             58 |       **100** |           78 | 100 · 100 · 100                              |
+| Login      |             98 |       **100** |           86 | 100 · 100 · 100                              |
+
+"Before" is our first audit (a single run; SEO was 91–92 and the place page had a layout shift of 0.13 on mobile).
+What changed it (commit `a2d9be2`):
+
+- **Compression**: Express gzips the API and the static files.
+- **Caching**: files with a hash in their name are cached for a year (`immutable`); `index.html` is always
+  revalidated, so a new version is picked up at once.
+- **Map on demand**: Leaflet's CSS and the pin styles are a separate `map.css`, loaded by `MapViewComponent` the
+  first time a map is shown (global CSS 21 kB → 9 kB). The maps use `@defer`: `on idle` in the Explorer (the list
+  comes first), `on viewport` on the place page (the mini map is below the fold, so Leaflet is not downloaded at all
+  on load).
+- **No layout shift**: `<main>` is at least one screen tall, so the footer no longer jumps down (CLS → 0 everywhere).
+- **SEO**: a `robots.txt` (91 → 100).
+
+What is left, and why:
+
+- **Mobile performance (71–86)**: the remaining cost is Total Blocking Time, mostly Angular starting up on a CPU
+  slowed down 4×. The next steps would be server-side rendering or prerendering, which we kept for later.
+- **Explorer accessibility 97 on desktop**: Lighthouse's `target-size` rule flags map pins that overlap. WCAG 2.5.8
+  allows it when an equivalent control exists, and here the list next to the map offers exactly the same actions.
+  Pin clustering (P3) would remove the overlap.
+- **Explorer LCP**: its largest element is the OpenStreetMap background, downloaded from an external server.
+
+### Clean code
+
+- **Prettier** (`.prettierrc`: 100 columns, single quotes) on the whole codebase; `npm run lint` runs
+  `format:check`, then ESLint and the type-check of both parts.
+- TypeScript `noUnusedLocals` and `noUnusedParameters`: an unused import or variable now fails the build.
+- Templates moved out of the bigger components (`account-reviews.component.html`), comments explain the "why".
+
+---
+
 ## Quality: tests, accessibility, performance
 
 ### Automated tests (all passing)
 
-| Suite        | Tool                  | Tests        | What is covered                                                                                                                                                                                                                                     |
-| ------------ | --------------------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Server, unit | Vitest                | 31           | `computeOccupancy` (the 47 % example, 2-hour window, report "from the future"), thresholds, reliability, filters → SQL (including an injection attempt), Tunis time, distances                                                                      |
-| API          | Vitest + Supertest    | 39           | every resource: auth (`httpOnly` cookie, identical 401, 409), places (filters, accents, distance sort, 404, validated creation), Live Meter (live / usual / none, 429, double click), reviews (409, 403), favourites, profile, contact, JSON errors |
-| Angular      | Vitest (Angular CLI)  | 71           | `SpotCardComponent`, `FilterBarComponent` (debounce), `LiveMeterComponent`, "Je suis ici" sheet, review form, "Add a place" (`FormArray`), `AuthService` + guard, utilities                                                                         |
-| End-to-end   | Playwright + axe-core | 20 scenarios | the 3 journeys of the brief, the guard, keyboard use, the accessibility audit; **fails if any error appears in the browser console**                                                                                                                |
+| Suite        | Tool                  | Tests        | What is covered                                                                                                                                                                                                                                                       |
+| ------------ | --------------------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Server, unit | Vitest                | 31           | `computeOccupancy` (the 47 % example, 2-hour window, report "from the future"), thresholds, reliability, filters → SQL (including an injection attempt), Tunis time, distances                                                                                        |
+| API          | Vitest + Supertest    | 42           | every resource: auth (`httpOnly` cookie, identical 401, 409), places (filters, accents, distance sort, 404, validated creation), Live Meter (live / usual / none, 429, double click), reviews (409, edit, 403), favourites, profile, contact, JSON errors, CSP header |
+| Angular      | Vitest (Angular CLI)  | 75           | `SpotCardComponent`, `FilterBarComponent` (debounce), `LiveMeterComponent`, "Je suis ici" sheet, review form, `FormFieldComponent`, "Add a place" (`FormArray`), `AuthService` + guard, utilities                                                                     |
+| End-to-end   | Playwright + axe-core | 20 scenarios | the 3 journeys of the brief, the guard, keyboard use, the accessibility audit; **fails if any error appears in the browser console**                                                                                                                                  |
 
 ```bash
 npm test     # server (unit + API, separate test database) then Angular
 npm run e2e  # with the app running (npm run dev)
+E2E_BASE_URL=http://localhost:3000 npm run e2e   # on the production build (npm run preview)
 ```
 
 ### Browsers
+
+Objective 4 results, on the **production build** (`npm run preview`):
 
 | Browser                  | End-to-end result                                |
 | ------------------------ | ------------------------------------------------ |
 | Chrome (Windows)         | 20/20, including the 12-page accessibility audit |
 | Edge                     | 7/7                                              |
 | Firefox                  | 7/7                                              |
-| WebKit (Safari's engine) | 6/6                                              |
+| WebKit (Safari's engine) | 6/6 (after the fix below)                        |
 | Phone (Pixel 7, Chrome)  | 4/4                                              |
 
 The accessibility audit runs once (in Chrome): the HTML is the same everywhere. Playwright's WebKit crashed on the
 View Transitions API (cross-fade between pages), so it is turned off for WebKit browsers (Safari, iPhone), which
 change pages without the fade. We could not test a real Safari (no Mac).
+
+**Bug found by testing the production build in WebKit**: the page stayed blank. helmet's default security policy
+asks browsers to upgrade every request to HTTPS (`upgrade-insecure-requests`); Safari does it even on
+`http://localhost`, so our own scripts were requested from `https://localhost:3000`, which does not exist. Chrome,
+Edge and Firefox treat localhost as secure, so only WebKit showed it. The directive is now sent only when the site
+is served over HTTPS (`CLIENT_ORIGIN` starts with `https://`), and an API test checks the header.
 
 ### Accessibility (WCAG 2.1 AA)
 
@@ -356,9 +453,10 @@ the bottom of the screen.
 
 ### Performance
 
-- **97.7 kB** (gzip) of JavaScript + CSS on first load (Angular budget: 500 kB).
-- Each page is lazy-loaded (1 to 11 kB); **Leaflet (40 kB) is only downloaded by pages with a map**;
-  the home page uses an SVG map preview instead.
+- **100 kB** (gzip) of JavaScript + CSS on first load (Angular budget: 500 kB). Most of it is Angular itself.
+- Each page is lazy-loaded (1 to 11 kB); **Leaflet (40 kB) and its styles are only downloaded when a map is
+  shown** (`@defer`); the home page uses an SVG map preview instead.
+- Lighthouse scores and what we changed to get them: see [Objective 4](#lighthouse-production-build).
 - No photos: SVG illustrations of a few hundred bytes; self-hosted `woff2` fonts (Latin subset only).
 - On the API side, the meter of N places costs 3 SQL queries whatever N is; indexes on the most-read tables.
 
@@ -401,6 +499,22 @@ All agreed with the team in Phase 0, or listed here:
 
 ---
 
+## Team and roles
+
+> **To be completed by the team** before delivery: replace the placeholders with the real split of the work.
+
+| Member   | Role                         | Main contributions                                                |
+| -------- | ---------------------------- | ----------------------------------------------------------------- |
+| [Name 1] | Front end (Angular)          | [Explorer, filters, map, place page, components]                  |
+| [Name 2] | Back end (API and database)  | [Express modules, SQL schema and seed, Live Meter]                |
+| [Name 3] | Design, UX and accessibility | [Figma mockups, style guide, contrast and keyboard checks]        |
+| [Name 4] | Quality and delivery         | [tests, Lighthouse, browser checks, README, Git workflow, slides] |
+
+How we worked together: decisions written down in [`CLAUDE.md`](CLAUDE.md) and [`docs/ai-log.md`](docs/ai-log.md),
+one branch per feature so everyone's work stays visible in the history, and `main` always working.
+
+---
+
 ## Git workflow
 
 `main` always works. One branch per phase/feature, merged with `--no-ff` so it stays visible in the history;
@@ -415,6 +529,12 @@ Conventional Commits messages (`feat:`, `fix:`, `test:`, `docs:`, `chore:`).
 | `feat/add-spot-contact` | add a place, about / contact, home page, 404                                |
 | `chore/quality-pass`    | multi-browser e2e, accessibility audit, local fonts, focus management       |
 | `docs/readme`           | this README, screenshots, AI log                                            |
+| `perf/lighthouse`       | Objective 4: Lighthouse script, compression, caching, map on demand, CLS    |
+| `feat/review-editing`   | Objective 4: edit a review (`PUT /api/reviews/:id`, "Mes avis")             |
+| `feat/form-components`  | Objective 4: `FormFieldComponent`, `appFieldControl`, `SpinnerComponent`    |
+| `feat/ui-polish`        | Objective 4: staggered list animations, reduced-motion fix                  |
+| `chore/code-quality`    | Objective 4: Prettier, `format:check`, no unused variables                  |
+| `docs/objective-4`      | Objective 4: this README section, Lighthouse reports, screenshots, AI log   |
 
 `git log --graph --oneline` shows the structure.
 
@@ -443,6 +563,8 @@ The phase-by-phase detail is in [`docs/ai-log.md`](docs/ai-log.md); every commit
 - Proposed the architecture, libraries and API; pointed out inconsistencies in the brief and the mockups.
 - Wrote the code (client, server, SQL, seed), the unit, API and end-to-end tests, the configuration and this README.
 - Ran the application, took screenshots to compare with the mockups, and fixed what was wrong.
+- Objective 4: ran Lighthouse and acted on its report, added review editing, the shared form components and the
+  list animations, set up Prettier, re-ran every test suite in five browsers, and drafted the presentation slides.
 
 **How we checked it**: every phase was tested (automated tests + real browsing), and the code is commented where
 the "why" is not obvious, so that each of us can explain it orally.
