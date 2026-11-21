@@ -12,33 +12,18 @@
     }
 
     <form class="auth__form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
-      <div class="field">
-        <label for="login-email">Adresse e-mail</label>
-        <input
-          id="login-email"
-          class="input"
-          type="email"
-          formControlName="email"
-          autocomplete="email"
-          inputmode="email"
-          [attr.aria-invalid]="!!fieldError(form.controls.email)"
-          [attr.aria-describedby]="fieldError(form.controls.email) ? 'login-email-error' : null"
-        />
-        @if (fieldError(form.controls.email); as error) {
-          <p id="login-email-error" class="field__error">{{ error }}</p>
-        }
-      </div>
+      <app-form-field label="Adresse e-mail" controlId="login-email" [error]="fieldError(form.controls.email)">
+        <input appFieldControl class="input" type="email" formControlName="email" autocomplete="email" inputmode="email" />
+      </app-form-field>
 
-      <div class="field">
-        <label for="login-password">Mot de passe</label>
+      <app-form-field label="Mot de passe" controlId="login-password" [error]="fieldError(form.controls.password)">
         <div class="password">
           <input
-            id="login-password"
+            appFieldControl
             class="input"
             [type]="showPassword() ? 'text' : 'password'"
             formControlName="password"
             autocomplete="current-password"
-            [attr.aria-invalid]="!!fieldError(form.controls.password)"
           />
           <button
             type="button"
@@ -54,12 +39,12 @@
             <span class="visually-hidden">Afficher le mot de passe</span>
           </button>
         </div>
-        @if (fieldError(form.controls.password); as error) {
-          <p class="field__error">{{ error }}</p>
-        }
-      </div>
+      </app-form-field>
 
       <button type="submit" class="btn btn--primary btn--block" [disabled]="submitting()">
+        @if (submitting()) {
+          <app-spinner />
+        }
         {{ submitting() ? 'Connexion…' : 'Se connecter' }}
       </button>
     </form>

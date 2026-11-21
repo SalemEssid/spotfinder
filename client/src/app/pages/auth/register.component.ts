@@ -4,6 +4,8 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router, RouterLink } from '@angular/router';
 import { LucideCheck, LucideCircleExclamationPoint, LucideEye, LucideEyeOff } from '@lucide/angular';
 import { finalize } from 'rxjs';
+import { FORM_FIELD } from '../../components/form-field/form-field.component';
+import { SpinnerComponent } from '../../components/spinner/spinner.component';
 import { AuthService } from '../../services/auth.service';
 import { ToastService } from '../../services/toast.service';
 import { apiErrorMessage, applyServerErrors } from '../../utils/api-error';
@@ -17,7 +19,16 @@ import {
 
 @Component({
   selector: 'app-register',
-  imports: [ReactiveFormsModule, RouterLink, LucideCheck, LucideEye, LucideEyeOff, LucideCircleExclamationPoint],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    FORM_FIELD,
+    SpinnerComponent,
+    LucideCheck,
+    LucideEye,
+    LucideEyeOff,
+    LucideCircleExclamationPoint,
+  ],
   templateUrl: './register.component.html',
   styleUrl: './auth-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
