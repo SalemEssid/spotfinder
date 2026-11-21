@@ -1,0 +1,73 @@
+<section class="my-reviews" aria-labelledby="my-reviews-title">
+  <h2 id="my-reviews-title">Mes avis</h2>
+
+  @if (error()) {
+    <app-empty-state tone="error" title="Vos avis n’ont pas pu être chargés" [message]="error()!" />
+  } @else if (reviews(); as list) {
+    @if (list.length === 0) {
+      <app-empty-state
+        title="Vous n’avez pas encore donné d’avis"
+        message="Vos notes aident les autres à choisir : Wi-Fi, calme, prises et prix."
+      >
+        <a class="btn btn--primary" routerLink="/explorer">Trouver un lieu à noter</a>
+      </app-empty-state>
+    } @else {
+      <ul class="list" role="list">
+        @for (review of list; track review.id) {
+          <li class="card review">
+            <div class="review__header">
+              <h3><a [routerLink]="['/lieux', review.spot.id]">{{ review.spot.name }}</a></h3>
+              <p class="caption">
+                <time [attr.datetime]="review.createdAt">{{ review.createdAt | date: 'd MMMM y' }}</time>
+                @if (review.updatedAt) {
+                  · modifié le <time [attr.datetime]="review.updatedAt">{{ review.updatedAt | date: 'd MMMM y' }}</time>
+                }
+              </p>
+            </div>
+
+            @if (editing()?.id === review.id) {
+              <!-- The same form as "Laisser un avis", filled with the current review. -->
+              <app-review-form
+                [initial]="editing()!.initial"
+                [submitting]="saving()"
+                submitLabel="Enregistrer les modifications"
+                (submitReview)="save(review, $event)"
+                (cancelled)="editing.set(null)"
+              />
+            } @else {
+              <p class="caption">
+                Wi-Fi {{ review.ratings.wifi }}/5 · Calme {{ review.ratings.calm }}/5 · Prises
+                {{ review.ratings.outlets }}/5 · Prix {{ review.ratings.price }}/5
+              </p>
+              @if (review.comment) {
+                <p>{{ review.comment }}</p>
+              }
+
+              <!-- Two-step delete: no accidental loss. -->
+              @if (confirmingId() === review.id) {
+                <div class="confirm" role="group" aria-label="Confirmer la suppression">
+                  <span>Supprimer cet avis ?</span>
+                  <button type="button" class="btn btn--danger" (click)="remove(review)">Oui, supprimer</button>
+                  <button type="button" class="btn btn--ghost" (click)="confirmingId.set(null)">Annuler</button>
+                </div>
+              } @else {
+                <div class="actions">
+                  <button type="button" class="btn btn--ghost" (click)="startEditing(review)">
+                    <svg lucidePencil aria-hidden="true"></svg>
+                    Modifier<span class="visually-hidden"> l’avis sur {{ review.spot.name }}</span>
+                  </button>
+                  <button type="button" class="btn btn--ghost delete" (click)="confirmingId.set(review.id)">
+                    <svg lucideTrash aria-hidden="true"></svg>
+                    Supprimer<span class="visually-hidden"> l’avis sur {{ review.spot.name }}</span>
+                  </button>
+                </div>
+              }
+            }
+          </li>
+        }
+      </ul>
+    }
+  } @else {
+    <div class="skeleton" style="height: 140px"></div>
+  }
+</section>

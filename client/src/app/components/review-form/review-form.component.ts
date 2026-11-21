@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, input, output, signal, untracked } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import type { NewReview } from '../../models/user.model';
@@ -42,7 +42,7 @@ const COMMENT_MAX = 500;
 
       <div class="review-form__actions">
         <button type="submit" class="btn btn--primary" [disabled]="submitting()">
-          {{ submitting() ? 'Publication…' : 'Publier mon avis' }}
+          {{ submitting() ? 'Envoi…' : submitLabel() }}
         </button>
         <button type="button" class="btn btn--ghost" (click)="cancelled.emit()">Annuler</button>
       </div>
@@ -74,6 +74,9 @@ const COMMENT_MAX = 500;
 })
 export class ReviewFormComponent {
   readonly submitting = input(false);
+  /** Existing review to edit: the form starts filled with it. Null = new review. */
+  readonly initial = input<NewReview | null>(null);
+  readonly submitLabel = input('Publier mon avis');
   readonly submitReview = output<NewReview>();
   readonly cancelled = output<void>();
 
@@ -98,6 +101,14 @@ export class ReviewFormComponent {
     this.formValue(); // re-evaluate on each change
     return fieldError(this.form.controls.comment);
   });
+
+  constructor() {
+    // Editing: fill the form with the existing review (the same form creates and edits).
+    effect(() => {
+      const review = this.initial();
+      if (review) untracked(() => this.form.reset({ ...review }));
+    });
+  }
 
   protected submit(): void {
     this.triedToSubmit.set(true);

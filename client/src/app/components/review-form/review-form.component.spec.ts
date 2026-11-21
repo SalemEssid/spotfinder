@@ -27,6 +27,30 @@ describe('ReviewFormComponent', () => {
     expect(element.textContent).toContain('Donnez une note aux 4 critères.');
   });
 
+  it('starts filled with an existing review when editing', async () => {
+    TestBed.configureTestingModule({ imports: [ReviewFormComponent] });
+    const fixture = TestBed.createComponent(ReviewFormComponent);
+    fixture.componentRef.setInput('initial', {
+      ratingWifi: 2,
+      ratingCalm: 5,
+      ratingOutlets: 3,
+      ratingPrice: 4,
+      comment: 'Très calme.',
+    });
+    fixture.componentRef.setInput('submitLabel', 'Enregistrer les modifications');
+    const submitted: NewReview[] = [];
+    fixture.componentInstance.submitReview.subscribe((review) => submitted.push(review));
+    await fixture.whenStable();
+    const element = fixture.nativeElement as HTMLElement;
+
+    expect(element.querySelector<HTMLInputElement>('input[name="rating-calm"][value="5"]')!.checked).toBe(true);
+    expect(element.querySelector('textarea')!.value).toBe('Très calme.');
+    expect(element.querySelector('button[type="submit"]')!.textContent).toContain('Enregistrer les modifications');
+
+    element.querySelector('form')!.dispatchEvent(new Event('submit')); // unchanged values are valid as is
+    expect(submitted[0]).toMatchObject({ ratingWifi: 2, ratingCalm: 5, comment: 'Très calme.' });
+  });
+
   it('emits the ratings and the trimmed comment', async () => {
     const { fixture, element, submitted, submit, rate } = await render();
     rate('rating-wifi', 4);

@@ -4,7 +4,7 @@ import { currentUser, requireAuth } from '../../middleware/auth';
 import { forbidden, HttpError, notFound } from '../../utils/http-error';
 import { hasReviewed, spotExists } from '../spots/spots.repository';
 import { idParamSchema } from '../spots/spots.schemas';
-import { deleteReview, findReviewById, findReviewsOfSpot, insertReview } from './reviews.repository';
+import { deleteReview, findReviewById, findReviewsOfSpot, insertReview, updateReview } from './reviews.repository';
 
 const rating = z
   .number('Donnez une note de 1 à 5.')
@@ -45,12 +45,26 @@ spotReviewsRouter.post('/', requireAuth, async (req, res) => {
 /** Mounted on /api/reviews */
 export const reviewsRouter = Router();
 
-/** DELETE /api/reviews/:id — only the author can delete their review. */
-reviewsRouter.delete('/:id', requireAuth, async (req, res) => {
-  const id = idParamSchema.parse(req.params.id);
+/** The review `rawId`, if it exists and belongs to the logged-in user (404 / 403 otherwise). */
+async function ownReview(rawId: unknown, userId: number, action: string) {
+  const id = idParamSchema.parse(rawId);
   const review = await findReviewById(id);
   if (!review) throw notFound('Cet avis n’existe pas.');
-  if (review.author.id !== currentUser(req).id) throw forbidden('Vous ne pouvez supprimer que vos propres avis.');
-  await deleteReview(id);
+  if (review.author.id !== userId) throw forbidden(`Vous ne pouvez ${action} que vos propres avis.`);
+  return review;
+}
+
+/** PUT /api/reviews/:id — the author replaces their ratings and comment. */
+reviewsRouter.put('/:id', requireAuth, async (req, res) => {
+  const review = await ownReview(req.params.id, currentUser(req).id, 'modifier');
+  const input = createReviewSchema.parse(req.body);
+  await updateReview(review.id, input);
+  res.json(await findReviewById(review.id));
+});
+
+/** DELETE /api/reviews/:id — only the author can delete their review. */
+reviewsRouter.delete('/:id', requireAuth, async (req, res) => {
+  const review = await ownReview(req.params.id, currentUser(req).id, 'supprimer');
+  await deleteReview(review.id);
   res.status(204).end();
 });
