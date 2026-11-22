@@ -501,14 +501,12 @@ All agreed with the team in Phase 0, or listed here:
 
 ## Team and roles
 
-> **To be completed by the team** before delivery: replace the placeholders with the real split of the work.
+**Group 6**: Salem Essid and Hajer Kammoun.
 
-| Member   | Role                         | Main contributions                                                |
-| -------- | ---------------------------- | ----------------------------------------------------------------- |
-| [Name 1] | Front end (Angular)          | [Explorer, filters, map, place page, components]                  |
-| [Name 2] | Back end (API and database)  | [Express modules, SQL schema and seed, Live Meter]                |
-| [Name 3] | Design, UX and accessibility | [Figma mockups, style guide, contrast and keyboard checks]        |
-| [Name 4] | Quality and delivery         | [tests, Lighthouse, browser checks, README, Git workflow, slides] |
+| Member        | Role                                | Main contributions                                                                                                      |
+| ------------- | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Salem Essid   | Back end, data and delivery         | Express API and its layers, PostgreSQL schema and seed, Live Meter formula, server tests, Lighthouse, Git workflow      |
+| Hajer Kammoun | Front end, design and accessibility | Figma mockups and style guide, Angular pages and shared components, responsive layout, accessibility and browser checks |
 
 How we worked together: decisions written down in [`CLAUDE.md`](CLAUDE.md) and [`docs/ai-log.md`](docs/ai-log.md),
 one branch per feature so everyone's work stays visible in the history, and `main` always working.
